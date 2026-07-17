@@ -3609,6 +3609,14 @@
         }
       ]
     },
+    "CodexResponseHandoffMode": {
+      "enum": [
+        "thinking",
+        "commentary",
+        "bemTags"
+      ],
+      "type": "string"
+    },
     "CollabAgentState": {
       "properties": {
         "message": {
@@ -7422,6 +7430,7 @@
         "preCompact",
         "postCompact",
         "sessionStart",
+        "sessionEnd",
         "userPromptSubmit",
         "subagentStart",
         "subagentStop",
@@ -8466,6 +8475,13 @@
           "type": "array"
         },
         "PreToolUse": {
+          "items": {
+            "$ref": "#/definitions/ConfiguredHookMatcherGroup"
+          },
+          "type": "array"
+        },
+        "SessionEnd": {
+          "default": [],
           "items": {
             "$ref": "#/definitions/ConfiguredHookMatcherGroup"
           },
@@ -10872,7 +10888,8 @@
     "PluginShareUpdateDiscoverability": {
       "enum": [
         "UNLISTED",
-        "PRIVATE"
+        "PRIVATE",
+        "LISTED"
       ],
       "type": "string"
     },
@@ -11125,6 +11142,13 @@
           "description": "Version of the locally materialized plugin package when available.",
           "type": [
             "string",
+            "null"
+          ]
+        },
+        "mustShowInstallationInterstitial": {
+          "default": null,
+          "type": [
+            "boolean",
             "null"
           ]
         },
