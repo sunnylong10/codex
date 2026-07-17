@@ -1,0 +1,13 @@
+ats_discovery.db
+ats_discovery.db-shm
+ats_discovery.db-wal
+career_url_cache.db
+career_url_cache.db-shm
+career_url_cache.db-wal
+portal_discovery*.db
+portal_discovery*.db-shm
+portal_discovery*.db-wal
+self_healing*.db
+self_healing*.db-shm
+self_healing*.db-wal
+__pycache__/

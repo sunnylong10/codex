@@ -1,0 +1,2445 @@
+"""
+MNC Job Scraper v8 — API-first, crawler fallback
+=================================================
+Changes in v8:
+  • FIX: Workday pagination no longer caps at 40 jobs (some tenants return
+    total=0 on page 2+; total is now trusted from page 1 only)
+  • FIX: Workday hard errors (403/404/422) return None so the browser
+    fallback actually runs (it was dead code — [] is not None)
+  • FIX: mid-pagination errors keep already-collected jobs
+  • NEW: stale Workday board names self-heal by following the human URL's
+    redirect and retrying with the corrected board (fixes Chevron/Shell/BP/UBS)
+  • NEW: --location filter (default "Singapore") — Workday uses searchText,
+    other ATSes filter client-side; blank locations are kept, not dropped.
+    Use --all-locations to disable.
+  • NEW: browser-context crashes ("Target page ... has been closed") retry
+    once with a fresh context instead of losing the company
+
+Architecture:
+  TIER 1 — Direct JSON APIs (complete, paginated, no browser):
+    • Workday:         POST /wday/cxs/{tenant}/{board}/jobs  (limit=20, paginated)
+    • Greenhouse:      GET  /v1/boards/{slug}/jobs           (all at once)
+    • Lever:           GET  /v0/postings/{slug}              (all at once)
+    • SmartRecruiters: GET  /v1/companies/{slug}/postings    (paginated)
+
+  TIER 2 — Browser crawler (for non-API companies):
+    • Loads the page, auto-detects embedded ATS slug → calls Tier 1 API
+    • If no ATS detected: extracts job cards/links AND follows pagination
+      (next-page buttons, load-more buttons, URL page params)
+    • This is the "crawler" — it doesn't stop at page 1
+
+Usage:
+    python scraper.py                   # all registered companies
+    python scraper.py --top 50
+    python scraper.py --output out.xlsx
+    python scraper.py --workers 4
+"""
+
+import asyncio, csv, re, logging, argparse, time, random, sys
+from datetime import datetime
+from pathlib import Path
+from urllib.parse import urljoin, urlparse, parse_qs, urlencode, urlunparse
+
+import requests
+import pandas as pd
+from openpyxl import load_workbook
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+from openpyxl.utils import get_column_letter
+from playwright.async_api import async_playwright, TimeoutError as PWTimeout
+
+# ── Windows encoding fix ───────────────────────────────────────────────────────
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
+def _handlers():
+    Path("logs").mkdir(exist_ok=True)
+    fh = logging.FileHandler(
+        f"logs/scraper_{datetime.now():%d%m%Y%H%M}.log", mode="w", encoding="utf-8")
+    fh.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
+    return [fh, ch]
+
+logging.basicConfig(level=logging.INFO, handlers=_handlers())
+log = logging.getLogger(__name__)
+
+UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36")
+
+# ── Politeness & volume controls ──────────────────────────────────────────────
+MAX_JOBS_PER_COMPANY = 400        # set via --max-per-company; 0 = unlimited
+JITTER = (0.4, 1.6)               # random delay range (s) between requests
+
+def jitter():
+    time.sleep(random.uniform(*JITTER))
+
+def cap_jobs(jobs):
+    """Keep only the newest MAX_JOBS_PER_COMPANY postings (date-desc when known)."""
+    if not MAX_JOBS_PER_COMPANY or len(jobs) <= MAX_JOBS_PER_COMPANY:
+        return jobs
+    jobs = sorted(jobs, key=lambda j: str(j.get("posted_date") or ""), reverse=True)
+    return jobs[:MAX_JOBS_PER_COMPANY]
+
+def hit_cap(jobs):
+    return MAX_JOBS_PER_COMPANY and len(jobs) >= MAX_JOBS_PER_COMPANY
+
+
+# ── Per-company diagnostics ────────────────────────────────────────────────────
+# Answers "why 0?": url error vs extraction failure vs no-SG-openings.
+DIAG = {}
+
+def diag(company, **kw):
+    d = DIAG.setdefault(company, {"strategy": "", "status": "", "raw": "",
+                                  "kept": "", "note": "", "url": "", "code": ""})
+    d.update({k: v for k, v in kw.items() if v is not None})
+
+API_STRATEGIES = ("workday", "greenhouse", "lever", "smartrecruiters", "oracle")
+
+def diag_verdict(d):
+    if d.get("status") == "error":
+        return "URL/SITE ERROR"
+    raw, kept = d.get("raw"), d.get("kept")
+    if isinstance(kept, int) and kept > 0:
+        return "OK"
+    if isinstance(raw, int) and raw > 0:
+        return "NO SG MATCHES (jobs exist elsewhere)"
+    if isinstance(raw, int) and raw == 0:
+        if d.get("strategy") in API_STRATEGIES:
+            return "NO SG MATCHES (API search returned 0)"
+        return "SITE EMPTY OR EXTRACTION FAILED"
+    return "UNKNOWN"
+
+
+# ── Location filter ────────────────────────────────────────────────────────────
+# Set from --location (default "Singapore"). Empty string = keep everything.
+LOCATION_FILTER = "Singapore"       # raw value as given (comma-separated allowed)
+LOCATION_TERMS  = ["singapore"]      # parsed lowercase terms
+SEARCH_TEXT     = "Singapore"        # server-side keyword (only when single term)
+
+def location_ok(loc):
+    """Keep a job if its location matches ANY filter term.
+    Blank/unknown locations are kept (browser cards often lack them);
+    Workday's 'N Locations' labels are kept too."""
+    if not LOCATION_TERMS:
+        return True
+    if not loc or not str(loc).strip():
+        return True
+    l = str(loc).strip().lower()
+    if any(t in l for t in LOCATION_TERMS):
+        return True
+    if re.match(r"^\d+\s+locations?$", l):
+        return True
+    return False
+
+# ── Career page registry ───────────────────────────────────────────────────────
+CAREER_PAGES = {
+    "6WIND":                                             "https://www.6wind.com",
+    "AACSB International":                               "https://www.aacsb.edu/about-us/careers",
+    "Aarki":                                             "https://apply.workable.com/aarki",
+    "ABB":                                               "https://careers.abb/global/en/search-results",
+    "Abbott":                                            "https://abbott.wd5.myworkdayjobs.com/abbottcareers",
+    "AboitizPower":                                      "https://careers.smartrecruiters.com/aboitizpower",
+    "Absolutdata":                                       "https://info.jazzhr.com/job-seekers.html",
+    "Academy Xi":                                        "https://academyxi.com/careers/",
+    "Accelya":                                           "https://w3.accelya.com/careers/",
+    "Accenture":                                         "https://accenture.wd103.myworkdayjobs.com/AccentureCareers",
+    "Accor":                                             "https://careers.smartrecruiters.com/accor",
+    "Acer":                                              "https://careers.acer.com/",
+    "Acronis":                                           "https://acronis.wd502.myworkdayjobs.com/acronis_careers",
+    "ACS":                                               "https://acs.wd5.myworkdayjobs.com/AcsCareers",
+    "Actualize Consulting":                              "https://www.actualizeconsulting.com/careers.html",
+    "ACWA Power":                                        "https://career23.sapsf.com/career?site=&company=acwapowerc&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE",
+    "Adams Street Partners":                             "https://boards.greenhouse.io/adamsstreetpartners",
+    "ADB SAFEGATE":                                      "https://careers.adbsafegate.com/",
+    "Adidas":                                            "https://adidas.wd3.myworkdayjobs.com/adidas-jobs",
+    "ADLINK Technology":                                 "https://www.spectrumreach.com/404",
+    "ADM":                                               "https://www.e-adm.com/",
+    "Adobe":                                             "https://careers.adobe.com/us/en",
+    "ADP":                                               "https://jobs.adp.com/en/",
+    "ADP Corporation":                                   "https://jobs.adp.com/en/",
+    "Adways":                                            "https://careers.smartrecruiters.com/AdwaysInteractive",
+    "AerCap":                                            "https://www.aercap.com/careers/life-at-aercap",
+    "Aeries":                                            "https://aeries.com/careers/",
+    "Aersale":                                           "https://www.aersale.com/careers",
+    "Afiniti":                                           "https://www.afiniti.com/careers/",
+    "AFRY":                                              "https://careers.smartrecruiters.com/afry",
+    "AGC":                                               "https://agccareers.com/",
+    "Agilent Technologies":                              "https://agilent.wd5.myworkdayjobs.com/Agilent_Careers",
+    "Agilysys":                                          "https://boards.greenhouse.io/agilysys",
+    "Agoda":                                             "https://boards.greenhouse.io/agoda",
+    "Ahlstrom":                                          "https://career5.successfactors.eu/career?company=Ahlstrom",
+    "AICA":                                              "https://aica.com/careers/",
+    "AIG":                                               "https://aig.wd1.myworkdayjobs.com/Aig",
+    "AIMA":                                              "https://www.aima.org/",
+    "Air Canada":                                        "https://careers.aircanada.com/ca/en",
+    "Air Niugini":                                       "https://iaahnf.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1",
+    "AirAsia":                                           "https://airasia.wd3.myworkdayjobs.com/Careers",
+    "Airbnb":                                            "https://careers.airbnb.com/",
+    "Airtac":                                            "https://www.airtac.com/careers",
+    "AirTrunk":                                          "https://airtrunk.com/careers/",
+    "Airwallex":                                         "https://careers.airwallex.com",
+    "Alba Berlin":                                       "https://www.albaberlin.de/verein/jobs-ausbildung/stellenausschreibungen/",
+    "Alibaba":                                           "https://talent.alibaba.com/en/home",
+    "AliExpress":                                        "https://www.aliexpress.com/s/error/404",
+    "Alitrip":                                           "https://store.taobao.com/shop/noshop.htm",
+    "AlixPartners":                                      "https://boards.greenhouse.io/alixpartners",
+    "Allegheny Technologies":                            "https://www.atimaterials.com/Pages/default.aspx",
+    "Allegis Group":                                     "https://allegisgroup.taleo.net/careersection/external/",
+    "Allot Communications":                              "https://www.allot.com/careers/",
+    "Allstate":                                          "https://allstate.wd5.myworkdayjobs.com/Allstate_Careers",
+    "ALTEN":                                             "https://careers.smartrecruiters.com/alten",
+    "Altimetrik":                                        "https://www.altimetrik.com/careers/",
+    "Amadeus":                                           "https://amadeus.com/en/careers/overview",
+    "Amazon":                                            "https://www.amazon.jobs/en/search",
+    "AMD":                                               "https://careers.amd.com/careers-home/jobs",
+    "Amgen":                                             "https://amgen.wd1.myworkdayjobs.com/Careers",
+    "Ammann":                                            "https://jobs.ammann.com/",
+    "Amneal":                                            "https://hcfa.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX",
+    "Amoy":                                              "https://www.amoy.com/tc/index.html",
+    "Ampol":                                             "https://careers.smartrecruiters.com/ampol",
+    "Analog Devices":                                    "https://analogdevices.wd1.myworkdayjobs.com/External",
+    "Analogfolk":                                        "https://jobs.lever.co/analogfolk",
+    "Anchnet":                                           "https://anchnet.com/",
+    "Andritz":                                           "https://career2.successfactors.eu/career?site=&company=andritzag&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE",
+    "Anglo American":                                    "https://angloamerican.wd3.myworkdayjobs.com/External",
+    "Anord Mardix":                                      "https://flextronics.wd1.myworkdayjobs.com/Anord_Mardix_Careers",
+    "Anthem":                                            "https://elevancehealth.wd1.myworkdayjobs.com/ANT",
+    "Antin Infrastructure Partners":                     "https://apply.workable.com/oops",
+    "Aon":                                               "https://aon.wd1.myworkdayjobs.com/careers",
+    "Apave":                                             "https://apave.taleo.net",
+    "Apparel Resource":                                  "https://apply.workable.com/oops",
+    "Apple":                                             "https://www.apple.com/careers/us/",
+    "Applied Materials":                                 "https://careers.appliedmaterials.com/careers",
+    "AppLovin":                                          "https://boards.greenhouse.io/applovin",
+    "APR Energy":                                        "https://www.aprenergy.com/careers/",
+    "April":                                             "https://www.april.com/fr/carrieres/travailler-chez-april/",
+    "Aptitude Software":                                 "https://www.aptitudesoftware.com/careers/",
+    "Aqua Security":                                     "https://www.aquasec.com/careers/",
+    "Aquifi":                                            "https://aquifi.com/careers",
+    "Arab Banking Corporation":                          "https://arabbank.taleo.net/careersection/ab_external/",
+    "Arch Pharmalabs":                                   "https://www.archpharmalabs.com/careers.php",
+    "Archer":                                            "https://boards.greenhouse.io/archer",
+    "Arcserve":                                          "https://www.arcserve.com/careers",
+    "Ardian":                                            "https://ardian.wd103.myworkdayjobs.com/ArdianCareers",
+    "Ardmac":                                            "https://www.ardmac.com/working-with-ardmac/",
+    "Arisaig Partners":                                  "https://apply.workable.com/oops",
+    "Arista Networks":                                   "https://careers.smartrecruiters.com/aristanetworks",
+    "Arjo":                                              "https://jobs.arjo.com/",
+    "Arper":                                             "https://apply.workable.com/oops",
+    "Artisan Partners":                                  "https://boards.greenhouse.io/artisanpartners",
+    "Arton Capital":                                     "https://www.artoncapital.com/careers/",
+    "Ascendion":                                         "https://ascendion.com/careers/",
+    "Asia Infrastructure Solutions":                     "https://www.asiainfrasolutions.com/join-ais/",
+    "Asia Paint":                                        "https://career8.successfactors.com/career?site=&company=C0013041173P&lang=en_GB&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE",
+    "Aspen Insurance":                                   "https://www.aspeninsurance.com/careers",
+    "ASSA ABLOY":                                        "https://www.assaabloy.com/career/en",
+    "Association of International Accountants":          "https://mycareer.aicpa-cima.com/",
+    "Astellar":                                          "https://career8.successfactors.com/career?site=&company=astellasT5&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE",
+    "Astellas Pharma":                                   "https://career8.successfactors.com/career?site=&company=astellasT5&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE",
+    "AstraZeneca":                                       "https://astrazeneca.wd3.myworkdayjobs.com/Careers",
+    "Asyril":                                            "https://asyril.com",
+    "ATR":                                               "https://careers.smartrecruiters.com/ATRInternational2",
+    "Audible":                                           "https://www.amazon.jobs/en/search?locations=Singapore",
+    "Austal":                                            "https://austalusa.wd1.myworkdayjobs.com/austal",
+    "Automation Anywhere":                               "https://automationanywhere.wd5.myworkdayjobs.com/AutomationAnywhereJobs",
+    "Avanade":                                           "https://www.avanade.com/en/career/search-jobs",
+    "Avery Dennison":                                    "https://careers.smartrecruiters.com/averydennison",
+    "Aviva":                                             "https://aviva.wd1.myworkdayjobs.com/External",
+    "AXA":                                               "https://careers.axa.com/careers-home/",
+    "AXS":                                               "https://boards.greenhouse.io/axs",
+    "B2C2":                                              "https://boards.greenhouse.io/b2c2",
+    "Backbase":                                          "https://www.backbase.com/careers",
+    "Badger Meter":                                      "https://www.badgermeter.com/careers",
+    "BAE Systems":                                       "https://careers.baesystems.com/",
+    "Baidu":                                             "https://boards.greenhouse.io/baidu",
+    "Bain":                                              "https://www.bain.com/careers/",
+    "Bain & Company":                                    "https://www.bain.com/careers/",
+    "Bain Capital":                                      "https://baincapital.wd1.myworkdayjobs.com/External_Public",
+    "Bakels":                                            "https://www.bakels.com",
+    "Baker Botts":                                       "https://www.bakerbotts.com/careers/careers-at-baker-botts",
+    "Baker McKenzie":                                    "https://careers.bakermckenzie.com/en_US/opportunities",
+    "Bandai Namco":                                      "https://boards.greenhouse.io/bandainamco",
+    "Bank of China":                                     "https://www.boc.cn/custserv/cs1/msg/200909/t20090928_846317.html",
+    "Bank of East Asia":                                 "https://careers.hkbea.com/",
+    "Banque Pictet":                                     "https://career5.successfactors.eu/career?company=banquepict",
+    "Barclays":                                          "https://barclays.wd3.myworkdayjobs.com/External_Career_Site_Barclays",
+    "Baringa":                                           "https://boards.greenhouse.io/baringa",
+    "Barings":                                           "https://barings.wd1.myworkdayjobs.com/Barings",
+    "Barracuda Networks":                                "https://www.barracuda.com/company/careers",
+    "BASF":                                              "https://www.basf.com/global/en/careers",
+    "Bauer":                                             "https://www.bauer.com/pages/careers",
+    "Bayer":                                             "https://jobs.bayer.com/",
+    "BayWa":                                             "https://www.baywa.com/jobs-karriere/auf-einen-blick",
+    "BCD Travel":                                        "https://jobs.bcdtravel.com/",
+    "Beaconhouse":                                       "https://beaconhouse.com/careers",
+    "Beca":                                              "https://www.beca.com/careers",
+    "Becton Dickinson":                                  "https://bdx.wd1.myworkdayjobs.com/EXTERNAL_CAREER_SITE_USA",
+    "Beetel":                                            "https://www.beetel.com/careers",
+    "Belden":                                            "https://careers.belden.com",
+    "Belgacom":                                          "https://jobs.proximus.com/be/en",
+    "Benchmark Electronics":                             "https://www.bench.com/careers/our-work",
+    "Benham and Reeves":                                 "https://apply.workable.com/oops",
+    "Bentley Systems":                                   "https://jobs.bentley.com/",
+    "Berjaya":                                           "https://www.berjaya.com/careers/",
+    "Berkeley Energy":                                   "https://apply.workable.com/oops",
+    "Bestseller":                                        "https://bestseller.com/careers",
+    "BHP Billiton":                                      "https://careers.bhp.com/",
+    "BigBasket":                                         "https://careers.bigbasket.com/",
+    "Bilibili":                                          "https://jobs.bilibili.com/",
+    "Bimeda":                                            "https://www.boehringer-ingelheim.com/careers//",
+    "Bioregen":                                          "https://careers.bioregen.com/",
+    "Biotage":                                           "https://careers.biotage.com/",
+    "Bird Electronic":                                   "https://bird.com/en-sg/careers",
+    "Birlasoft":                                         "https://www.birlasoft.com/careers",
+    "BIS":                                               "https://jobs.lever.co/bis",
+    "BitGo":                                             "https://boards.greenhouse.io/bitgo",
+    "Blackboard":                                        "https://www.blackboard.com/company/careers",
+    "BlackRock":                                         "https://blackrock.wd1.myworkdayjobs.com/BlackRock_Professional",
+    "Blackstone":                                        "https://blackstone.wd1.myworkdayjobs.com/Blackstone_Campus_Careers",
+    "Bloomberg":                                         "https://bloomberg.avature.net/careers/SearchJobs",
+    "BLS International":                                 "https://careers.smartrecruiters.com/blsinternational",
+    "Blue Yonder":                                       "https://careers.blueyonder.com/us/en/search-results?keywords=%7Bsearch_term_string%7D",
+    "BlueScope":                                         "https://careers.smartrecruiters.com/bluescope",
+    "Bluetti":                                           "https://apply.workable.com/oops",
+    "BMC Software":                                      "https://jobs.bmc.com/",
+    "BNP Paribas":                                       "https://bnpparibas.tal.net/candidate",
+    "BNY Mellon":                                        "https://eofe.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/BNY-Careers",
+    "Board of Innovation":                               "https://apply.workable.com/boardofinnovation",
+    "Bobobox":                                           "https://bobobox.teamtailor.com/",
+    "Boge Kompressoren":                                 "https://www.boge.com/de-de/jobs-karriere/",
+    "Bonfiglioli":                                       "https://career5.successfactors.eu/career?company=C0001104584P&lang=en_US&login_ns=register&navBarLevel=MY_PROFILE",
+    "Bosch":                                             "https://careers.smartrecruiters.com/BoschGroup",
+    "Boston Consulting":                                 "https://careers.bcg.com/global/en/",
+    "Boston Consulting Group":                           "https://careers.bcg.com/global/en/",
+    "Bounce":                                            "https://bounce.sg/careers",
+    "Bound4Blue":                                        "https://apply.workable.com/oops",
+    "Boyden":                                            "https://www.boyden.com/careers/",
+    "BP":                                                "https://bp.avature.net/talentcommunity",
+    "BQT Solutions":                                     "https://apply.workable.com/oops",
+    "Bracell":                                           "https://averis.wd3.myworkdayjobs.com/RGE",
+    "Brady":                                             "https://boards.greenhouse.io/brady",
+    "Brainlabs":                                         "https://boards.greenhouse.io/brainlabs",
+    "Brand Finance":                                     "https://brandfinance.com/careers",
+    "Bray Controls":                                     "https://www.bray.com/careers",
+    "BreadTalk":                                         "https://www.breadtalk.com/careers/",
+    "Bridgestone":                                       "https://bridgestone.wd5.myworkdayjobs.com/External",
+    "Bright Food":                                       "https://brightfood.taleo.net/careersection/brightfood_external/jobsearch.ftl",
+    "Bristlecone":                                       "https://iaagiz.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/bristlecone-careers",
+    "British American Tobacco":                          "https://careers.bat.com/en",
+    "Broadcom":                                          "https://broadcom.wd1.myworkdayjobs.com/External_Career",
+    "Brookfield":                                        "https://brookfield.wd5.myworkdayjobs.com/brookfield",
+    "Brookfield Properties":                             "https://careers.smartrecruiters.com/brookfieldproperties",
+    "Brown Advisory":                                    "https://brownadvisory.wd1.myworkdayjobs.com/Brown",
+    "Bryden Wood":                                       "https://www.brydenwood.com/careers",
+    "BTIG":                                              "https://www.btig.com/careers/",
+    "Buffalo Tours":                                     "https://www.discova.com/",
+    "Buhler":                                            "https://www.buhlergroup.com/global/en/info_pages/404_not_found.html",
+    "Burckhardt Compression":                            "https://performancemanager.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js",
+    "Bureau Veritas":                                    "https://careers.bureauveritas.com/",
+    "BWT":                                               "https://www.bwt.com/en/careers/",
+    "BYD":                                               "https://boards.greenhouse.io/byd",
+    "ByteDance":                                         "https://careers.smartrecruiters.com/bytedance",
+    "CAB":                                               "https://clk.mamma.com/screen?d=cab.com",
+    "CAE":                                               "https://www.cae.com/careers",
+    "Cainiao":                                           "https://jobs.alibaba.com/",
+    "Calabrio":                                          "https://fa-epcb-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX",
+    "Callsign":                                          "https://apply.workable.com/callsign",
+    "CallTower":                                         "https://apply.workable.com/oops",
+    "Campbell Soup":                                     "https://campbellsoup.wd5.myworkdayjobs.com/ExternalCareers_GlobalSite",
+    "Camstar":                                           "https://www.camstar.com/careers",
+    "Camtek":                                            "https://www.camtek.com/careers/",
+    "Canadian Solar":                                    "https://canadiansolar.wd5.myworkdayjobs.com/CanadianSolar",
+    "Canon":                                             "https://sg.canon/en/consumer",
+    "Capco":                                             "https://boards.greenhouse.io/capco",
+    "Capgemini":                                         "https://www.capgemini.com/careers/",
+    "Capital Drilling":                                  "https://careers.capitaldrilling.com/",
+    "Capital Economics":                                 "https://apply.workable.com/capital-economics",
+    "CapitaLand":                                        "https://capitaland.wd3.myworkdayjobs.com/CapitaLandGroup",
+    "Capvision":                                         "https://boards.greenhouse.io/capvision",
+    "Carbery":                                           "https://carbery.wd3.myworkdayjobs.com/carbery_external_careers",
+    "Cardinal Health":                                   "https://jobs.cardinalhealth.com/",
+    "Carestream Health":                                 "https://career4.successfactors.com/career?site=&company=carestream&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE",
+    "Carey Olsen":                                       "https://www.careyolsen.com/careers",
+    "Cargill":                                           "https://careers.cargill.com/en",
+    "Carrian":                                           "https://carrian.com/careers",
+    "Carta":                                             "https://boards.greenhouse.io/carta",
+    "Cartier":                                           "https://careers.cartier.com/",
+    "Caseware":                                          "https://jobs.lever.co/caseware",
+    "Catalent":                                          "https://catalent.wd1.myworkdayjobs.com/External",
+    "Catenon":                                           "https://www.catenon.com",
+    "Caterpillar":                                       "https://cat.wd5.myworkdayjobs.com/CaterpillarCareers",
+    "CATL":                                              "https://www.catl.com/404/",
+    "Cato Networks":                                     "https://boards.greenhouse.io/catonetworks",
+    "CBRE":                                              "https://www.cbre.com/careers",
+    "CDPQ":                                              "https://www.lacaisse.com/en/careers",
+    "CECO Environmental":                                "https://www.cecoenviro.com/careers/",
+    "Celanese":                                          "https://www.celanese.com/careers",
+    "Cemex":                                             "https://career5.successfactors.eu/career?company=emexcentrP2&site=&lang=en_US&requestParams=&login_ns=register&jobPipeline=RCM%20Redirect&navBarLevel=MY_PROFILE&_s.crb=xMnsH5S7ZsQ%2BZBkAaBGE0Ych71w%3D",
+    "Century 21":                                        "https://www.century21.com/general/careers/how-we-support-you",
+    "Cerner":                                            "https://www.oracle.com/careers/",
+    "CGI":                                               "https://www.cgi.com/en/careers",
+    "ChannelEngine":                                     "https://apply.workable.com/oops",
+    "Charles River":                                     "https://careers.criver.com/",
+    "Chenega":                                           "https://www.icims.com/legal/privacy-notice-website/",
+    "Chevron":                                           "https://chevron.wd5.myworkdayjobs.com/Jobs",
+    "Chevron Phillips":                                  "https://career4.successfactors.com/career?company=CPC&amp;site=&amp;lang=en_US&amp;requestParams=&amp;navBarLevel=MY%5fPROFILE&amp;_s.crb=WOjH75ul1ORT0%2fqxI1ytJJL3yqs%3d",
+    "China Civil Engineering Construction Corporation":  "https://www.ccecc.com.sg/careers/",
+    "China Eastern Airlines":                            "https://job.ceair.com/",
+    "China Energy Engineering Group":                    "https://www.mycareersfuture.gov.sg/companies/china-energy-engineering-group-shanxi-electric-power-engineering-co-T20FC0038L",
+    "China Harbour Engineering":                         "https://www.chec.com.cn/en/recruit/",
+    "China International":                               "https://www.chinainter.com/careers",
+    "China Petroleum":                                   "https://www.spc.com.sg/career/job-opportunities/",
+    "China Railway":                                     "https://www.crec.cn/en/careers/",
+    "China Railway Tunnel Group":                        "https://www.mycareersfuture.gov.sg/companies/china-railway-tunnel-group-co-T13FC0140G",
+    "Chint":                                             "https://www.chint.com/careers",
+    "CIEE":                                              "https://www.ciee.org/about/work-ciee",
+    "Cigna":                                             "https://cigna.wd5.myworkdayjobs.com/CignaCareers",
+    "CIMC":                                              "https://cimcconsulting.hire.trakstar.com/",
+    "CIPD":                                              "https://www.cipd.org:443/uk/the-people-profession/careers/",
+    "Cisco":                                             "https://jobs.cisco.com/jobs/SearchJobs",
+    "Citibank":                                          "https://jobs.citi.com/search-jobs",
+    "Citigate Dewe Rogerson":                            "https://boards.greenhouse.io/citigatedewerogerson",
+    "Citigroup":                                         "https://jobs.citi.com/search-jobs",
+    "CitiusTech":                                        "https://www.citiustech.com/careers",
+    "CJ Group":                                          "https://www.cj.net/en/careers",
+    "Clariant":                                          "https://careers.clariant.com/",
+    "Clarion":                                           "https://career2.successfactors.eu/career?career_company=adpllcP3&loginFlowRequired=true",
+    "ClearCube":                                         "https://clearcube.com/about",
+    "Clinical Laserthermia Systems":                     "https://apply.workable.com/oops",
+    "Cloudera":                                          "https://www.cloudera.com/careers.html",
+    "CloudHQ":                                           "https://apply.workable.com/oops",
+    "Cloudian":                                          "https://cloudian.com/company/careers/",
+    "CLP":                                               "https://iabhtj.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CLP-Recruitment-System/jobs",
+    "CLSA":                                              "https://www.clsa.com/careers/",
+    "CMA CGM":                                           "https://www.cmacgm-group.com/en/careers",
+    "CMC Markets":                                       "https://cmcmarkets.wd3.myworkdayjobs.com/CMC_Markets_Careers",
+    "Cockett Marine Oil":                                "https://www.cockettgroup.com/",
+    "Cofense":                                           "https://cofense.com/about/careers",
+    "Cofra":                                             "https://boards.greenhouse.io/cofraholding",
+    "Cognizant":                                         "https://careers.cognizant.com/us-en/",
+    "Colas Rail":                                        "https://colasrail.com/en/careers/",
+    "Colliers":                                          "https://careers.smartrecruiters.com/colliers",
+    "Coloplast":                                         "https://careers.coloplast.com/",
+    "Comba Telecom":                                     "https://combagroup.com/",
+    "Comexposium":                                       "https://careers.comexposium.com/",
+    "Commonwealth War Graves Commission":                "https://careers.cwgc.org/",
+    "Compassion International":                          "https://compassion.wd5.myworkdayjobs.com/CompassionCareers",
+    "Compressport":                                      "https://www.compressport.com/inter/en/",
+    "Compuage":                                          "https://compuage.com/careers",
+    "Conergy":                                           "https://www.conergy.com/404.html",
+    "ConMed":                                            "https://conmed.wd5.myworkdayjobs.com/Conmed",
+    "Conservation International":                        "https://phh.tbe.taleo.net/phh04/ats/careers/v2/jobSearch?org=CONSERVATION&cws=39",
+    "Container Leasing International":                   "https://www.cli.com/careers",
+    "Contentserv":                                       "https://www.centricsoftware.com/careers",
+    "Contenur":                                          "https://apply.workable.com/oops",
+    "ConvaTec":                                          "https://convatec.wd1.myworkdayjobs.com/Convatec",
+    "Cordis":                                            "https://careers.cordis.com/",
+    "Corgan":                                            "https://www.corgan.com/careers",
+    "Corio Generation":                                  "https://www.linkedin.com/jobs/search/?keywords=Corio%20Generation",
+    "Corning":                                           "https://career4.successfactors.com/career?site=&company=CNGPROD&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE",
+    "Corteva Agriscience":                               "https://corteva.wd5.myworkdayjobs.com/Corteva",
+    "Coupa":                                             "https://jobs.lever.co/coupa",
+    "Coverall":                                          "https://www.coverall.com/careers/",
+    "Creative Technology":                               "https://sg.creative.com/corporate/careers",
+    "Credit Bureau":                                     "https://careers.equifax.com/en/",
+    "Credit Suisse":                                     "https://www.credit-suisse.com/careers",
+    "CrowdStrike":                                       "https://crowdstrike.wd5.myworkdayjobs.com/CrowdstrikeCareers",
+    "CTBUH":                                             "https://verticalurbanism.org/about/careers/",
+    "Cubic":                                             "https://cubic.wd1.myworkdayjobs.com/cubic_global_careers",
+    "Cumulocity":                                        "https://careers.softwareag.cloud/",
+    "Curaden":                                           "https://curaden.com/careers/",
+    "Curefit":                                           "https://www.cult.fit/",
+    "Cyient":                                            "https://careers.cyient.com/cyient/",
+    "Cyklop":                                            "https://www.cyklop.com/careers",
+    "Cytel":                                             "https://iblyjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/cytel",
+    "Daifuku":                                           "https://www.daifuku.com/careers/",
+    "Daishin":                                           "https://www.daishin.com/careers",
+    "Dallas Airmotive":                                  "https://cva.fa.us1.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_3",
+    "Danone":                                            "https://careers.danone.com/en-global/home.html",
+    "Danske Commodities":                                "https://danskebank.com/careers",
+    "DAP":                                               "https://hcwx.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_20",
+    "Darigold":                                          "https://www.darigold.com/careers/",
+    "Dasqua":                                            "https://www.dasqua.com/careers",
+    "Dassault Falcon":                                   "https://www.dassaultfalcon.com/careers/",
+    "Databricks":                                        "https://boards.greenhouse.io/databricks",
+    "DataDirect Networks":                               "https://careers-ddn.icims.com/jobs/intro?_gl=1*ms2z5o*_gcl_au*NDg3MzM0MjAzLjE3MjA3OTYyMjg.*_ga*MTU3MzM5NTYwNS4xNzIwNzk2MjI4*_ga_RPSCCB6F9T*MTcyMDc5NjIyOC4xLjEuMTcyMDc5NjI0MS40Ny4wLjA.&#038;mobile=false&#038;width=1200&#038;height=500&#038;bga=true&#038;needsRedirect=false&#038;jan1offset=120&#038;jun1offset=180",
+    "DaVita":                                            "https://careers.davita.com/",
+    "Dayforce":                                          "https://www.dayforce.com/who-we-are/careers",
+    "DBS":                                               "https://dbs.wd3.myworkdayjobs.com/Dbs_Careers",
+    "DBS Group":                                         "https://dbs.wd3.myworkdayjobs.com/Dbs_Careers",
+    "De Brauw Blackstone Westbroek":                     "https://careers.smartrecruiters.com/DeBrauwBlackstoneWestbroek1",
+    "De Nora":                                           "https://www.denora.com/careers",
+    "Decathlon":                                         "https://decathlon.taleo.net/careersection/decathlon_group/jobsearch.ftl",
+    "Dell":                                              "https://iawmqy.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/careers",
+    "Deloitte":                                          "https://www.deloitte.com/global/en.html",
+    "Delta Electronics":                                 "https://careers.smartrecruiters.com/deltaelectronics",
+    "DeltaPath":                                         "https://www.deltapath.com/",
+    "Dennemeyer Group":                                  "https://dennemeyer.wd3.myworkdayjobs.com/Dennemeyer_Careers",
+    "Dentsply Sirona":                                   "https://career5.successfactors.eu/career?site=&company=DENTSPLY&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE",
+    "Dentsu":                                            "https://dentsuaegis.wd3.myworkdayjobs.com/DAN_GLOBAL",
+    "Deppon":                                            "https://www.deppon.com/careers",
+    "Desmet":                                            "https://www.desmet.com/en/career",
+    "Detpak":                                            "https://apply.workable.com/oops",
+    "Deutsche":                                          "https://db.wd3.myworkdayjobs.com/DBWebsite",
+    "Dewesoft":                                          "https://dewesoft.com/careers",
+    "DHL":                                               "https://careers.dhl.com/apac/en/search-results?keywords=%7Bsearch_term_string%7D",
+    "Diageo":                                            "https://diageo.wd3.myworkdayjobs.com/Diageo_Careers",
+    "Diamond Offshore":                                  "https://noblecorp.wd1.myworkdayjobs.com/noblecorp",
+    "DigitalBridge":                                     "https://boards.greenhouse.io/digitalbridge",
+    "Discovery Networks":                                "https://careers.wbd.com/global/en",
+    "DKSH":                                              "https://jobs.dksh.com/",
+    "DMG Mori":                                          "https://en.dmgmori.com?redirect=i",
+    "DMW":                                               "https://www.dmw.com/careers/",
+    "DNV":                                               "https://ecyq.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1",
+    "Dobot":                                             "https://www.dobot-robots.com/careers",
+    "DocuSign":                                          "https://careers.smartrecruiters.com/docusign",
+    "Donaldson":                                         "https://donaldson.wd115.myworkdayjobs.com/DonaldsonCareers",
+    "Dormakaba":                                         "https://jobs.dormakaba.com/",
+    "Dow Jones":                                         "https://dowjones.jobs/sgp/jobs/",
+    "Drewry":                                            "https://apply.workable.com/oops",
+    "DriveWealth":                                       "https://boards.greenhouse.io/drivewealth",
+    "DS Avocats":                                        "https://www.dsavocats.com/",
+    "Dulwich College":                                   "https://www.dulwich.org/careers",
+    "Duopharma":                                         "https://duopharma.com/careers",
+    "DuPont":                                            "https://dupont.wd5.myworkdayjobs.com/Jobs",
+    "DXC Technology":                                    "https://dxctechnology.wd1.myworkdayjobs.com/DXCJobs",
+    "Dymax":                                             "https://dymax.com/careers",
+    "Dynapac":                                           "https://dynapac.com/en/careers",
+    "Dyson":                                             "https://dyson.wd3.myworkdayjobs.com/Dyson_Careers",
+    "Eagles Flight":                                     "https://eaglesflight.com/careers/",
+    "EAS":                                               "https://abbott.wd5.myworkdayjobs.com/abbottcareers",
+    "Eastman":                                           "https://jobs.eastman.com/",
+    "Eastman Chemical":                                  "https://jobs.eastman.com/",
+    "Eberspacher":                                       "https://career012.successfactors.eu/career?company=eberspaecher",
+    "Echologics":                                        "https://echologics.com/",
+    "Economist Group":                                   "https://www.economistgroup.com/careers",
+    "EdgeConneX":                                        "https://www.edgeconnex.com/careers/",
+    "Edgecore Networks":                                 "https://edgecore.com/company/careers",
+    "Edom Technology":                                   "https://www.edomtech.com/en/careers/",
+    "EDP":                                               "https://edp.com/en/careers",
+    "EFG Hermes":                                        "https://efgholding.com/careers",
+    "EGIS":                                              "https://www.egis-group.com/fr",
+    "Eksons":                                            "https://corporate.exxonmobil.com/careers",
+    "Electronic Arts":                                   "https://www.ea.com/careers",
+    "Element Materials Technology":                      "https://www.element.com/careers",
+    "EMC":                                               "https://iawmqy.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/careers",
+    "Emerchantpay":                                      "https://www.emerchantpay.com/careers/",
+    "Emerson":                                           "https://hdjq.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1",
+    "Emirates":                                          "https://emiratesjobs.avature.net/careersmarketplace/Login",
+    "Encompass Digital Media":                           "https://encompass.tv/careers/",
+    "Endava":                                            "https://careers.smartrecruiters.com/endava",
+    "Energy Exemplar":                                   "https://www.energyexemplar.com/careers/",
+    "Engelhart":                                         "https://boards.greenhouse.io/engelhart",
+    "ENGIE":                                             "https://jobs.engie.com/",
+    "Engis":                                             "https://apply.workable.com/oops",
+    "ENJO":                                              "https://www.enjo.com/sg/",
+    "ENSCO":                                             "https://boards.greenhouse.io/ensco",
+    "Ensign":                                            "https://ensign.wd1.myworkdayjobs.com/Ensign",
+    "Entrepreneur First":                                "https://apply.workable.com/oops",
+    "EOH":                                               "https://eoh.taleo.net/careersection/external/jobsearch.ftl",
+    "Eoptolink":                                         "http://www.eoptolink.com/about-us/careers",
+    "Epic Games":                                        "https://boards.greenhouse.io/epicgames",
+    "EPRI":                                              "https://www.epri.com/careers",
+    "Epson":                                             "https://epson.recruitee.com",
+    "Equinix":                                           "https://careers.equinix.com/jobs",
+    "Eraneos":                                           "https://eraneos.wd3.myworkdayjobs.com/Eraneos_External_Career_Site",
+    "Ergon Oil":                                         "http://ergon.com/careers/",
+    "Ericsson":                                          "https://career2.successfactors.eu/career?company=Ericsson&amp;career_ns=job_application&amp;src=Eightfold&amp;career_job_req_id={{job_id}}&#34;,",
+    "ESET":                                              "https://jobs.eset.com/en-US/ESET_External",
+    "ESMO":                                              "https://apply.workable.com/oops",
+    "ESR":                                               "https://jobs.esr.com",
+    "Esri":                                              "https://boards.greenhouse.io/esri",
+    "Ethiopian Airlines":                                "https://www.ethiopianairlines.com/en/careers",
+    "Euler Hermes":                                      "https://www.allianz-trade.com/en_global.html",
+    "Eurofins":                                          "https://careers.smartrecruiters.com/eurofins",
+    "Euromonitor":                                       "https://apply.workable.com/euromonitor",
+    "Eutelsat":                                          "https://careers.eutelsat.com/",
+    "Everbridge":                                        "https://jobs.lever.co/everbridge",
+    "Evonik":                                            "https://evonik.wd3.myworkdayjobs.com/External_Careers",
+    "Ewise Systems":                                     "https://wise.jobs/",
+    "Exact Software":                                    "https://www.exact.com/careers",
+    "Exacta":                                            "https://exacta.com/",
+    "Exagrid":                                           "https://www.exagrid.com/careers/",
+    "Excelitas Technologies":                            "https://career5.successfactors.eu/career?site=&company=excelitast&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE",
+    "ExecuJet":                                          "https://www.execujet.com/careers/",
+    "Exiger":                                            "https://boards.greenhouse.io/exiger",
+    "Exo Travel":                                        "https://www.exotravel.com/careers",
+    "Extreme Networks":                                  "https://jobs.lever.co/extremenetworks",
+    "Exxon":                                             "https://corporate.exxonmobil.com/careers",
+    "ExxonMobil":                                        "https://corporate.exxonmobil.com/careers",
+    "EY":                                                "https://careers.ey.com/ey/search/",
+    "Fagerdala":                                         "https://apply.workable.com/oops",
+    "Fastenal":                                          "https://careers.fastenal.com/",
+    "Fastmarkets":                                       "https://careers.smartrecruiters.com/fastmarkets",
+    "Fedders":                                           "https://careers.fedders.com/",
+    "FedEx":                                             "https://fedex.wd1.myworkdayjobs.com/FXE-LAC_External_Career_Site",
+    "FEI Systems":                                       "https://feisystems.com/careers/",
+    "Felicite IP Consulting":                            "https://apply.workable.com/oops",
+    "Ferrero":                                           "https://career5.successfactors.eu/careers?company=ferreroint&lang=en_US&clientId=jobs2web&jobPipeline=Direct&navBarLevel=MY_PROFILE",
+    "Ferrotec":                                          "https://www.ferrotec.com/company/careers/",
+    "FFR Group":                                         "https://ffrgroup.com/careers",
+    "Fidinam":                                           "https://www.fidinam.com/en/careers",
+    "Fifth Wall":                                        "https://www.fifthwall.com/careers",
+    "Filtronic":                                         "https://filtronic.com/careers/",
+    "Financial Times":                                   "https://job-boards.eu.greenhouse.io/financialtimes33",
+    "Firefly":                                           "https://firefly.com/careers",
+    "First Solar":                                       "https://fa-esbv-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1",
+    "Firstmac":                                          "https://www.firstmac.com.au:443/",
+    "Fiserv":                                            "https://careers.fiserv.com/us/en/search-results?keywords={search_term_string}",
+    "FL Technics":                                       "https://fltechnics.com/careers/",
+    "Flexicon":                                          "https://newcareers.flexicon.com/",
+    "Flextronics":                                       "https://flex.com/careers",
+    "Flight Safety Foundation":                          "https://apply.workable.com/oops",
+    "Flint Group":                                       "https://career55.sapsf.eu/career?site=&company=flintgroup&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE",
+    "Flokk":                                             "https://info.jazzhr.com/job-seekers.html",
+    "Flow Traders":                                      "https://boards.greenhouse.io/flowtraders",
+    "Flowdesk":                                          "https://careers.smartrecruiters.com/flowdesk",
+    "Fluenta":                                           "https://www.fluenta.com/careers",
+    "Fluidra":                                           "https://careers.fluidra.com/",
+    "Fluke":                                             "https://careers.fortive.com/fluke/",
+    "Flying Tiger Copenhagen":                           "https://flyingtiger.com/pages/work-with-us",
+    "FMC Technologies":                                  "https://fmc.wd12.myworkdayjobs.com/Fmc",
+    "Fonterra":                                          "https://fonterrakf.avature.net/internalcareers/Login/",
+    "FormFactor":                                        "https://www.formfactor.com/company/careers/career-opportunities/",
+    "Formica":                                           "https://www.formica.com/en-sg/",
+    "Formlabs":                                          "https://boards.greenhouse.io/formlabs",
+    "Forrester":                                         "https://www.forrester.com/careers/",
+    "Foxconn":                                           "https://www.foxconn.com/zh-tw",
+    "Franklin Covey":                                    "https://www.franklincovey.com/about/careers/",
+    "Frasers Group":                                     "https://careers.smartrecruiters.com/frasersgroup",
+    "FreeBalance":                                       "https://www.freebalance.com/en/careers/",
+    "Freshly":                                           "https://apply.workable.com/oops",
+    "Frontier Management":                               "https://www.frontier-mgmt-recruit.com/eng/",
+    "Frontier Strategy Group":                           "https://frontierstrategygroup.com/careers/",
+    "Fugro":                                             "https://fugro.wd3.myworkdayjobs.com/Careers",
+    "Fuji Dies Kogyo":                                   "https://apply.workable.com/oops",
+    "Fuji Yusoki Kogyo":                                 "https://www.fujiyusoki.com/careers",
+    "Fujita":                                            "https://global.fujitsu/en-apac/careers/singapore",
+    "Fujitsu":                                           "https://global.fujitsu/en-apac",
+    "Fumakilla":                                         "https://www.fumakilla.com/careers",
+    "Fund Channel":                                      "https://www.fundchannel.com/careers",
+    "FWD Group":                                         "https://fwd.wd3.myworkdayjobs.com/FWDcareersite",
+    "GA Telesis":                                        "https://www.gatelesis.com/careers/",
+    "Galderma":                                          "https://galderma.wd3.myworkdayjobs.com/External",
+    "Galileo":                                           "https://boards.greenhouse.io/galileo",
+    "Gamuda":                                            "https://gamuda.com/our-people/careers-gamuda/",
+    "Gandi":                                             "https://gandi.taleez.com/",
+    "Garena":                                            "https://careers.garena.com/sg/",
+    "Gategroup":                                         "https://www.gategroup.com/careers/",
+    "Gaumont":                                           "https://info.jazzhr.com/job-seekers.html",
+    "GBG":                                               "https://apply.workable.com/gbg",
+    "GCL":                                               "https://www.gcl.com/careers/",
+    "GE Vernova":                                        "https://gevernova.wd5.myworkdayjobs.com/Vernova_ExternalSite",
+    "General Atlantic":                                  "https://www.generalatlantic.com/careers/",
+    "General Motors":                                    "https://search-careers.gm.com/en/",
+    "General Reinsurance":                               "https://careers.munichre.com/en/search-jobs",
+    "Genetec":                                           "https://careers.smartrecruiters.com/genetec",
+    "Genius Sports":                                     "https://boards.greenhouse.io/geniussports",
+    "Genting":                                           "https://www.genting.com/careers/",
+    "Geometry":                                          "https://apply.workable.com/geometry",
+    "GES":                                               "https://geaerospace.wd5.myworkdayjobs.com/GE_ExternalSite",
+    "Gessi":                                             "https://www.gessi.com/en/careers",
+    "GIA":                                               "https://gia.wd1.myworkdayjobs.com/Gia",
+    "Gland Pharma":                                      "https://glandpharma.com/careers",
+    "Gleeds":                                            "https://apply.workable.com/oops",
+    "Glencore":                                          "https://www.glencore.com/en/careers",
+    "GLMX":                                              "https://boards.greenhouse.io/glmx",
+    "Global Blue":                                       "https://globalblue.wd3.myworkdayjobs.com/External",
+    "Global Calcium":                                    "https://www.globalcalcium.com/careers",
+    "Global Infrastructure Partners":                    "https://www.globalinfrastructurepartners.com/careers",
+    "Global Payments":                                   "https://worldpay.wd5.myworkdayjobs.com/Worldpay_External_Careers_Site",
+    "Global Switch":                                     "https://careers.globalswitch.com/",
+    "Go City":                                           "https://apply.workable.com/oops",
+    "Golden Village":                                    "https://goldenvillage.avature.net",
+    "Goldman Sachs":                                     "https://higher.gs.com/roles",
+    "GoodWe":                                            "https://wecruit.hotjob.cn/SU630a3a0e2f9d2406b4f6c5f1/pb/index.html#/",
+    "Goodwin Procter":                                   "https://goodwinprocter.wd5.myworkdayjobs.com/External_Careers",
+    "Google":                                            "https://careers.google.com/jobs/results/",
+    "Grab":                                              "https://grab.careers/jobs/",
+    "Graceland Fruit":                                   "https://www.gracelandfruit.com/careers/",
+    "Grant Thornton":                                    "https://ehzq.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1",
+    "Greenlam":                                          "https://www.greenlam.com/careers",
+    "Greif":                                             "https://greif.wd5.myworkdayjobs.com/Greif",
+    "Groma":                                             "https://boards.greenhouse.io/groma",
+    "Groupe OnePoint":                                   "https://onepoint.wd3.myworkdayjobs.com/OnepointFR",
+    "GS Caltex":                                         "https://www.gscaltex.com/en/careers",
+    "GSK":                                               "https://gsk.wd5.myworkdayjobs.com/GskCareers",
+    "GuarantCo":                                         "https://guarantco.com/careers/",
+    "Guidepoint":                                        "https://boards.greenhouse.io/guidepoint",
+    "GumGum":                                            "https://boards.greenhouse.io/gumgum",
+    "GuotaiQixing":                                      "https://guotaiqixing.taleo.net",
+    "Habitat for Humanity":                              "https://www.habitat.org/about/careers",
+    "Habyt":                                             "https://www.habyt.com/careers",
+    "Hach":                                              "https://veralto.wd1.myworkdayjobs.com/HachJobs",
+    "Haggai Institute":                                  "https://www.haggai-international.org/connect-page/",
+    "Haidilao":                                          "https://www.haidilao.com/careers",
+    "Hainan Airlines":                                   "https://www.hnair.com/404/",
+    "Hakuhodo":                                          "https://www.hakuhodo.co.jp/hr/",
+    "Halliburton":                                       "https://halliburton.wd3.myworkdayjobs.com/Search",
+    "Hammerspace":                                       "https://hammerspace.com/careers/",
+    "Hansaworld":                                        "https://www.hansaworld.com/en/careers",
+    "Hanwa":                                             "https://www.hanwha.com/index.do",
+    "Hanwha":                                            "https://jobs-offshore.hanwhaocean.com/go/Asia-Pacific/9738700/",
+    "Harmonic":                                          "https://boards.greenhouse.io/harmonic",
+    "Harris":                                            "https://careers.l3harris.com/en",
+    "Harris Hotels":                                     "https://harrishotels.taleo.net",
+    "Harvey Norman":                                     "https://www.harveynorman.com.sg/careers.html",
+    "Harwin":                                            "https://www.harwin.com/careers",
+    "HashKey Capital":                                   "https://www.hashkey.com/careers",
+    "Hassell":                                           "https://www.hassellstudio.com/asia/join/benefits?redirected=%E2%9C%93",
+    "Hatch":                                             "https://www.hatch.com/careers",
+    "Haycarb":                                           "https://emdm.fa.ap1.oraclecloud.com/hcmUI/CandidateExperience/en/sites/hayleys-careers/",
+    "Heerema":                                           "https://careers.heerema.com/",
+    "Heilind":                                           "https://heilind.taleo.net/careersection/external",
+    "Helix Robotics Solutions":                          "https://helixesg.com/job-search/",
+    "Hella":                                             "https://www.hella.com/en/Career-230/",
+    "Henderson":                                         "https://www.janushenderson.com/en-us/",
+    "Henkel":                                            "https://jobs.henkel.com/",
+    "Henry Jacques":                                     "https://www.henryjacques.com/careers",
+    "Herman Miller":                                     "https://www.hermanmiller.com/en_us/careers/",
+    "Hermes":                                            "https://talents.hermes.com/en/sites/CX/jobs",
+    "HeyGen":                                            "https://boards.greenhouse.io/heygen",
+    "Highpower Technology":                              "https://careers.smartrecruiters.com/highpower",
+    "Hill Dickinson":                                    "https://careers.hilldickinson.com/",
+    "Hillstone Networks":                                "https://www.hillstonenet.com/more/careers/join-hillstone/",
+    "Hilti":                                             "https://careers.hilti.group/en",
+    "Hilton":                                            "https://efet.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1",
+    "Hiperbaric":                                        "https://apply.workable.com/oops",
+    "Hisense":                                           "https://jobs.hisense.com/",
+    "Hitachi":                                           "https://www.hitachivantara.com/en-us/company/careers.html",
+    "HKS":                                               "https://hks.com/careers",
+    "Hobart":                                            "https://www.hobartcorp.com/about-us-hobart/current-openings",
+    "Homag":                                             "https://www.homag.com/en/career",
+    "Honda":                                             "https://careers.honda.com/us/en",
+    "Honeywell":                                         "https://careers.honeywell.com/en/sites/Honeywell",
+    "Hong Kong Futures Exchange":                        "https://hkex.wd3.myworkdayjobs.com/HKEXCareerPage",
+    "Hoogwegt":                                          "https://hoogwegt.com/careers",
+    "HotelPlanner":                                      "https://www.hotelplanner.com",
+    "HSBC":                                              "https://mycareer.hsbc.com/en_GB/external/SearchJobs",
+    "HTC":                                               "https://globalcareers-htcvive.icims.com/jobs/intro?hashed=-435804063&amp;mobile=false&amp;width=988&amp;height=500&amp;bga=true&amp;needsRedirect=false&amp;jan1offset=0&amp;jun1offset=60",
+    "Huawei":                                            "https://career.huawei.com/reccampportal/portal5/index.html",
+    "Huber":                                             "https://careers.huber.com/",
+    "Hugo Boss":                                         "https://careers.hugoboss.com/global/en",
+    "Humanscale":                                        "https://www.humanscale.com/welcome",
+    "Hunter Douglas":                                    "https://boards.greenhouse.io/hunterdouglas",
+    "Huntsman":                                          "https://huntsman.wd1.myworkdayjobs.com/Huntsman",
+    "Hutchinson":                                        "https://fa-eocc-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/fr/sites/CX_1007",
+    "Hyatt":                                             "https://jobs.hyatt.com/jobs/search",
+    "Hyland Software":                                   "https://www.hyland.com/en/company/careers",
+    "Hyundai":                                           "https://www.hyundai.com/worldwide/en/about-hyundai/careers.html",
+    "IAG":                                               "https://careers.iag.com.au/global/en",
+    "Ibibo Group":                                       "https://apply.workable.com/goibibo/",
+    "IBM":                                               "https://ibm.wd12.myworkdayjobs.com/External_IBM_Careers",
+    "iClick Interactive":                                "https://apply.workable.com/oops",
+    "IDEMIA":                                            "https://uscareers-idemia.icims.com/",
+    "Idemitsu":                                          "https://www.idemitsu.com/jp/index.html",
+    "IDEXX Laboratories":                                "https://idexx.wd1.myworkdayjobs.com/idexx",
+    "IDP":                                               "https://careers.idp.com/",
+    "IIF":                                               "https://iif.taleo.net",
+    "IKA":                                               "https://www.ika.com/en",
+    "iloom":                                             "https://apply.workable.com/iloom/",
+    "IMI":                                               "https://boards.greenhouse.io/imi",
+    "Impiana Hotels":                                    "https://apply.workable.com/oops",
+    "Impossible Foods":                                  "https://impossiblefoods.com/careers",
+    "InBody":                                            "https://www.inbody.com/careers",
+    "Incubeta":                                          "https://incubeta.com/careers/",
+    "Index Exchange":                                    "https://www.indexexchange.com/careers/",
+    "Indiba":                                            "https://apply.workable.com/oops",
+    "Indospace":                                         "https://www.indospace.in/careers/",
+    "INEOS":                                             "https://careers.ineos.com/",
+    "Infineon":                                          "https://www.infineon.com/careers",
+    "Infinite Convergence Solutions":                    "https://www.infinite-convergence.com/Job-DOS_C",
+    "Inflow Technologies":                               "https://inflowtechnologies.com/careers/",
+    "Infosys":                                           "https://career.infosys.com/joblist",
+    "Infratil":                                          "https://apply.workable.com/oops",
+    "Ingenico":                                          "https://jobs.ingenico.com/",
+    "Innio":                                             "https://careers.innio.com/en/",
+    "Inspectorate":                                      "https://commodities.bureauveritas.com",
+    "Instawork":                                         "https://boards.greenhouse.io/instawork",
+    "Insulet":                                           "https://insulet.wd5.myworkdayjobs.com/InsuletCareers",
+    "Integris Composites":                               "https://integriscomposites.com/careers/",
+    "Intel":                                             "https://intel.wd1.myworkdayjobs.com/External",
+    "Intel 471":                                         "https://intel471.bamboohr.com/careers",
+    "Intellian":                                         "https://intellian.com/careers",
+    "International SOS":                                 "https://careers.internationalsos.com/",
+    "International Trademark Association":               "https://apply.workable.com/oops",
+    "InterSystems":                                      "https://boards.greenhouse.io/intersystems",
+    "INTERTANKO":                                        "https://apply.workable.com/oops",
+    "Investcorp":                                        "https://www.investcorp.com/careers/",
+    "IONOS":                                             "https://boards.greenhouse.io/ionos",
+    "IPECO":                                             "https://ipeco.com/work-for-us/",
+    "Ippudo":                                            "https://www.ippudo.com/",
+    "IQ EQ":                                             "https://www.iqeq.com/careers/",
+    "IQVIA":                                             "https://iqvia.wd1.myworkdayjobs.com/Iqvia",
+    "IronNet Cybersecurity":                             "https://www.ironnet.com/company/careers",
+    "ISG":                                               "https://isginc.pinpointhq.com/",
+    "ISOQAR":                                            "https://isoqar.com/careers/",
+    "Ivanhoe Cambridge":                                 "https://www.ivanhoecambridge.com/en/",
+    "Jacobi Carbons":                                    "https://www.jacobi.net/careers/",
+    "Jain International Foods":                          "https://www.jainfarmfresh.com/careers-global-opportunities",
+    "Jane Goodall Institute":                            "https://janegoodall.org/",
+    "Jangho Group":                                      "http://en.jangho.com/TalentRecruitment/",
+    "Janus et Cie":                                      "https://www.janusetcie.com/careers",
+    "Jardine Matheson":                                  "https://www.jardinegroup.com/careers",
+    "Jauch":                                             "https://www.jauch.com/en-INT/careers",
+    "JCB":                                               "https://careers.jcb.com/",
+    "Jet Aviation":                                      "https://www.jetaviation.com/company/careers/",
+    "Jetstar":                                           "https://jetstar.taleo.net/careersection/jetstar/jobsearch.ftl",
+    "JFE":                                               "https://www.jfe-holdings.co.jp/en/careers/",
+    "JFrog":                                             "https://boards.greenhouse.io/jfrog",
+    "Jingdong":                                          "https://www.jd.com/error2.aspx?from=shopdomain",
+    "JM Financial":                                      "https://www.jmfinancial.com/careers",
+    "Johnson & Johnson":                                 "https://jnj.wd5.myworkdayjobs.com/jnjemea_external",
+    "Johnson Controls":                                  "https://jci.wd5.myworkdayjobs.com/JCI",
+    "Johnson Electric":                                  "https://johnsonelectric.wd3.myworkdayjobs.com/Career_JE",
+    "Johnson Health":                                    "https://jj.wd5.myworkdayjobs.com/JJ",
+    "Joint Commission Resources":                        "https://careers-jointcommission.icims.com/jobs/intro",
+    "JPMorgan":                                          "https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/jobs",
+    "JPMorgan Chase":                                    "https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001",
+    "Juki":                                              "https://juki.com/careers",
+    "Julius Baer":                                       "https://juliusbaer.wd3.myworkdayjobs.com/External",
+    "JW Player":                                         "https://jwx.com/careers",
+    "JWT":                                               "https://apply.workable.com/jwt/",
+    "Kajima":                                            "https://www.thegear.sg/careers/",
+    "Kalsec":                                            "https://www.kalsec.com/about-kalsec/careers",
+    "Kamigumi":                                          "https://www.kamigumi.co.jp/recruit/index.html",
+    "Kandji":                                            "https://www.iru.com/",
+    "Kantar":                                            "https://kantar.wd3.myworkdayjobs.com/Kantar",
+    "Kao":                                               "https://boards.greenhouse.io/kao",
+    "Kappa":                                             "https://kappagroup.com",
+    "Karmsund Maritime":                                 "https://karmsund.no/careers/",
+    "Katoen Natie":                                      "https://www.katoennatie.com/careers/",
+    "Kaya":                                              "https://apply.workable.com/oops",
+    "Kayak":                                             "https://boards.greenhouse.io/kayak",
+    "Kdan":                                              "https://www.kdan.com/careers",
+    "Kennametal":                                        "https://jobs.kennametal.com",
+    "Kennedys":                                          "https://www.kennedyslaw.com/en/careers-at-kennedys/",
+    "Keolis":                                            "https://careers.keolis.com/",
+    "Keppel":                                            "https://keppel.wd3.myworkdayjobs.com/KeppelCareers",
+    "Kerber":                                            "https://kerber.com/careers",
+    "Kering":                                            "https://careers.kering.com/careers",
+    "Ketjen":                                            "https://www.ketjen.com/careers/",
+    "Keune":                                             "https://keunehaircosmetics.recruitee.com",
+    "KFC":                                               "https://www.kfc.com.sg/careers",
+    "KFIN Technologies":                                 "https://www.kfintech.com/jobs/",
+    "King Living":                                       "https://www.kingliving.com/careers",
+    "KITZ":                                              "https://www.kitz.co.jp/recruit/",
+    "Kiwoom":                                            "https://www.kiwoom.com/error.html",
+    "KKR":                                               "https://www.kkr.com/careers",
+    "Kleiberit":                                         "https://www.kleiberit.com/en/careers",
+    "Klumpp Coatings":                                   "https://de.linkedin.com/company/klumpp-coatings",
+    "Knoll":                                             "https://millerknoll.wd1.myworkdayjobs.com/MillerKnoll?Skills=5e5722fb51ba100a6f097075c63a0000",
+    "Knomo":                                             "https://apply.workable.com/oops",
+    "Koelis":                                            "https://koelis.com/career/",
+    "Koerber":                                           "https://career5.successfactors.eu/careers?company=Koerber",
+    "Komatsu":                                           "https://www.komatsu.com/en-us/careers",
+    "Konami":                                            "https://www.konami.com/games/us/en/jobs/",
+    "Korea Investment Corporation":                      "https://www.kic.kr/en/careers/recruit",
+    "Koyo Engineering":                                  "https://koyotech.com/careers/",
+    "KPMG":                                              "https://kpmg.wd3.myworkdayjobs.com/kpmg-careers",
+    "KraussMaffei":                                      "https://www.kraussmaffei.com/en/404",
+    "Kredivo":                                           "https://apply.workable.com/oops",
+    "Kumho Tire":                                        "https://kumhotire.recruitee.com",
+    "Kumul Petroleum":                                   "https://kumul.com/careers",
+    "Kurita":                                            "https://www.kurita.com.sg/careers/",
+    "Kvadrat":                                           "https://apply.workable.com/oops",
+    "Kyndryl":                                           "https://www.kyndryl.com/us/en/careers",
+    "L3Harris":                                          "https://careers.l3harris.com/en",
+    "Lakshmi Ring Travellers":                           "https://www.lrt.co.in/current-openings/",
+    "Lalique":                                           "https://apply.workable.com/oops",
+    "LaMotte":                                           "https://lamotte.com/careers/",
+    "Lantech":                                           "https://lantech.applicantpro.com/notset.php?lantech&root=4&disabled=1",
+    "Laura Ashley":                                      "https://www.lauraashley.com/content/international-store-locator",
+    "Laurel Shipping":                                   "https://sg.linkedin.com/company/laurelshipmanagement",
+    "Lawo":                                              "https://apply.workable.com/oops",
+    "Lazada":                                            "https://careers.lazada.com/",
+    "LBC Express":                                       "https://www.lbcexpress.com/about",
+    "Lear":                                              "https://jobs.lear.com/",
+    "Lectra":                                            "https://careers.lectra.com/",
+    "Lenovo":                                            "https://jobs.lenovo.com/en_US/careers",
+    "Leoch International":                               "https://apply.workable.com/oops",
+    "Leonardo":                                          "https://leonardocompany.wd3.myworkdayjobs.com/LeonardoCareerSite",
+    "LG Display":                                        "https://careers.lg.com/",
+    "LG Electronics":                                    "https://boards.greenhouse.io/lgelectronics",
+    "Lime":                                              "https://apply.workable.com/lime/",
+    "Linde":                                             "https://linde.wd3.myworkdayjobs.com/Linde_Careers",
+    "Lineage Logistics":                                 "https://onelineage.wd1.myworkdayjobs.com/External",
+    "Lingaro":                                           "https://careers.smartrecruiters.com/lingaro",
+    "Linxens":                                           "https://onelinxens.wd3.myworkdayjobs.com/External_Careers",
+    "Liquidnet":                                         "https://www.liquidnet.com/careers",
+    "LNG Japan":                                         "https://careers.slng.com.sg/",
+    "Lockwood International":                            "https://boards.greenhouse.io/lockwood",
+    "Loftware":                                          "https://www.loftware.com/about-us/careers",
+    "LogicMonitor":                                      "https://boards.greenhouse.io/logicmonitor",
+    "Lojel":                                             "https://www.lojel.com/careers/",
+    "Lonza":                                             "https://careers.smartrecruiters.com/lonza",
+    "Lotte":                                             "https://apply.workable.com/lotte-travel-retail-singapore/",
+    "Lotus Bakeries":                                    "https://lotusbakeries.recruitee.com",
+    "Lotusflare":                                        "https://careers.lotusflare.com/",
+    "Louis Delius":                                      "https://sg.linkedin.com/jobs/louis-dreyfus-company-jobs",
+    "Louis Dreyfus Company":                             "https://careers.smartrecruiters.com/louisdreyfuscompany",
+    "Louis Vuitton":                                     "https://lvmh.taleo.net/careersection/lv_global/jobsearch.ftl",
+    "LPGA":                                              "https://www.lpga.com/careers",
+    "LS Electric":                                       "https://www.ls-electric.com/careers/",
+    "Lucidworks":                                        "https://jobs.lever.co/lucidworks",
+    "Lufthansa Technik":                                 "https://www.lufthansagroup.careers/en/lufthansa-technik",
+    "Lumen Technologies":                                "https://jobs.lumen.com/global/en/",
+    "Lummus Technology":                                 "https://www.lummus.com/careers",
+    "Luxury Escapes":                                    "https://careers.smartrecruiters.com/luxuryescapes",
+    "LVMH":                                              "https://careers.smartrecruiters.com/lvmh",
+    "LyondellBasell":                                    "https://careers.lyondellbasell.com/",
+    "Macquarie":                                         "https://macquarie.wd3.myworkdayjobs.com/External",
+    "Macquarie Group":                                   "https://www.macquarie.com/au/en/careers.html",
+    "Maersk":                                            "https://maersk.wd3.myworkdayjobs.com/Maersk_Careers",
+    "Magix":                                             "https://www.magix.com/us/",
+    "Magna":                                             "https://magna.wd3.myworkdayjobs.com/Magna",
+    "Magna International":                               "https://magna.wd3.myworkdayjobs.com/Magna",
+    "Magnet Forensics":                                  "https://jobs.lever.co/magnetforensics",
+    "Malaysia Marine and Heavy Engineering":             "https://www.mmhe.com/careers",
+    "Malindo Airways":                                   "https://www.kayak.sg",
+    "Mambu":                                             "https://mambu.com/en/careers",
+    "Management Development Institute of Singapore":     "https://www.mdis.edu.sg/careers",
+    "Manila Water":                                      "https://careers.manilawater.com/",
+    "Manulife":                                          "https://manulife.wd3.myworkdayjobs.com/MFCJH_Jobs",
+    "MAPFRE":                                            "https://www.mapfre.com/en/talent/",
+    "Maples and Calder":                                 "https://maples.com/",
+    "Mapletree":                                         "https://www.mapletree.com.sg/careers",
+    "Marathon":                                          "https://conocophillips.wd1.myworkdayjobs.com/External",
+    "Marchon":                                           "https://www.marchon.com/careers",
+    "Marechal Electric":                                 "https://marechal-electric.com",
+    "Marex":                                             "https://www.marex.com/careers",
+    "Markel":                                            "https://careers.smartrecruiters.com/markel",
+    "Markham":                                           "https://jobs.lever.co/markham",
+    "Marriott":                                          "https://ejwl.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX",
+    "Maruho":                                            "https://www.maruho.co.jp/recruit/",
+    "Masimo":                                            "https://careers.smartrecruiters.com/masimo",
+    "Mastercard":                                        "https://mastercard.wd1.myworkdayjobs.com/CorporateCareers",
+    "Matex Lab":                                         "https://www.mycareersfuture.gov.sg/companies/matex-holdings-201504475H",
+    "Mattson Technology":                                "https://eidg.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2",
+    "Maybank":                                           "https://www.maybank.com/en/404-error.page",
+    "Mayer Brown":                                       "https://www.mayerbrown.com/en/careers",
+    "MB Automation":                                     "https://my.jobstreet.com/Mb-Automation-(Malaysia)-jobs",
+    "McCain Foods":                                      "https://careers.mccain.com/us/en",
+    "McCormick":                                         "https://careers.mccormick.com/",
+    "McKinsey":                                          "https://www.mckinsey.com/careers/search-jobs",
+    "MDRT":                                              "https://www.mdrt.org/careers",
+    "Mead Johnson":                                      "https://www.mead-johnson.com/en-us/careers",
+    "Mediacorp":                                         "https://careers.mediacorp.sg/",
+    "Medpace":                                           "https://uscareers-medpace.icims.com/jobs/login?loginOnly=1",
+    "Medtronic":                                         "https://medtronic.wd1.myworkdayjobs.com/MedtronicCareers",
+    "Meican":                                            "https://www.meican.com/",
+    "Melissa Data":                                      "https://www.melissa.com",
+    "Mercer":                                            "https://careers.mercer.com/",
+    "Merrill Lynch":                                     "https://careers.bankofamerica.com/en-us",
+    "Meta":                                              "https://www.metacareers.com/jobs",
+    "MGI":                                               "https://careers.mgi.com/",
+    "Michael Page":                                      "https://michaelpage.taleo.net/careersection",
+    "Michelin":                                          "https://michelinhr.wd3.myworkdayjobs.com/Michelin",
+    "Microchip Technology":                              "https://careers.smartrecruiters.com/microchip",
+    "Micron":                                            "https://micron.wd1.myworkdayjobs.com/External",
+    "Microsoft":                                         "https://careers.microsoft.com/v2/global/en/home.html",
+    "Midea":                                             "https://careers.midea.com/schoolOut",
+    "Midwich":                                           "https://careers.midwich.com/",
+    "Milestone":                                         "https://fa-ewto-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/jobs",
+    "Mimaki":                                            "https://apply.workable.com/oops",
+    "Minco":                                             "https://external-minco.icims.com",
+    "Minden":                                            "https://www.minden.com/careers",
+    "Mindteck":                                          "https://careers.mindteck.com/",
+    "MIPA":                                              "https://www.mipa.com/careers",
+    "MISC":                                              "https://www.miscgroup.com/careers",
+    "Mitel":                                             "https://mitel.wd3.myworkdayjobs.com/MitelCareers",
+    "Mitsubishi":                                        "https://www.mitsubishielectric.com.sg/careers/job-listings/",
+    "Mitsui":                                            "https://www.mitsui.com/ap/en/careers/1216407_9112.html",
+    "Mitutoyo":                                          "https://www.mitutoyo.com/about-us/careers/",
+    "Mizkan":                                            "https://www.mizkan.com/careers/",
+    "Mizuho":                                            "https://www.mizuho.com/error/notfound",
+    "Modern Hire":                                       "https://apply.workable.com/oops",
+    "Modifi":                                            "https://apply.workable.com/modifi",
+    "Moloco":                                            "https://boards.greenhouse.io/moloco",
+    "Monash IVF":                                        "https://apply.workable.com/oops",
+    "Monoxer":                                           "https://careers.monoxer.com/",
+    "Montague":                                          "https://apply.workable.com/oops",
+    "Moog":                                              "https://moog.wd5.myworkdayjobs.com/MOOG_External_Career_Site",
+    "Morgan Stanley":                                    "https://www.morganstanley.com/careers/career-opportunities-search",
+    "Morita":                                            "https://apply.workable.com/morita/",
+    "Morningstar":                                       "https://morningstar.wd5.myworkdayjobs.com/Morningstar",
+    "Motion Picture Licensing Company":                  "https://us.mplc.com/",
+    "Motive":                                            "https://boards.greenhouse.io/motive",
+    "Mount Elizabeth":                                   "https://careers.mountelizabeth.com/",
+    "MSD":                                               "https://msd.wd5.myworkdayjobs.com/SearchJobs",
+    "Muehlhan":                                          "https://www.muehlhan.com/careers/",
+    "Munich Airport":                                    "https://bewerben.munich-airport.de/en/jobs",
+    "Music for Young Children":                          "https://apply.workable.com/oops",
+    "Musim Mas":                                         "https://musimmas.taleo.net",
+    "Mystifly":                                          "https://mystifly.com/careers/",
+    "Nakheel":                                           "https://fa-ewid-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/errors/404",
+    "Nalco":                                             "https://nalco.taleo.net/careersection/ex/jobsearch.ftl",
+    "Namco":                                             "https://www.bandainamcoent.com/careers",
+    "National Petrochemical":                            "https://nationalpetro.com/careers",
+    "Navis":                                             "https://kaleris.com/company/careers/",
+    "Nayati":                                            "https://www.nayati.com/company-profile/careers/",
+    "ND Industries":                                     "https://hbfuller.wd1.myworkdayjobs.com/Careers",
+    "NEC":                                               "https://www.nec.com/en/global/careers/",
+    "Neo Performance Materials":                         "https://www.neomaterials.com/careers/",
+    "Neovia Logistics":                                  "https://jobs.neovialogistics.com/content/apac/?locale=en_US",
+    "Nestle":                                            "https://nestle.wd3.myworkdayjobs.com/en/Nestle_Vevey",
+    "NetApp":                                            "https://jobs.netapp.com/",
+    "Netflix":                                           "https://jobs.netflix.com/",
+    "Newploy":                                           "https://ikea.avature.net/ko_KR/External/JobDetail/IKEA-Food-Team-Leader-10months-Temporary-IKEA-Goyang/310893",
+    "Nexen Tire":                                        "https://www.nexentire.com/",
+    "NextLabs":                                          "https://apply.workable.com/oops",
+    "NGC":                                               "https://www.northropgrumman.com/careers",
+    "Nidec":                                             "https://nidec.wd1.myworkdayjobs.com/Nidec",
+    "Nihon Shokken":                                     "https://www.nihonshokken.com/careers/",
+    "NIIT":                                              "https://jobs.niit.com/",
+    "Nike":                                              "https://nike.wd1.myworkdayjobs.com/nke",
+    "Nintendo":                                          "https://boards.greenhouse.io/nintendo",
+    "NIO":                                               "https://nio.wd3.myworkdayjobs.com/Nio_Careers",
+    "Nippon Express":                                    "https://www.nipponexpress.com/careers",
+    "Nippon Paint":                                      "https://nipponpaint.taleo.net/careersection/external/joblist.ftl",
+    "Nippon Steel":                                      "https://global.nssol.nipponsteel.com/sg/career.html",
+    "Nissei Kyoeki":                                     "https://www.nissei-jp.co.jp/english/",
+    "Nissin Foods":                                      "https://careers-nissinfoods.icims.com/",
+    "Nitto":                                             "https://careers.nitto.com/",
+    "NLMK":                                              "https://nlmk.com/en/",
+    "Noble Drilling":                                    "https://noblecorp.wd1.myworkdayjobs.com/noblecorp",
+    "Nokia":                                             "https://jobs.nokia.com/en/sites/CX_1",
+    "Nomura":                                            "https://nomura.wd3.myworkdayjobs.com/Nomura_Careers",
+    "Nordic Semiconductor":                              "https://nordicjobs.com/",
+    "North London Collegiate School":                    "https://nlcs.recruitee.com",
+    "Northrop Grumman":                                  "https://ngc.wd1.myworkdayjobs.com/Northrop_Grumman_External_Site",
+    "NOV":                                               "https://egay.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2001",
+    "Nova Chemicals":                                    "https://career17.sapsf.com/career?site=&amp;company=novachemic&amp;lang=en%5FUS&amp;login_ns=register&amp;career_ns=home&amp;navBarLevel=MY_PROFILE",
+    "Novartis":                                          "https://novartis.wd3.myworkdayjobs.com/Novartis_Careers",
+    "Novatek":                                           "https://novatek.taleo.net",
+    "Novo Holdings":                                     "https://apply.workable.com/novoholdings",
+    "Novo Nordisk":                                      "https://www.novonordisk.com/careers.html",
+    "Nozomi Networks":                                   "https://boards.greenhouse.io/nozominetworks",
+    "NTT":                                               "https://ntt.wd3.myworkdayjobs.com/nttcareers",
+    "NTT Data":                                          "https://careers.services.global.ntt/global/en",
+    "NTT Docomo":                                        "https://nttdocomo.taleo.net/careersection/",
+    "Nu Skin":                                           "https://nuskin.wd5.myworkdayjobs.com/Nuskin",
+    "Nuctech":                                           "https://www.nuctech.com/",
+    "NVC Lighting":                                      "https://www.nvcuk.com/careers",
+    "NVIDIA":                                            "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite",
+    "NX Shoji":                                          "https://apply.workable.com/oops",
+    "Oatly":                                             "https://careers.oatly.com/",
+    "Objective Systems":                                 "https://jobs.lever.co/objective",
+    "OCBC":                                              "https://ocbc.wd102.myworkdayjobs.com/External",
+    "Ocorian":                                           "https://careers.smartrecruiters.com/ocorian",
+    "OCS Group":                                         "https://ocsgroup.com/careers-apply-page/",
+    "Octo Telematics":                                   "https://www.octotelematics.com/company/careers/",
+    "Okumura":                                           "https://sg.jobstreet.com/companies/okumura-corporation-singapore-branch-168555561968576/jobs",
+    "Olam International":                                "https://careers.olamgroup.com/",
+    "Omers":                                             "https://careers.omers.com/ca/en",
+    "Omni Bridgeway":                                    "https://omnibridgeway.com/careers",
+    "OneWeb":                                            "https://www.eutelsat.com/satellite-network/oneweb-leo-constellation",
+    "Ontic":                                             "https://www.ontic.com/careers",
+    "Ooredoo":                                           "https://careers.ooredoo.com/",
+    "OPay":                                              "https://apply.workable.com/oops",
+    "Optibelt":                                          "https://web.optibelt.com/en",
+    "Oracle":                                            "https://oracle.wd1.myworkdayjobs.com/OracleCareers",
+    "Orbit Techsol":                                     "https://www.orbittechsol.com/careers",
+    "Oregon Tool":                                       "http://www.oregontool.com/oregon-tool-careers/",
+    "Orient Technologies":                               "https://www.orientitservices.com/careers/",
+    "ORIX":                                              "https://orix.wd5.myworkdayjobs.com/External_ORIX",
+    "Osaka Exchange":                                    "https://www.linkedin.com/jobs/search/?keywords=Osaka%20Exchange&location=Singapore",
+    "OSF Digital":                                       "https://osf.digital/",
+    "Osotspa":                                           "https://osotspa.taleo.net",
+    "Otsuka":                                            "https://otsuka.taleo.net/careersection/",
+    "OwnDays":                                           "https://www.owndays.com/sg/en",
+    "Oxalis Chemicals":                                  "https://www.oxachem.com/en/jobs",
+    "Oxford Economics":                                  "https://careers.oxfordeconomics.com/",
+    "PAAMCO":                                            "https://paamcoprisma.com/careers",
+    "Palantir":                                          "https://careers.smartrecruiters.com/palantir",
+    "Panasonic":                                         "https://jobs.panasonic.com/en/jobs",
+    "Pansar":                                            "https://pansar.com.my/careers/",
+    "Parexel":                                           "https://jobs.parexel.com/en",
+    "parkrun":                                           "https://www.parkrun.com/about/the-organisation/careers/",
+    "PayPal":                                            "https://paypal.wd1.myworkdayjobs.com/jobs",
+    "Paysafe":                                           "https://www.paysafe.com/en/careers/",
+    "PCCW":                                              "https://www.pccw.com/careers",
+    "Peikko":                                            "https://www.peikko.com/careers/",
+    "Penguin Random House":                              "https://careers.penguinrandomhouse.com/",
+    "Peninsula Components":                              "https://sg.jobstreet.com/Peninsula-Components,-Inc.-(Singapore-Branch)-jobs",
+    "Penn Color":                                        "https://www.penncolor.com/careers/",
+    "Penningtons Manches Cooper":                        "https://careers.smartrecruiters.com/ReitmansCanadaLteLtd/stores_en",
+    "Penske":                                            "https://fa-euyk-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/PenskeCareers/jobs",
+    "Pentamaster Technology":                            "https://pentamaster.com/career/",
+    "Pentel":                                            "https://www.pentel.com/#seogid115714",
+    "PepsiCo":                                           "https://pepjobs-pepsico.icims.com/?branding=&amp;mobile=false&amp;needsRedirect=false",
+    "Perkins Eastman":                                   "https://www.perkinseastman.com/careers/",
+    "Perspectum":                                        "https://apply.workable.com/oops",
+    "Pexip":                                             "https://www.pexip.com/careers",
+    "Pfizer":                                            "https://pfizer.wd1.myworkdayjobs.com/PfizerCareers",
+    "PGIM":                                              "https://pru.wd5.myworkdayjobs.com/Careers",
+    "Philips":                                           "https://www.careers.philips.com/apac/en",
+    "Pimax":                                             "https://pimax.com/#erid619085",
+    "PingCAP":                                           "https://boards.greenhouse.io/pingcap",
+    "Pizza Hut":                                         "https://jobs.pizzahut.com/",
+    "Planet Payment":                                    "https://planet.wd3.myworkdayjobs.com/Planet",
+    "PlanRadar":                                         "https://boards.greenhouse.io/planradar",
+    "Plastic Energy":                                    "https://plasticenergy.com/careers/",
+    "Platinum Cargo":                                    "https://platinumcargologistics.com/job-opportunities/",
+    "Plixer":                                            "https://www.plixer.com/careers/",
+    "Pole Star":                                         "https://careers.polestarglobal.com/",
+    "Porsche":                                           "https://jobs.porsche.com/index.php?ac=start",
+    "Portek":                                            "https://www.portek.com/contact/careers/",
+    "POSCO":                                             "http://www.posco.co.kr/infomsg/error.html",
+    "PowerChina":                                        "https://www.powerchina.cn/col/col56/index.html",
+    "Premier Research":                                  "https://premierresearch.wd12.myworkdayjobs.com/Premierresearch",
+    "Procter & Gamble":                                  "https://pg.wd5.myworkdayjobs.com/1000",
+    "Profusa":                                           "https://profusa.com/careers-profusa/",
+    "Prologis":                                          "https://prologis.wd5.myworkdayjobs.com/Prologis_External_Careers",
+    "Prudential":                                        "https://prudential.wd3.myworkdayjobs.com/Prudential",
+    "PT Surveyor Indonesia":                             "https://rekrutmen.ptsi.co.id/",
+    "Puma Energy":                                       "https://trafigura.wd3.myworkdayjobs.com/Puma_Energy_Careers",
+    "PwC":                                               "https://www.pwc.com/gx/en/careers/job-search.html",
+    "PxGeo":                                             "https://apply.workable.com/pxgeo",
+    "PZ Cussons":                                        "https://pzcussons.wd3.myworkdayjobs.com/CareersPZCussons",
+    "Qorvo":                                             "https://careers.qorvo.com/",
+    "Quadria Capital":                                   "http://quadriacapital.com/careers",
+    "Qualcomm":                                          "https://qualcomm.wd5.myworkdayjobs.com/External",
+    "Qualys":                                            "https://qualys.wd5.myworkdayjobs.com/Careers",
+    "Quantitative Brokers":                              "https://www.quantitativebrokers.com/careers",
+    "Qumulo":                                            "https://qumulo.com/careers",
+    "Radware":                                           "https://www.radware.com/careers/",
+    "Raine":                                             "https://jobs.lever.co/raine",
+    "Rakon":                                             "https://www.rakon.com/careers",
+    "Ratiodata":                                         "https://www.ratiodata.de",
+    "Raute":                                             "https://raute.recruitee.com",
+    "Reinhausen":                                        "https://www.reinhausen.com/index.php?id=585&uri=/encareers",
+    "Reliable Controls":                                 "https://ekkt.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_4",
+    "Renaissance Reinsurance":                           "https://careers.renre.com/careers/careers-home/",
+    "Rendezvous Hotels":                                 "https://www.rendezvoushotels.com/en/page-not-found/",
+    "Renishaw":                                          "https://renishaw.wd3.myworkdayjobs.com/Renishaw",
+    "Repsol":                                            "https://repsol.wd3.myworkdayjobs.com/Repsol",
+    "Resolution Life":                                   "https://resolutionlife.wd5.myworkdayjobs.com/resolutionlife_jobs",
+    "Resorts World":                                     "https://www.rwsentosa.com/about/career",
+    "Resulticks":                                        "https://www.go.resul.io/",
+    "Revio":                                             "https://apply.workable.com/oops",
+    "Richard Mille":                                     "https://www.richardmille.com/",
+    "Richardson Electronics":                            "https://richardson.taleo.net/careersection/jobs",
+    "Richemont":                                         "https://richemont.wd3.myworkdayjobs.com/Richemont",
+    "Rigaku":                                            "https://rigaku.wd103.myworkdayjobs.com/RigakuCareers",
+    "Right Management":                                  "https://rightmanagement.taleo.net",
+    "Rimini Street":                                     "https://riministreet.wd1.myworkdayjobs.com/Riministreet",
+    "RIMS":                                              "https://www.rims.org/careers",
+    "Rio Tinto":                                         "https://riotinto.wd3.myworkdayjobs.com/Riotinto_Careers",
+    "Riot Games":                                        "https://boards.greenhouse.io/riotgames",
+    "Rippling":                                          "https://www.rippling.com/careers",
+    "Robert Bosch":                                      "https://careers.smartrecruiters.com/robertbosch",
+    "Robertet":                                          "https://www.robertet.com/en/careers/",
+    "Roblox":                                            "https://boards.greenhouse.io/roblox",
+    "Roche":                                             "https://roche.wd3.myworkdayjobs.com/roche-ext",
+    "Rocket Software":                                   "https://rocket.wd5.myworkdayjobs.com/rocket_careers",
+    "Rocketseed":                                        "https://apply.workable.com/oops",
+    "Rohde Nielsen":                                     "https://www.rohde-schwarz.com/sg/career/career-overview/career-overview_257552.html",
+    "ROHM":                                              "https://www.rohm.com/careers",
+    "Roquette":                                          "https://roquette.wd3.myworkdayjobs.com/External",
+    "Roses Only":                                        "https://apply.workable.com/oops",
+    "Ross Video":                                        "https://www.rossvideo.com/company/careers/",
+    "Rotol":                                             "https://www.rotol.com/careers",
+    "RR Donnelley":                                      "https://careers.smartrecruiters.com/rrdonnelley",
+    "Rubrik":                                            "https://boards.greenhouse.io/rubrik",
+    "Russell Reynolds Associates":                       "https://www.russellreynolds.com/en/about/careers",
+    "Russian Standard":                                  "https://www.russianstandard.com/careers",
+    "SAExploration":                                     "https://saexploration.com/careers/",
+    "Safran":                                            "https://careers.safran-group.com/accueil.aspx?LCID=1036",
+    "Salesforce":                                        "https://salesforce.wd12.myworkdayjobs.com/External_Career_Site",
+    "Salto Systems":                                     "https://www.salto.io/careers",
+    "Salzgitter":                                        "https://career5.successfactors.eu/careers?company=gesisgesel&amp;navBarLevel=MY_PROFILE&amp;site=VjItTWpjcXRjdUJoQUd0czhoLzVucEkvQT09",
+    "Samco":                                             "https://www.samco.com/careers/",
+    "Samsonite":                                         "https://careers.samsonite.com/",
+    "Samsung":                                           "https://sec.wd3.myworkdayjobs.com/Samsung_Careers",
+    "Samty":                                             "https://apply.workable.com/oops",
+    "Samyang Foods":                                     "https://www.samyang.com/en/careers/job-introduction/list",
+    "Sandbox VR":                                        "https://jobs.lever.co/sandboxvr",
+    "Sanhua":                                            "https://sanhua.taleo.net",
+    "Sanko Gosei":                                       "https://www.sanko-gosei.com/recruit/",
+    "Sankyo":                                            "https://www.daiichisankyo.com/careers/",
+    "Sankyu":                                            "https://www.sankyu.com/careers",
+    "Sansiri":                                           "https://www.sansiri.com/thai/404?q=careers",
+    "Santen Pharmaceutical":                             "https://www.santen.com/en/careers",
+    "Santos":                                            "https://santos.taleo.net/careersection/external/jobsearch.ftl",
+    "Santova":                                           "https://www.santova.com/careers",
+    "SAP":                                               "https://sap.wd3.myworkdayjobs.com/SAP_External_Roles",
+    "Sapura":                                            "https://my.jobstreet.com/Sapura-Group-jobs",
+    "Savills":                                           "https://www.savills.com/careers/",
+    "SCG":                                               "https://www.scg.com/",
+    "Schaeffler":                                        "https://jobs.schaeffler.com/",
+    "Schneider Electric":                                "https://www.se.com/ww/en/about-us/careers/job-search/",
+    "Schreder":                                          "https://careers.smartrecruiters.com/Schrder",
+    "Schreiber Foods":                                   "https://careers.schreiber.com/",
+    "Science in Sport":                                  "https://careers.scienceinsport.com/",
+    "Scotts":                                            "https://scottsmiraclegro.wd5.myworkdayjobs.com/SMGExternal",
+    "Seagate":                                           "https://www.seagate.com/sg/en/jobs/",
+    "Seal Dynamics":                                     "https://myjobs.adp.com/heico/cx/",
+    "Seal for Life Industries":                          "https://apply.workable.com/oops",
+    "Seamless":                                          "https://seamless.se/careers/",
+    "Searidge":                                          "https://searidge.com/careers",
+    "Seaway":                                            "https://careers.subsea7.com/Seaway7/",
+    "Sebia":                                             "https://career2.successfactors.eu/career?career_ns=job_listing&company=sebia&career_job_req_id=6131",
+    "Secret Recipe":                                     "https://secretrecipe.com/careers",
+    "Securitas":                                         "https://careers.smartrecruiters.com/securitas",
+    "Securonix":                                         "https://www.securonix.com/company/careers/",
+    "Seeburger":                                         "https://careers.seeburger.com/",
+    "Seiko":                                             "https://www.seiko-mfg.sg/recruitment/job-vacancy/",
+    "Sensient Technologies":                             "https://careers.sensient.com/en",
+    "Sensus":                                            "https://www.xylem.com/en-us/brand/sensus/",
+    "Sephora":                                           "https://jobs.sephora.com/",
+    "Serapid":                                           "https://www.serapid.com/careers",
+    "Serta":                                             "https://serta.taleo.net/careersection/serta_external/jobsearch.ftl",
+    "SETSCO":                                            "https://www.setsco.com/careers/",
+    "SGS":                                               "https://careers.smartrecruiters.com/sgs",
+    "Shake Shack":                                       "https://careers.smartrecruiters.com/shakeshack",
+    "Shanghai Geoharbour Construction Group":            "https://www.geoharbour.com/en/index.php/Job",
+    "Shanghai International Port Group":                 "https://www.sipg.com.cn/Error/Index",
+    "Shanghai Tunnel Engineering":                       "https://www.stecs.com.sg/stecscareers",
+    "SharkNinja":                                        "https://careers.sharkninja.com/",
+    "Shell":                                             "https://shell.wd3.myworkdayjobs.com/ShellCareers",
+    "SHI International":                                 "https://shi.wd12.myworkdayjobs.com/ShiCareers",
+    "Shopee":                                            "https://careers.shopee.sg/jobs",
+    "Shutterstock":                                      "https://shutterstock.wd1.myworkdayjobs.com/ShutterstockCareers",
+    "SIASUN":                                            "https://siasun.taleo.net",
+    "Sichuan Airlines":                                  "https://www.sichuanairlines.com/en/about/careers",
+    "Siemens":                                           "https://jobs.siemens.com/careers",
+    "Signium International":                             "https://apply.workable.com/oops",
+    "Silab":                                             "https://apply.workable.com/oops",
+    "Silberline":                                        "https://www.eckart.net/en/",
+    "SilverPush":                                        "https://silverpush.co/careers/",
+    "Silversea Cruises":                                 "https://crewcareer.silversea.com/",
+    "Sime Darby":                                        "https://simedarby.wd3.myworkdayjobs.com/SimeCareerSite",
+    "Sindicatum":                                        "https://apply.workable.com/oops",
+    "Singapore Airlines":                                "https://singaporeairlines.wd3.myworkdayjobs.com/SIA",
+    "Singapore Technologies":                            "https://careers.stengg.com/",
+    "Singleron Biotechnologies":                         "https://singleron.bio/careers/",
+    "Singtel":                                           "https://singtel.wd3.myworkdayjobs.com/Singtel_Careers",
+    "Sinokor":                                           "https://sinokor.taleo.net",
+    "Sinopec":                                           "https://www.sinopecgroup.com/group/en/careers/",
+    "SISL Infotech":                                     "https://careers.smartrecruiters.com/SISLInfotechPvtLtd",
+    "SITA":                                              "https://careers.sita.aero/",
+    "Six Seconds":                                       "https://www.6seconds.org/",
+    "SK Enmove":                                         "https://www.skenmove.com/careers/jobs",
+    "SK Group":                                          "https://www.sk.com/careers/",
+    "Skanray":                                           "https://world.skanray.com/",
+    "Skuld":                                             "https://www.skuld.com/careers",
+    "Sky Perfect JSAT":                                  "https://en.skyperfectjsat.space/recruit",
+    "SLR Consulting":                                    "https://www.slrconsulting.com/careers/",
+    "SmallRig":                                          "https://www.smallrig.com/global/careers",
+    "Smartd Technologies":                               "https://smartd.tech/careers/",
+    "Smarte Carte":                                      "https://smartecarte.com/careers/",
+    "SmartNews":                                         "https://apply.workable.com/smartnews/",
+    "Smiths Detection":                                  "https://www.smithsdetection.com/careers/",
+    "Smollan":                                           "https://smollan.com",
+    "Snap Group":                                        "https://careers.snap.com/jobs",
+    "Socomec":                                           "https://www.socomec.com/en/careers",
+    "SoftBank":                                          "https://www.softbank.jp/recruit/",
+    "SoftBank Vision Fund":                              "https://visionfund.com/careers",
+    "Softiron":                                          "https://softiron.com/careers/",
+    "Softlink":                                          "https://apply.workable.com/softlink/",
+    "Sojitz":                                            "https://www.sojitz.com/en/",
+    "SolarWinds":                                        "https://boards.greenhouse.io/solarwinds",
+    "Solpac":                                            "https://www.solpac.com/careers",
+    "Solta Medical":                                     "https://www.solta.com/careers",
+    "Sony":                                              "https://www.sonyjobs.com/find-a-job.html",
+    "Southern Baptist Convention":                       "https://jobs.sbc.net/",
+    "Sphera":                                            "https://sphera.wd1.myworkdayjobs.com/Careers",
+    "Spider Holster":                                    "https://apply.workable.com/oops",
+    "Splashtop":                                         "https://www.splashtop.com/about/careers",
+    "Sportfive":                                         "https://sportfive.com/careers",
+    "Spotify":                                           "https://jobs.lever.co/spotify",
+    "Sprout Social":                                     "https://boards.greenhouse.io/sproutsocial",
+    "SPX":                                               "https://performancemanager8.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js",
+    "Squaretrade":                                       "https://careers.smartrecruiters.com/squaretrade1",
+    "StackAdapt":                                        "https://boards.greenhouse.io/stackadapt",
+    "Standard Biotools":                                 "https://standardbiotools.wd5.myworkdayjobs.com/External",
+    "Standard Chartered":                                "https://scb.wd3.myworkdayjobs.com/SCB_Careers",
+    "Star Bulk":                                         "https://www.starbulk.com/gr/en/on-shore/",
+    "Starbucks":                                         "https://starbucks.wd5.myworkdayjobs.com/en-US/Starbucks",
+    "Starburst Data":                                    "https://boards.greenhouse.io/starburst",
+    "StarHub":                                           "https://careers.starhub.com/",
+    "Starlux Airlines":                                  "https://careers.jx-starlux.com/",
+    "StayInFront":                                       "https://www.stayinfront.com/careers/",
+    "StemCell Technologies":                             "https://stemcell.wd3.myworkdayjobs.com/External_Careers",
+    "Stena Line":                                        "https://stenaline.com/career/job-openings/",
+    "Stonepeak":                                         "https://stonepeakpartners.com/careers/",
+    "Stripe":                                            "https://stripe.com/jobs",
+    "Stryker":                                           "https://stryker.wd1.myworkdayjobs.com/StrykerCareers",
+    "Study Group":                                       "https://apply.workable.com/oops",
+    "Studyportals":                                      "https://studyportals.com/careers/",
+    "Subcom":                                            "https://www.paycomonline.net/v4/ats/web.php/portal/D643FF77D905DF5085183AF26960B58C/career-page",
+    "Subsea 7":                                          "https://careers.subsea7.com/",
+    "Sucofindo":                                         "https://sucofindo.com/careers",
+    "Sumitomo":                                          "https://www.sumitomocorp.com/en/asia-oceania/careers",
+    "Sumitomo Corporation":                              "https://www.sumitomocorp.com/en/global/404?item=%2fcareers&user=extranet%5cAnonymous&site=website",
+    "Sumitomo Electric Industries":                      "https://www.sumitomo-electric.com/careers",
+    "Sumitomo Mitsui Banking Corporation":               "https://career8.successfactors.com/career?site=&company=smbcP2&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE",
+    "Sumsub":                                            "https://sumsub.com/careers/",
+    "Sun Life":                                          "https://sunlife.wd3.myworkdayjobs.com/Experienced-Jobs",
+    "Sunseeker":                                         "https://www.sunseeker.com/en/careers",
+    "Sunsuper":                                          "https://hcgh.fa.ap1.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_3001",
+    "Suntory":                                           "https://suntory.wd3.myworkdayjobs.com/Suntory_Careers",
+    "Surecomp":                                          "https://www.surecomp.com/careers",
+    "SUSE":                                              "https://www.suse.com/careers/",
+    "Suunto":                                            "https://www.suunto.com/careers",
+    "Suzumo":                                            "https://www.suzumo.com/",
+    "Suzuyo":                                            "https://www.suzuyo.co.jp/recruit/",
+    "SVN":                                               "https://svn.com/join-svn/commercial-real-estate-jobs/",
+    "Swire":                                             "https://careers.swire.com/en",
+    "Swiss Aviation Software":                           "https://swissas.teamtailor.com/jobs",
+    "Swiss Re":                                          "https://career2.successfactors.eu/career?career_company=SwissRe&lang=en_GB&company=SwissRe&site=&loginFlowRequired=true",
+    "Swisslog":                                          "https://www.swisslog.com/en-us",
+    "Synamedia":                                         "https://www.synamedia.com/careers/",
+    "Synechron":                                         "https://careers.smartrecruiters.com/synechron",
+    "Synopsys":                                          "https://synopsys.avature.net/talentcommunity?jobId=88&amp;source=Radancy&amp;tags=Careersite_leads",
+    "Synpulse":                                          "https://www.synpulse.com/en/careers",
+    "Syska Hennessy":                                    "https://boards.greenhouse.io/syskahennessy",
+    "Tabreed":                                           "https://careers.tabreed.ae/",
+    "Taihei":                                            "https://www.taihei.com/careers",
+    "Taiyo":                                             "https://taiyo.com.sg/careers/",
+    "Taiyo Electric":                                    "https://taiyo.com.sg/careers/",
+    "Taiyo Ink":                                         "https://www.taiyo-hd.co.jp/jp/index.html",
+    "Takeda":                                            "https://takeda.wd3.myworkdayjobs.com/External",
+    "Takeda Pharmaceuticals":                            "https://jobs.takeda.com/",
+    "Talkdesk":                                          "https://job-boards.greenhouse.io/talkdesk2/",
+    "Tanla":                                             "https://www.tanla.com/careers",
+    "Tasaki":                                            "https://careers.tasaki.co.jp/",
+    "Tata":                                              "https://www.tata.com/careers/jobs/joblisting",
+    "Tata Consultancy Services":                         "https://www.tcs.com/careers",
+    "Tatler":                                            "https://apply.workable.com/oops",
+    "Taulia":                                            "https://taulia.com/company/careers/",
+    "TBWA":                                              "https://tbwa.com/page-not-found/",
+    "Tech Data":                                         "https://careers.tdsynnex.com/us/en/search-results?keywords={search_term_string}",
+    "Tech Mahindra":                                     "https://careers.techmahindra.com/",
+    "Technogym":                                         "https://careers.technogym.com/",
+    "Technos":                                           "https://technos.recruitee.com",
+    "Tecnicas Reunidas":                                 "https://www.tecnicasreunidas.es/careers/",
+    "Tecnikabel":                                        "https://www.tecnikabel.com/page-not-found/",
+    "Teekay":                                            "https://eipv.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2001",
+    "Telechips":                                         "https://careers.telechips.com/",
+    "Teledyne FLIR":                                     "https://flir.wd1.myworkdayjobs.com/flircareers",
+    "Telesat":                                           "https://jobs.lever.co/telesat",
+    "Temenos":                                           "https://www.temenos.com/about-us/careers/",
+    "Tencent":                                           "https://tencent.wd1.myworkdayjobs.com/Tencent_Careers",
+    "Teneo":                                             "https://boards.greenhouse.io/teneo",
+    "Tential":                                           "https://tential.com/careers/",
+    "Terex":                                             "https://terex.wd1.myworkdayjobs.com/TerexCareers",
+    "Tezos":                                             "https://apply.workable.com/oops",
+    "Thai AirAsia":                                      "https://airasia.wd3.myworkdayjobs.com/Careers",
+    "Thales":                                            "https://careers.smartrecruiters.com/thales",
+    "Thames Water":                                      "https://careers.thameswater.co.uk/",
+    "The Baltic Exchange":                               "https://www.balticexchange.com/careers",
+    "Theon Therapeutics":                                "https://teontherapeutics.com/careers/",
+    "Thermosafe":                                        "https://thermosafe.com/careers/",
+    "ThinkPlace":                                        "https://www.thinkplace.com.sg/careers/",
+    "Thomas Foods International":                        "http://thomasfoods.com/careers/",
+    "ThomasLloyd":                                       "https://apply.workable.com/thomaslloyd/",
+    "ThyssenKrupp":                                      "https://thyssenkruppmaterialsna.wd12.myworkdayjobs.com/1",
+    "TIAA":                                              "https://tiaa.wd1.myworkdayjobs.com/Search",
+    "Tidewater":                                         "https://phh.tbe.taleo.net/phh03/ats/careers/v2/searchResults?org=TIDETRANS&amp;cws=40",
+    "Tideway":                                           "https://www.tideway.london/our-people/",
+    "Tigermed":                                          "https://tigermed.recruitee.com",
+    "TikTok":                                            "https://lifeattiktok.com/",
+    "Tim Ho Wan":                                        "https://apply.workable.com/oops",
+    "Timematters":                                       "https://apply.workable.com/oops",
+    "Timken":                                            "https://careers.timken.com/",
+    "TNO":                                               "https://www.tno.nl/en/careers/",
+    "Todos Medical":                                     "https://www.applicantstack.com/job-not-found/",
+    "Together Group Studios":                            "https://careers.smartrecruiters.com/together",
+    "Tokio Marine":                                      "https://www.tokyomarine.com/en/careers/",
+    "Tokyo Century":                                     "https://www.tokyocentury.com/careers",
+    "Tokyo Keiki":                                       "https://www.tokyokeiki.com/recruit/",
+    "Tokyo Stock Exchange":                              "https://www.jpx.co.jp/english/corporate/about-jpx/recruit/index.html",
+    "Tokyu Land":                                        "https://www.tokyu-land.co.jp/recruit/",
+    "Tong Ren Tang":                                     "https://www.tongrentang.com/",
+    "Tony Blair Institute":                              "https://tbinstitute.wd3.myworkdayjobs.com/TBI",
+    "Toppan":                                            "https://toppanecquaria.com/company/careers/",
+    "Toronto Dominion":                                  "https://td.wd3.myworkdayjobs.com/TD_Bank_Careers",
+    "Toshiba":                                           "https://toshiba.taleo.net/careersection/toshiba_external/jobsearch.ftl",
+    "Tosoh":                                             "https://www.tosoh.com/careers",
+    "TotalEnergies":                                     "https://fa-eocc-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX",
+    "Tower Transit":                                     "https://www.towertransit.sg/careers",
+    "Toyota":                                            "https://careers.toyota.com/us/en/search-results?keywords={search_term_string}",
+    "Toyota Tsusho":                                     "https://www.ttsystems.com/careerinformation",
+    "TP ICAP":                                           "https://careers.smartrecruiters.com/tpicap",
+    "Tracerco":                                          "https://tracerco.com/careers/",
+    "TraceSafe":                                         "https://tracesafe.com/careers",
+    "Trackunit":                                         "https://careers.trackunit.com/",
+    "Trafigura":                                         "https://trafigura.wd3.myworkdayjobs.com/TrafiguraCareerSite",
+    "Trafometal":                                        "https://trafometal.recruitee.com",
+    "Trainocate":                                        "https://trainocate.com/sg/careers",
+    "Travel Guard":                                      "https://travelguard.taleo.net/careersection/external/jobsearch.ftl",
+    "Travix":                                            "https://boards.greenhouse.io/travix",
+    "Traxdata":                                          "https://apply.workable.com/oops",
+    "Traxys":                                            "https://www.traxys.com/careers",
+    "TRC Systems":                                       "https://www.trcsystems.com/careers",
+    "Trek":                                              "https://trekbikes.wd1.myworkdayjobs.com/TREK",
+    "Tribal Group":                                      "https://apply.workable.com/oops",
+    "Trina Solar":                                       "https://careers.trinasolar.com/",
+    "TripAdvisor":                                       "https://boards.greenhouse.io/tripadvisor",
+    "Triton International":                              "https://www.tritoninternational.com/careers",
+    "TRL Krosaki":                                       "https://www.trlkrosaki.com/careers",
+    "Truecaller":                                        "https://boards.greenhouse.io/truecaller",
+    "Trulioo":                                           "https://apply.workable.com/oops",
+    "Tsui Wah":                                          "https://tsuiwah.taleo.net/careersection",
+    "Tudor Investment":                                  "https://boards.greenhouse.io/tudorgroup",
+    "Tunap":                                             "https://www.tunap.com/tunap/start.php",
+    "TUV SUD":                                           "https://careers.tuvsud.com/",
+    "TVS":                                               "https://www.tvs.com/careers",
+    "TVS Motor":                                         "https://www.tvsmotor.com/about-us/careers/overview",
+    "Twilio":                                            "https://boards.greenhouse.io/twilio",
+    "Twitch":                                            "https://boards.greenhouse.io/twitch",
+    "Tyco International":                                "https://careers.smartrecruiters.com/Tyco",
+    "Uber":                                              "https://www.uber.com/us/en/careers/list/",
+    "UBS":                                               "https://ubs.wd3.myworkdayjobs.com/UBS_Careers",
+    "UCWeb":                                             "https://www.ucweb.com/",
+    "Udacity":                                           "https://boards.greenhouse.io/udacity",
+    "UFA":                                               "https://career17.sapsf.com/careers?company=unitedfarm",
+    "Unilever":                                          "https://unilever.wd3.myworkdayjobs.com/Unilever_Experienced_Professionals",
+    "Unilode":                                           "https://www.unilode.com/",
+    "Union Bulk":                                        "https://unionbulk.recruitee.com",
+    "Uniphore":                                          "https://www.uniphore.com/careers/",
+    "Uniplas Corporation":                               "https://sg.jobstreet.com/",
+    "United Airlines":                                   "https://careers.united.com/us/en",
+    "United Bible Societies":                            "https://wycliffe.wd1.myworkdayjobs.com/SIL_Careers",
+    "United Overseas Bank":                              "https://www.uobgroup.com/careers/index.page",
+    "University of Warwick":                             "https://warwick.taleo.net/",
+    "UPS":                                               "https://ups.wd1.myworkdayjobs.com/UPS_Careers",
+    "USANA":                                             "https://careers.usana.com/",
+    "USANA Health Sciences":                             "https://careers.usana.com/",
+    "UWI Applied Materials":                             "https://careers.appliedmaterials.com/careers",
+    "Uzin Utz":                                          "https://int.uzin-utz.com/about-us/worldwide/singapore/",
+    "Vale":                                              "https://vale.eightfold.ai/careers",
+    "Valqua":                                            "https://valqua.recruiterflow.com/",
+    "Valr":                                              "https://valr.careers.hibob.com/",
+    "ValuePoint Techsol":                                "https://www.valuepointsystems.com/career/",
+    "Vard":                                              "https://www.vard.com/about-us/careers",
+    "Varde Partners":                                    "https://www.vardepartners.com/careers",
+    "Vecima":                                            "https://vecima.com/company/careers/",
+    "Veka":                                              "https://jobs.veka.com/",
+    "Velocity Solutions":                                "https://apply.workable.com/oops",
+    "Veolia":                                            "https://www.veolia.com/en/careers",
+    "Verifavia":                                         "https://normecverifavia.com/jobs/",
+    "Verimatrix":                                        "https://www.verimatrix.com/careers/",
+    "Versuni":                                           "https://careers.versuni.com/gb/en",
+    "Vertex Ventures":                                   "https://msd.wd5.myworkdayjobs.com/SearchJobs",
+    "Vertu":                                             "https://vertu.com/careers",
+    "Vesconite":                                         "https://apply.workable.com/oops",
+    "Vetter Pharma":                                     "https://www.vetter-pharma.com/en/careers",
+    "Viatris":                                           "https://viatris.wd5.myworkdayjobs.com/External",
+    "Vicon Industries":                                  "https://vicon-security.com/",
+    "Videology":                                         "https://apply.workable.com/oops",
+    "Vimeo":                                             "https://vimeo.com/careers",
+    "Vintana":                                           "https://vintana.com/careers",
+    "Virtus Health":                                     "https://virtushealth.com/careers",
+    "Visa":                                              "https://careers.smartrecruiters.com/visa",
+    "Vision RT":                                         "https://apply.workable.com/oops",
+    "Vistra":                                            "https://careers.vistra.com/",
+    "Visy":                                              "https://careers.visy.com/jobs/search",
+    "Vitalink":                                          "https://apply.workable.com/oops",
+    "Vitasoy":                                           "https://www.vitasoy.com/en/careers",
+    "Vitol":                                             "https://careers.smartrecruiters.com/vitol",
+    "Vodafone":                                          "https://careers.vodafone.com/",
+    "VSL":                                               "https://vsl.com/",
+    "WAGO":                                              "https://www.wago.com/global/",
+    "Walkaroo":                                          "https://apply.workable.com/oops",
+    "Walmart":                                           "https://walmart.wd5.myworkdayjobs.com/WalmartExternal",
+    "Wantedly":                                          "https://www.wantedly.com/companies/wantedly/projects",
+    "Wartsila":                                          "https://career2.successfactors.eu/career?career_company=Wartsila&amp;lang=en_GB&amp;company=Wartsila&amp;site=&amp;loginFlowRequired=true&amp;_s.crb=yTlPiLgyuwcNW6fgpvvCFJtAauWaAZVyQMz10xBgM1A%3d",
+    "Watchfinder":                                       "https://richemont.wd3.myworkdayjobs.com/richemont",
+    "Waterwipes":                                        "https://www.waterwipes.com/careers",
+    "WBCSD":                                             "https://www.wbcsd.org/Careers/",
+    "Webbeds":                                           "https://webtravelgroup.wd103.myworkdayjobs.com/WebBeds_Jobs",
+    "Weibo":                                             "https://passport.weibo.com/visitor/visitor?entry=miniblog&a=enter&url=https%3A%2F%2Fwww.weibo.com%2Fcareers&domain=weibo.com&ua=Mozilla%2F5.0%20%28Windows%20NT%2010.0%3B%20Win64%3B%20x64%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F121.0.0.0%20Safari%2F537.36&_rand=1783633076148&sudaref=",
+    "Wella":                                             "https://careers.wella.com/",
+    "Wells Fargo":                                       "https://www.wellsfargo.com/about/careers/?utm_medium=www-redirect&utm_source=careers",
+    "West Japan Railway":                                "https://www.jrkyushu.co.jp/recruit/",
+    "Western Digital":                                   "https://careers.smartrecruiters.com/westerndigital",
+    "WestRock":                                          "https://westrockta.avature.net/en_US/careers",
+    "Wevo":                                              "https://apply.workable.com/oops",
+    "Wieland":                                           "https://careers-chasebrass.icims.com/jobs/intro?mobile=false&amp;width=1902&amp;height=500&amp;bga=true&amp;needsRedirect=false&amp;jan1offset=60&amp;jun1offset=120",
+    "Wieland Electric":                                  "https://www.wieland.com/en/career",
+    "Willis Towers Watson":                              "https://careers.wtwco.com",
+    "Wilson":                                            "https://wilsonhcg.wd5.myworkdayjobs.com/Wilson_Careers",
+    "Wilson Parking":                                    "https://www.wilsonparking.com.sg/join-wilson/",
+    "Wilsonart":                                         "https://wilsonart.wd5.myworkdayjobs.com/Wilsonart_Careers",
+    "Wirebarley":                                        "https://www.wirebarley.com/en",
+    "Wizcraft International":                            "https://wizcraft.taleo.net/careersection/external",
+    "Wolters Kluwer":                                    "https://wk.wd3.myworkdayjobs.com/External",
+    "Woowa Brothers":                                    "https://www.woowabros.com/careers",
+    "World Gold Council":                                "https://apply.workable.com/oops",
+    "World Hotels":                                      "https://worldhotels.taleo.net/careersection/careers/jobsearch.ftl",
+    "Worldline":                                         "https://jobs.worldline.com",
+    "WorldRemit":                                        "https://zepz.io",
+    "Worley":                                            "https://www.eightfold.ai&#34;,",
+    "Woven Image":                                       "https://apply.workable.com/oops",
+    "Wyeth":                                             "https://www.pfizer.com/about/careers",
+    "Wynn":                                              "https://www.wynnresorts.com/careers",
+    "Xado":                                              "https://apply.workable.com/oops",
+    "Xeikon":                                            "https://career55.sapsf.eu",
+    "Xiaomi":                                            "https://careers.smartrecruiters.com/xiaomi",
+    "Xizi":                                              "https://www.xizi.com/",
+    "XP Power":                                          "https://careers.smartrecruiters.com/XPPower2",
+    "Xtralis":                                           "https://xtralis.com/careers_list",
+    "YKK AP":                                            "https://careers.ykkap.com/",
+    "Yokogawa":                                          "https://www.yokogawa.com/about/careers/",
+    "Yokohama":                                          "https://careers-yokohamatire.icims.com/jobs/intro",
+    "Yuanta":                                            "https://www.yuanta.com/careers",
+    "Yubico":                                            "https://boards.greenhouse.io/yubico",
+    "ZAGG":                                              "https://www.zagg.com/careers/",
+    "Zedra":                                             "https://www.zedra.com/careers/",
+    "Zegna":                                             "https://www.zegnagroup.com/en/zegna-careers/working-at-zegna/",
+    "Zenitel":                                           "https://www.zenitel.com/careers",
+    "Zenlayer":                                          "https://www.zenlayer.com/careers/",
+    "Zensar Technologies":                               "https://fa-etvl-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1",
+    "Zinus":                                             "https://apply.workable.com/oops",
+    "Zinzino":                                           "https://www.zinzino.com/site/sg/en-gb",
+    "Zoetis":                                            "https://zoetis.wd5.myworkdayjobs.com/Zoetis",
+    "Zoom":                                              "https://zoom.wd5.myworkdayjobs.com/Zoom",
+}
+
+# ── Junk title filter ─────────────────────────────────────────────────────────
+JUNK_RE = re.compile(
+    r"^(English|Deutsch|Fran[cç]ais|Espa[nñ]ol|Italiano|Portugu[eê]s|Nederlands|Svenska|"
+    r"[A-Z][a-z]+ \([A-Z]{2}\)|[A-Z][a-z]+ \([a-z]+\)|"
+    r"Next ?>>|<< ?Prev|Page \d+|Saved [Jj]obs|"
+    r"Cookie Settings?|Accessibility|Sitemap|Privacy|Legal|Recruitment Fraud|"
+    r"Careers?|Jobs?|Search|Apply( Now)?|Benefits|Culture|About( us)?|Events?|"
+    r"Blog|Contact|Learn more|Read more|Click here|View|See|Explore|Join|"
+    r"Life at \w+|Work at \w+|Working at \w+|Why (Work|Here|\w+)|"
+    r"How (we hire|to apply|to join)|What (moves|you can do)|"
+    r"Read \w+.s story.*|LEARN MORE|APPLY NOW|VIEW LOCATIONS|"
+    r"START YOUR CAREER.*|OPPORTUNITIES AT.*|"
+    r"Hiring tips?|Talent Community|Job Alerts?|"
+    r"Early [Cc]areers?|University|Students?|Graduates?|Military|Neurodiversity|"
+    r"Diversity|Internship|Contractor [Rr]oles?|"
+    r"Employee (Stories?|Benefits|Experience)|Career (Blog|Paths?|Journeys?)|"
+    r"PayPal\.com.*|\d{1,5}|[A-Z]{2,5})$",
+    re.IGNORECASE
+)
+
+def is_junk(title):
+    t = title.strip()
+    return not t or len(t) < 6 or len(t) > 220 or bool(JUNK_RE.match(t))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TIER 1: Direct JSON APIs
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _parse_workday_url(url):
+    m = re.match(r'https://([^.]+)\.(wd\d+)\.myworkdayjobs\.com/(?:[a-z]{2}-[A-Z]{2}/)?([^/?#\s]+)', url)
+    return m.groups() if m else None
+
+
+def _resolve_workday_board(url):
+    """
+    A 404/422 from /wday/cxs/ almost always means the board name in our
+    registry is stale. Workday usually redirects the human-facing URL to
+    the current board — follow it and re-extract tenant/board.
+    """
+    try:
+        r = requests.get(url, headers={"User-Agent": UA}, timeout=15, allow_redirects=True)
+        parsed = _parse_workday_url(r.url)
+        if parsed:
+            return parsed
+        # Sometimes the landing page embeds the real board URL in HTML
+        m = re.search(r'https://[a-zA-Z0-9_-]+\.wd\d+\.myworkdayjobs\.com/[^\s"\'?#]+', r.text)
+        if m:
+            return _parse_workday_url(m.group(0))
+    except Exception as e:
+        log.warning(f"  Workday board resolve failed: {e}")
+    return None
+
+
+def workday_api(company, url, search_text="", _retried=False):
+    """
+    Workday CXS JSON API — fully paginated, no browser needed.
+    Correct call: POST /wday/cxs/{tenant}/{board}/jobs
+      limit=20 (Workday max), offset increments by 20
+      Origin + Referer headers are required by Workday
+
+    Returns:
+      list  -> success (possibly partial if an error hit mid-pagination)
+      None  -> hard failure (bad URL / 404 / 422 / 403 / network) so the
+               caller can fall back to the browser crawler
+    """
+    parsed = _parse_workday_url(url)
+    if not parsed:
+        return None  # not a Workday URL
+    tenant, wdver, board = parsed
+
+    api      = f"https://{tenant}.{wdver}.myworkdayjobs.com/wday/cxs/{tenant}/{board}/jobs"
+    base_url = f"https://{tenant}.{wdver}.myworkdayjobs.com/{board}"
+    headers  = {
+        "User-Agent":    UA,
+        "Content-Type":  "application/json",
+        "Accept":        "application/json",
+        "Origin":        f"https://{tenant}.{wdver}.myworkdayjobs.com",
+        "Referer":       f"https://{tenant}.{wdver}.myworkdayjobs.com/{board}",
+    }
+
+    session = requests.Session()
+    jobs, offset, total = [], 0, None
+    while True:
+        try:
+            r = session.post(
+                api,
+                json={"appliedFacets": {}, "limit": 20, "offset": offset,
+                      "searchText": search_text},
+                headers=headers,
+                timeout=20,
+            )
+            if r.status_code in (403, 404, 422) and offset == 0:
+                # Board name is probably stale — try to self-heal once by
+                # following the human URL's redirect to the current board.
+                if not _retried:
+                    fixed = _resolve_workday_board(url)
+                    if fixed and fixed != (tenant, wdver, board):
+                        t2, w2, b2 = fixed
+                        fixed_url = f"https://{t2}.{w2}.myworkdayjobs.com/{b2}"
+                        log.info(f"  Workday board corrected: {board} -> {b2}")
+                        return workday_api(company, fixed_url, search_text, _retried=True)
+                log.warning(f"  Workday {r.status_code} for {company} ({board}) — falling back to browser")
+                diag(company, strategy="workday", status="error",
+                     code=f"WD_{r.status_code}",
+                     note=f"CXS {r.status_code} on board '{board}'")
+                return None
+            r.raise_for_status()
+            data  = r.json()
+            batch = data.get("jobPostings", [])
+            # BUG FIX: some tenants return total=0 on page 2+, which used to
+            # trigger `len(jobs) >= total` and cap every big company at 40.
+            # Trust the total from the FIRST page only.
+            if total is None:
+                total = data.get("total", 0)
+            if not batch:
+                break
+            for j in batch:
+                if not location_ok(j.get("locationsText", "")):
+                    continue
+                ext = j.get("externalPath", "").lstrip("/")
+                jobs.append({
+                    "company":     company,
+                    "title":       j.get("title", ""),
+                    "location":    j.get("locationsText", ""),
+                    "department":  "",
+                    "job_type":    "",
+                    "url":         f"{base_url}/{ext}",
+                    "posted_date": j.get("postedOn", ""),
+                    "source":      "Workday API",
+                })
+            log.info(f"  [{company}] Workday: {len(jobs)}/{total}")
+            if len(jobs) >= total or len(batch) < 20 or hit_cap(jobs):
+                break
+            offset += 20
+            jitter()
+        except Exception as e:
+            log.warning(f"  Workday API error for {company}: {e}")
+            diag(company, strategy="workday", status="ok" if jobs else "error",
+                 code="OK" if jobs else "WD_EXC", raw=total, kept=len(jobs),
+                 note=str(e)[:120])
+            # BUG FIX: don't discard jobs already collected mid-pagination.
+            return cap_jobs(jobs) if jobs else None
+    # B. success path: record what the API reported vs what SG-filter kept
+    diag(company, strategy="workday", status="ok", code="OK",
+         raw=total if total is not None else 0, kept=len(jobs))
+    return cap_jobs(jobs)
+
+
+ORC_URL_RE = re.compile(
+    r"https://([^/]+\.oraclecloud\.com)/hcmUI/CandidateExperience/[a-zA-Z-]+/sites/([^/?#]+)")
+
+
+def oracle_api(company, url):
+    """Oracle Recruiting Cloud public CE JSON API — paginated, no browser.
+    Works for any URL like:
+      https://xxxx.fa.ap1.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/...
+    Returns list on success, None on failure (caller falls back to browser)."""
+    m = ORC_URL_RE.match(url)
+    if not m:
+        return None
+    host, site = m.groups()
+    api = f"https://{host}/hcmRestApi/resources/latest/recruitingCEJobRequisitions"
+    jobs, offset, total = [], 0, None
+    kw = SEARCH_TEXT or ""
+    while True:
+        finder = (f"findReqs;siteNumber={site},facetsList=LOCATIONS,limit=25,"
+                  f"offset={offset},sortBy=POSTING_DATES_DESC" +
+                  (f",keyword={kw}" if kw else ""))
+        try:
+            r = requests.get(api, params={"onlyData": "true", "finder": finder},
+                             headers={"User-Agent": UA, "Accept": "application/json"},
+                             timeout=20)
+            if r.status_code != 200:
+                log.warning(f"  Oracle API {r.status_code} for {company}")
+                return jobs if jobs else None
+            item = (r.json().get("items") or [{}])[0]
+            if total is None:
+                total = item.get("TotalJobsCount", 0)
+            batch = item.get("requisitionList", [])
+            if not batch:
+                break
+            for j in batch:
+                loc = j.get("PrimaryLocation", "")
+                if not location_ok(loc):
+                    continue
+                jid = j.get("Id", "")
+                jobs.append({
+                    "company":     company,
+                    "title":       j.get("Title", ""),
+                    "location":    loc,
+                    "department":  "",
+                    "job_type":    "",
+                    "url":         f"https://{host}/hcmUI/CandidateExperience/en/sites/{site}/job/{jid}",
+                    "posted_date": j.get("PostedDate", ""),
+                    "source":      "Oracle API",
+                })
+            log.info(f"  [{company}] Oracle: {offset + len(batch)}/{total}")
+            if offset + len(batch) >= total or len(batch) < 25 or hit_cap(jobs):
+                break
+            offset += 25
+            jitter()
+        except Exception as e:
+            log.warning(f"  Oracle API error for {company}: {e}")
+            diag(company, strategy="oracle", status="ok" if jobs else "error",
+                 code="OK" if jobs else "ORC_EXC", note=str(e)[:120])
+            return cap_jobs(jobs) if jobs else None
+    diag(company, strategy="oracle", status="ok", code="OK",
+         raw=total if total is not None else 0, kept=len(jobs))
+    return cap_jobs(jobs)
+
+
+def greenhouse_api(company, slug):
+    jobs, _raw = [], 0
+    try:
+        r = requests.get(
+            f"https://boards-api.greenhouse.io/v1/boards/{slug}/jobs?content=true",
+            headers={"User-Agent": UA}, timeout=15,
+        )
+        r.raise_for_status()
+        for j in r.json().get("jobs", []):
+            _raw += 1
+            if not location_ok(j.get("location", {}).get("name", "")):
+                continue
+            jobs.append({
+                "company":     company,
+                "title":       j.get("title", ""),
+                "location":    j.get("location", {}).get("name", ""),
+                "department":  (j.get("departments") or [{}])[0].get("name", ""),
+                "job_type":    "",
+                "url":         j.get("absolute_url", ""),
+                "posted_date": (j.get("updated_at") or "")[:10],
+                "source":      "Greenhouse API",
+            })
+        log.info(f"  [{company}] Greenhouse: {len(jobs)} jobs (slug={slug})")
+    except Exception as e:
+        log.warning(f"  Greenhouse failed ({slug}): {e}")
+    diag(company, strategy="greenhouse", status="ok", code="OK", raw=_raw, kept=len(jobs))
+    return cap_jobs(jobs)
+
+
+def lever_api(company, slug):
+    jobs, _raw = [], 0
+    try:
+        r = requests.get(
+            f"https://api.lever.co/v0/postings/{slug}?mode=json",
+            headers={"User-Agent": UA}, timeout=15,
+        )
+        r.raise_for_status()
+        for j in r.json():
+            cats = j.get("categories", {})
+            _raw += 1
+            if not location_ok(cats.get("location", "")):
+                continue
+            ts   = j.get("createdAt")
+            jobs.append({
+                "company":     company,
+                "title":       j.get("text", ""),
+                "location":    cats.get("location", ""),
+                "department":  cats.get("department", ""),
+                "job_type":    cats.get("commitment", ""),
+                "url":         j.get("hostedUrl", ""),
+                "posted_date": datetime.fromtimestamp(ts/1000).strftime("%Y-%m-%d") if ts else "",
+                "source":      "Lever API",
+            })
+        log.info(f"  [{company}] Lever: {len(jobs)} jobs (slug={slug})")
+    except Exception as e:
+        log.warning(f"  Lever failed ({slug}): {e}")
+    diag(company, strategy="lever", status="ok", code="OK", raw=_raw, kept=len(jobs))
+    return cap_jobs(jobs)
+
+
+def smartrecruiters_api(company, slug):
+    jobs, offset, _raw = [], 0, 0
+    while True:
+        try:
+            r = requests.get(
+                f"https://api.smartrecruiters.com/v1/companies/{slug}/postings",
+                params={"limit": 100, "offset": offset},
+                headers={"User-Agent": UA}, timeout=15,
+            )
+            r.raise_for_status()
+            batch = r.json().get("content", [])
+            if not batch:
+                break
+            for j in batch:
+                _raw += 1
+                loc = j.get("location", {})
+                _loc_str = ", ".join(filter(None, [loc.get("city"), loc.get("country")]))
+                if not location_ok(_loc_str):
+                    continue
+                jobs.append({
+                    "company":     company,
+                    "title":       j.get("name", ""),
+                    "location":    ", ".join(filter(None, [loc.get("city"), loc.get("country")])),
+                    "department":  (j.get("department") or {}).get("label", ""),
+                    "job_type":    (j.get("typeOfEmployment") or {}).get("label", ""),
+                    "url":         f"https://jobs.smartrecruiters.com/{slug}/{j.get('id','')}",
+                    "posted_date": (j.get("releasedDate") or "")[:10],
+                    "source":      "SmartRecruiters API",
+                })
+            if len(batch) < 100:
+                break
+            offset += 100
+        except Exception as e:
+            log.warning(f"  SmartRecruiters failed ({slug}): {e}")
+            break
+    log.info(f"  SmartRecruiters: {len(jobs)} jobs (slug={slug})")
+    diag(company, strategy="smartrecruiters", status="ok", code="OK", raw=_raw, kept=len(jobs))
+    return cap_jobs(jobs)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# TIER 2: Browser crawler
+# ─────────────────────────────────────────────────────────────────────────────
+
+def detect_ats_from_html(html, page_url):
+    """Detect embedded ATS from live page HTML."""
+    for pat in [r'greenhouse\.io/embed/job_board\?for=([a-zA-Z0-9_-]+)',
+                r'boards\.greenhouse\.io/([a-zA-Z0-9_-]+)',
+                r'greenhouse\.io/([a-zA-Z0-9_-]+)/jobs']:
+        m = re.search(pat, html)
+        if m:
+            return "greenhouse", m.group(1)
+
+    m = re.search(r'jobs\.lever\.co/([a-zA-Z0-9_-]+)', html)
+    if m:
+        return "lever", m.group(1)
+
+    for pat in [r'careers\.smartrecruiters\.com/([a-zA-Z0-9_-]+)',
+                r'"companyIdentifier"\s*:\s*"([a-zA-Z0-9_-]+)"']:
+        m = re.search(pat, html)
+        if m:
+            return "smartrecruiters", m.group(1)
+
+    m = re.search(r'(https://[a-zA-Z0-9_-]+\.wd\d+\.myworkdayjobs\.com/[^\s"\'?#]+)', html)
+    if m:
+        return "workday", m.group(1)
+    if "myworkdayjobs.com" in page_url:
+        return "workday", page_url
+
+    return None, None
+
+
+JOB_CARD_SELECTORS = [
+    # SuccessFactors (legacy portals + Career Site Builder sites)
+    "a.jobTitle-link", "tr.jobResultItem", ".jobResultsList li",
+    "[id^='job-listing']", ".currentSearchResults .jobTitle",
+    # Phenom People portals (careers.<company>.com/../search-results)
+    "li.jobs-list-item", "[data-ph-at-id='jobs-list-item']",
+    # iCIMS
+    ".iCIMS_JobsTable .row", "div.job_list_row",
+    # Taleo
+    "#requisitionListInterface\\.listRequisition tr", ".oracletaleocwsv2-accordion-head",
+    # generic
+    "[data-testid='job-result']", "[data-testid='job-card']", "[data-testid='job-item']",
+    "[data-automation-id='jobItem']", "[data-job-id]",
+    ".job-card", ".job-listing", ".job-item", ".job-row", ".job-result",
+    ".position-card", ".position-item", ".career-card", ".career-item",
+    ".opening-item", ".posting-item", "[class*='JobCard']", "[class*='jobCard']",
+    "[class*='JobListing']", "li.job", "li.position", "article.job",
+]
+
+# Selectors for "next page" / "load more" buttons
+NEXT_PAGE_SELECTORS = [
+    # SuccessFactors + Phenom
+    "a#next", "[data-ph-at-id='pagination-next-link']", "a.paginationArrow--next",
+    "a[aria-label='Next']", "a[aria-label='next']",
+    "button[aria-label='Next']", "button[aria-label='next page']",
+    "[data-testid='pagination-next']", "[data-automation='pagination-next']",
+    "a.next", "button.next", ".pagination__next", ".pager-next",
+    "li.next a", "a[rel='next']",
+    "button:has-text('Next')", "a:has-text('Next page')",
+    "button:has-text('Load more')", "button:has-text('Show more')",
+    "button:has-text('See more jobs')", "[data-testid='load-more']",
+]
+
+JOB_URL_RE = re.compile(
+    r'/(jobs?|roles?|position|opening|vacancy|requisition|req)s?'
+    r'/[a-zA-Z0-9_\-%]{3,}(/[a-zA-Z0-9_\-%]{3,})*',
+    re.IGNORECASE
+)
+
+
+async def _extract_structured_json(page, company, base_url):
+    """Highest-fidelity fallback for JS-heavy sites: pull jobs from structured
+    data the page already contains — JSON-LD JobPosting schema (a web standard
+    many career sites emit) and Next.js __NEXT_DATA__ / embedded state blobs.
+    Works when CSS selectors miss because the markup is non-standard."""
+    import json as _json
+    out = []
+
+    # 1. JSON-LD <script type="application/ld+json"> JobPosting entries
+    try:
+        blocks = await page.eval_on_selector_all(
+            'script[type="application/ld+json"]',
+            "els => els.map(e => e.textContent)")
+    except Exception:
+        blocks = []
+    for raw in blocks or []:
+        try:
+            data = _json.loads(raw)
+        except Exception:
+            continue
+        items = data if isinstance(data, list) else [data]
+        # unwrap @graph containers
+        graph = []
+        for it in items:
+            if isinstance(it, dict) and "@graph" in it:
+                graph.extend(it["@graph"])
+            else:
+                graph.append(it)
+        for it in graph:
+            if not isinstance(it, dict) or it.get("@type") not in ("JobPosting", "JobPosting"):
+                continue
+            loc = ""
+            jl = it.get("jobLocation")
+            if isinstance(jl, list) and jl:
+                jl = jl[0]
+            if isinstance(jl, dict):
+                addr = jl.get("address", {})
+                if isinstance(addr, dict):
+                    loc = ", ".join(str(addr.get(k, "")) for k in
+                                    ("addressLocality", "addressRegion", "addressCountry")
+                                    if addr.get(k))
+            url = it.get("url") or it.get("@id") or base_url
+            out.append({"company": company, "title": (it.get("title") or "").strip(),
+                        "location": loc, "department": "", "job_type":
+                        it.get("employmentType", "") or "", "url": url,
+                        "posted_date": (it.get("datePosted") or "")[:10],
+                        "source": "Browser (JSON-LD)"})
+    if len(out) >= 1:
+        log.info(f"  [{company}] JSON-LD: {len(out)} jobs")
+        return out
+
+    # 2. __NEXT_DATA__ / embedded JSON state — scan for objects that look like
+    #    job postings (have a title-ish and an id/slug/url-ish field).
+    try:
+        blob = await page.eval_on_selector(
+            'script#__NEXT_DATA__', "e => e.textContent")
+    except Exception:
+        blob = None
+    if blob:
+        try:
+            data = _json.loads(blob)
+        except Exception:
+            data = None
+        found = []
+        def walk(o):
+            if isinstance(o, dict):
+                t = o.get("title") or o.get("name") or o.get("jobTitle")
+                idish = o.get("id") or o.get("slug") or o.get("url") or o.get("absolute_url")
+                if t and idish and isinstance(t, str) and 3 < len(t) < 200:
+                    u = o.get("absolute_url") or o.get("url") or ""
+                    if u and not str(u).startswith("http"):
+                        u = base_url.rstrip("/") + "/" + str(u).lstrip("/")
+                    loc = ""
+                    lv = o.get("location") or o.get("locations")
+                    if isinstance(lv, dict): loc = lv.get("name", "")
+                    elif isinstance(lv, list) and lv:
+                        loc = lv[0].get("name","") if isinstance(lv[0], dict) else str(lv[0])
+                    elif isinstance(lv, str): loc = lv
+                    found.append({"company": company, "title": t.strip(),
+                                  "location": loc, "department": "", "job_type": "",
+                                  "url": u or base_url, "posted_date": "",
+                                  "source": "Browser (JSON state)"})
+                for v in o.values(): walk(v)
+            elif isinstance(o, list):
+                for v in o: walk(v)
+        if data is not None:
+            walk(data)
+        # dedupe by title+url
+        seen, uniq = set(), []
+        for j in found:
+            k = (j["title"], j["url"])
+            if k not in seen:
+                seen.add(k); uniq.append(j)
+        if len(uniq) >= 1:
+            log.info(f"  [{company}] JSON state: {len(uniq)} jobs")
+            return uniq
+    return []
+
+
+async def extract_jobs_from_page(page, company, base_url):
+    """Extract job listings from current page state."""
+    jobs = []
+
+    # JS-heavy sites: try structured JSON the page already carries first
+    structured = await _extract_structured_json(page, company, base_url)
+    if structured:
+        return structured
+
+    # Try structured card selectors first
+    for sel in JOB_CARD_SELECTORS:
+        try:
+            cards = await page.query_selector_all(sel)
+            if len(cards) < 3:
+                continue
+            log.info(f"  Cards: '{sel}' -> {len(cards)}")
+            for card in cards[:500]:
+                try:
+                    title = ""
+                    for ts in ["h2","h3","h4","[class*='title']","[class*='role']","[class*='JobTitle']","a"]:
+                        el = await card.query_selector(ts)
+                        if el:
+                            t = re.sub(r"\s+", " ", (await el.inner_text()).strip())
+                            if 5 < len(t) < 200 and not is_junk(t):
+                                title = t
+                                break
+                    if not title:
+                        continue
+                    link_el = await card.query_selector("a[href]")
+                    href = (await link_el.get_attribute("href")) if link_el else ""
+                    if href and not href.startswith("http"):
+                        href = urljoin(base_url, href)
+                    location = ""
+                    for ls in ["[class*='location']","[class*='locat']","[class*='city']","[class*='office']"]:
+                        loc_el = await card.query_selector(ls)
+                        if loc_el:
+                            location = re.sub(r"\s+", " ", (await loc_el.inner_text()).strip())
+                            break
+                    jobs.append({
+                        "company": company, "title": title, "location": location,
+                        "department": "", "job_type": "", "url": href or base_url,
+                        "posted_date": "", "source": "Browser",
+                    })
+                except Exception:
+                    continue
+            if jobs:
+                return jobs
+        except Exception:
+            continue
+
+    # Fallback: strict job URL link scan
+    seen = set()
+    for a in await page.query_selector_all("a[href]"):
+        try:
+            href = (await a.get_attribute("href")) or ""
+            text = re.sub(r"\s+", " ", (await a.inner_text()).strip())
+            if href in seen or not JOB_URL_RE.search(href):
+                continue
+            if re.search(r"/(login|logout|apply|saved|profile|signin|auth|redirect|privacy|cookie|fraud)", href, re.I):
+                continue
+            if is_junk(text) or len(text) < 6:
+                continue
+            full = href if href.startswith("http") else urljoin(base_url, href)
+            seen.add(href)
+            jobs.append({
+                "company": company, "title": text, "location": "",
+                "department": "", "job_type": "", "url": full,
+                "posted_date": "", "source": "Browser (links)",
+            })
+        except Exception:
+            continue
+
+    return jobs
+
+
+async def get_next_page(page):
+    """Click next/load-more if available. Returns True if clicked."""
+    for sel in NEXT_PAGE_SELECTORS:
+        try:
+            btn = await page.query_selector(sel)
+            if btn and await btn.is_visible() and await btn.is_enabled():
+                await btn.click()
+                await page.wait_for_timeout(2500)
+                return True
+        except Exception:
+            continue
+    return False
+
+
+async def browser_crawl(browser, company, url, sem):
+    """
+    Full crawler: loads page, extracts jobs, follows pagination until done.
+    """
+    async with sem:
+        log.info(f"Scraping: {company}")
+        await asyncio.sleep(random.uniform(0.3, 1.0))
+
+        diag(company, url=url)
+        # Fast path: Workday URL -> try API directly, no browser needed
+        if "myworkdayjobs.com" in url:
+            jobs = workday_api(company, url, search_text=SEARCH_TEXT)
+            if jobs is not None:  # None = API error, [] = no jobs
+                log.info(f"  -> {len(jobs)} jobs (Workday API)")
+                return jobs
+            # API returned None (error) -> fall through to browser
+
+        # Fast paths: other ATS URLs -> API directly, no browser needed
+        if "oraclecloud.com" in url:
+            jobs = oracle_api(company, url)
+            if jobs is not None:
+                log.info(f"  -> {len(jobs)} jobs (Oracle API)")
+                return jobs
+            # None -> fall through to browser
+        m = re.search(r'boards\.greenhouse\.io/([a-zA-Z0-9_-]+)', url)
+        if m:
+            jobs = greenhouse_api(company, m.group(1))
+            if jobs:
+                log.info(f"  -> {len(jobs)} jobs (Greenhouse API)")
+                return jobs
+        m = re.search(r'jobs\.lever\.co/([a-zA-Z0-9_-]+)', url)
+        if m:
+            jobs = lever_api(company, m.group(1))
+            if jobs:
+                log.info(f"  -> {len(jobs)} jobs (Lever API)")
+                return jobs
+        m = re.search(r'(?:careers|jobs)\.smartrecruiters\.com/([a-zA-Z0-9_-]+)', url)
+        if m:
+            jobs = smartrecruiters_api(company, m.group(1))
+            if jobs:
+                log.info(f"  -> {len(jobs)} jobs (SmartRecruiters API)")
+                return jobs
+
+        await asyncio.sleep(random.uniform(*JITTER))   # stagger companies
+        jobs = []
+        for attempt in range(2):  # retry once if the shared browser context crashes
+          if attempt:
+            log.info(f"  Retrying {company} with a fresh context...")
+            await asyncio.sleep(random.uniform(1.0, 2.0))
+          crashed = False
+          _raw_cards = 0
+          ctx = await browser.new_context(
+            user_agent=UA, locale="en-US", viewport={"width": 1440, "height": 900}
+          )
+          page = await ctx.new_page()
+          await page.route("**/*.{png,jpg,jpeg,gif,webp,ico,woff,woff2,ttf,mp4,zip}", lambda r: r.abort())
+
+          try:
+            await page.goto(url, wait_until="domcontentloaded", timeout=35000)
+            final_url = page.url
+            await page.wait_for_timeout(3000)
+            try:
+                await page.wait_for_load_state("networkidle", timeout=5000)
+            except Exception:
+                pass
+
+            # Dismiss cookie banners
+            for sel in ["#onetrust-accept-btn-handler", "button[id*='accept-all']",
+                        "button[class*='accept-all']", ".cc-accept",
+                        "[aria-label='Accept all cookies']", "[aria-label='Accept cookies']"]:
+                try:
+                    btn = await page.query_selector(sel)
+                    if btn and await btn.is_visible():
+                        await btn.click()
+                        await page.wait_for_timeout(500)
+                        break
+                except Exception:
+                    pass
+
+            # Detect ATS from live HTML
+            html = await page.content()
+            ats, identifier = detect_ats_from_html(html, final_url)
+
+            if ats == "greenhouse" and identifier:
+                jobs = greenhouse_api(company, identifier)
+            elif ats == "lever" and identifier:
+                jobs = lever_api(company, identifier)
+            elif ats == "smartrecruiters" and identifier:
+                jobs = smartrecruiters_api(company, identifier)
+            elif ats == "workday" and identifier:
+                api_jobs = workday_api(company, identifier, search_text=SEARCH_TEXT)
+                if api_jobs:
+                    jobs = api_jobs
+
+            # If API approach worked, we're done
+            if jobs:
+                log.info(f"  -> {len(jobs)} jobs")
+                return jobs
+
+            # ── CRAWLER: extract + follow pagination ──────────────────────────
+            log.info(f"  Crawling pages...")
+            seen_job_urls = set()
+            page_num = 1
+            max_pages = 50  # safety cap
+
+            while page_num <= max_pages:
+                await page.keyboard.press("End")
+                await page.wait_for_timeout(1500)
+
+                page_jobs = await extract_jobs_from_page(page, company, page.url)
+                _raw_cards += len(page_jobs)
+                page_jobs = [j for j in page_jobs if location_ok(j["location"])]
+                if hit_cap(jobs):
+                    log.info(f"  Cap reached ({MAX_JOBS_PER_COMPANY}) — stopping crawl")
+                    break
+                new = [j for j in page_jobs if j["url"] not in seen_job_urls]
+                for j in new:
+                    seen_job_urls.add(j["url"])
+                    jobs.append(j)
+
+                log.info(f"  [{company}] Page {page_num}: {len(new)} new jobs (total {len(jobs)})")
+
+                if not new and page_num > 1:
+                    break  # no new jobs on this page = done
+
+                clicked = await get_next_page(page)
+                if not clicked:
+                    break  # no next page button = done
+
+                page_num += 1
+                await page.wait_for_timeout(1000)
+
+          except PWTimeout:
+            log.warning(f"  Timeout: {company}")
+            diag(company, strategy="browser", status="error",
+                 code="TIMEOUT", note="page timeout")
+          except Exception as e:
+            log.warning(f"  Error {company}: {e}")
+            _code = "DNS_FAIL" if "ERR_NAME" in str(e) else "BROWSER_ERR"
+            diag(company, strategy="browser", status="error",
+                 code=_code, note=str(e)[:120])
+            if "has been closed" in str(e) or "browser has been" in str(e):
+                crashed = True
+                jobs = []  # partial state from a dead context is unreliable
+          finally:
+            try:
+                await ctx.close()
+            except Exception:
+                pass
+          if not crashed:
+            break  # success or a non-crash failure — don't retry
+
+        if DIAG.get(company, {}).get("status") != "error":
+            _code = "OK" if jobs else ("NO_SG" if _raw_cards > 0 else "ZERO_CARDS")
+            diag(company, strategy=DIAG.get(company, {}).get("strategy") or "browser",
+                 status="ok", code=_code, raw=_raw_cards, kept=len(jobs))
+        d = DIAG.get(company, {})
+        if d.get("status") == "error":
+            # a dead URL is not "0 jobs" — say what actually happened
+            log.warning(f"  [{company}] -> FAILED [{d.get('code', 'ERR')}] "
+                        f"{str(d.get('note', ''))[:90]}")
+        elif not jobs and d.get("code") == "ZERO_CARDS":
+            log.warning(f"  [{company}] -> 0 jobs (page loaded but NO job cards "
+                        f"found — possibly wrong page)")
+        else:
+            log.info(f"  [{company}] -> {len(jobs)} jobs total")
+        return jobs
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Orchestration
+# ─────────────────────────────────────────────────────────────────────────────
+
+async def run_all(companies, max_workers):
+    all_jobs = []
+    sem = asyncio.Semaphore(max_workers)
+
+    async with async_playwright() as pw:
+        browser = await pw.chromium.launch(
+            headless=True,
+            args=["--no-sandbox", "--disable-dev-shm-usage", "--disable-gpu"],
+        )
+        try:
+            task_map = {
+                asyncio.create_task(browser_crawl(browser, co, url, sem)): co
+                for co, url in companies.items()
+            }
+            for i, task in enumerate(asyncio.as_completed(list(task_map)), 1):
+                try:
+                    result = await task
+                    all_jobs.extend(result)
+                except Exception as e:
+                    log.error(f"Task error: {e}")
+                if i % 10 == 0:
+                    log.info(f"Progress: {i}/{len(task_map)} done | {len(all_jobs)} jobs so far")
+            # every attempted company gets a diagnostics row, no exceptions
+            for task, co in task_map.items():
+                if task.done() and task.exception() is not None:
+                    diag(co, strategy="browser", status="error", code="TASK_CRASH",
+                         note=str(task.exception())[:120])
+                elif co not in DIAG:
+                    diag(co, status="error", code="NO_DIAG",
+                         note="task finished without reporting")
+        finally:
+            await browser.close()
+
+    return all_jobs
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Export
+# ─────────────────────────────────────────────────────────────────────────────
+
+def style_sheet(ws, color):
+    fill = PatternFill("solid", fgColor=color)
+    thin = Side(style="thin", color="CCCCCC")
+    brd  = Border(left=thin, right=thin, top=thin, bottom=thin)
+    alt  = PatternFill("solid", fgColor="EBF3FB")
+    for cell in ws[1]:
+        cell.fill = fill
+        cell.font = Font(bold=True, color="FFFFFF", name="Arial", size=11)
+        cell.alignment = Alignment(horizontal="center", vertical="center")
+        cell.border = brd
+    ws.row_dimensions[1].height = 22
+    ws.freeze_panes = "A2"
+    for i, row in enumerate(ws.iter_rows(min_row=2), 2):
+        for cell in row:
+            if i % 2 == 0:
+                cell.fill = alt
+            cell.border = brd
+            cell.font = Font(name="Arial", size=10)
+    for col in ws.columns:
+        w = max((len(str(c.value)) if c.value else 0) for c in col)
+        ws.column_dimensions[get_column_letter(col[0].column)].width = min(w + 4, 60)
+
+
+def export(all_jobs, path):
+    if not all_jobs:
+        log.error("No jobs to export!")
+        return 0
+    cols = ["company","title","location","department","job_type","url","posted_date","source"]
+    df = pd.DataFrame(all_jobs, columns=cols)
+    df.columns = ["Company","Job Title","Location","Department","Job Type","Job URL","Posted Date","Source"]
+    df["Scraped At"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+    df = df[~df["Job Title"].apply(is_junk)]
+    df = df[df["Job Title"].str.strip() != ""].drop_duplicates(subset=["Company","Job Title","Job URL"])
+
+    summary = (
+        df.groupby("Company").agg(Jobs_Found=("Job Title","count"))
+        .reset_index().sort_values("Jobs_Found", ascending=False)
+    )
+    summary.columns = ["Company","Jobs Found"]
+
+    diag_rows = []
+    for comp in sorted(DIAG, key=str.lower):
+        d = DIAG[comp]
+        verdict = diag_verdict(d)
+        action = {"URL/SITE ERROR": "re-discover URL (pipeline does this automatically)",
+                  "SITE EMPTY OR EXTRACTION FAILED": "open URL in browser: wrong page? JS-only? then re-discover",
+                  "NO SG MATCHES (jobs exist elsewhere)": "none — genuine zero for SG",
+                  "OK": ""}.get(verdict, "inspect Note")
+        diag_rows.append({"Company": comp, "Strategy": d.get("strategy", ""),
+                          "Verdict": verdict,
+                          "Error Code": d.get("code", ""),
+                          "URL Tried": d.get("url", ""),
+                          "Jobs Found (raw)": d.get("raw", ""),
+                          "SG Jobs Kept": d.get("kept", ""),
+                          "Suggested Action": action,
+                          "Note": d.get("note", "")})
+    ddf = pd.DataFrame(diag_rows)
+
+    with pd.ExcelWriter(path, engine="openpyxl") as w:
+        df.to_excel(w, sheet_name="All Jobs", index=False)
+        summary.to_excel(w, sheet_name="Summary", index=False)
+        if not ddf.empty:
+            ddf.to_excel(w, sheet_name="Diagnostics", index=False)
+
+    wb = load_workbook(path)
+    style_sheet(wb["All Jobs"], "1F4E79")
+    style_sheet(wb["Summary"], "375623")
+    if "Diagnostics" in wb.sheetnames:
+        style_sheet(wb["Diagnostics"], "7F6000")
+    wb.save(path)
+
+    if not ddf.empty:
+        vc = ddf["Verdict"].value_counts()
+        log.info("Diagnostics: " + " | ".join(f"{k}: {v}" for k, v in vc.items()))
+    log.info(f"Saved {len(df)} rows -> {path}")
+    return len(df)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CLI
+# ─────────────────────────────────────────────────────────────────────────────
+
+def load_companies(csv_path, top):
+    """Intersect a company-list CSV with CAREER_PAGES.
+    Accepts an 'Entity', 'brand', or 'entity_name' column (case-insensitive).
+    If the CSV is missing, falls back to scraping everything in CAREER_PAGES."""
+    if not Path(csv_path).exists():
+        log.warning(f"{csv_path} not found — scraping ALL {len(CAREER_PAGES)} "
+                    f"registered companies instead")
+        items = list(CAREER_PAGES.items())
+        return dict(items[:top]) if top else dict(items)
+
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        cols = {c.lower(): c for c in (reader.fieldnames or [])}
+        name_col = next((cols[c] for c in ("entity", "brand", "entity_name",
+                                           "company", "name") if c in cols), None)
+        if not name_col:
+            log.error(f"{csv_path} has no Entity/brand/company column "
+                      f"(found: {reader.fieldnames})")
+            return {}
+        rows = list(reader)
+
+    if top:
+        rows = rows[:top]
+    registered, skipped = {}, 0
+    for row in rows:
+        name = (row.get(name_col) or "").strip()
+        if name in CAREER_PAGES:
+            registered[name] = CAREER_PAGES[name]
+        else:
+            skipped += 1
+    log.info(f"{len(registered)} registered | {skipped} skipped (no URL in registry)")
+    return registered
+
+
+def main():
+    parser = argparse.ArgumentParser(description="MNC Job Scraper v7")
+    parser.add_argument("--companies", default="entity_results.csv")
+    parser.add_argument("--output",    default="",
+                        help="Output xlsx (default: jobs_output_DDMMYYYYHHMM.xlsx)")
+    parser.add_argument("--workers",   type=int, default=3, help="Parallel browser tabs")
+    parser.add_argument("--top",       type=int, default=0,  help="Only top N companies")
+    parser.add_argument("--location",  default="Singapore",
+                        # comma-separated list allowed, e.g. "Singapore,Hong Kong"
+                        help="Only keep jobs whose location matches (default: Singapore)")
+    parser.add_argument("--all-locations", action="store_true",
+                        help="Disable the location filter entirely")
+    parser.add_argument("--max-per-company", type=int, default=400,
+                        help="Keep only the newest N postings per company (0 = unlimited, default 400)")
+    parser.add_argument("--jitter", nargs=2, type=float, default=[0.4, 1.6],
+                        metavar=("MIN", "MAX"),
+                        help="Random delay range in seconds between requests (default 0.4 1.6)")
+    args = parser.parse_args()
+
+    global LOCATION_FILTER, MAX_JOBS_PER_COMPANY, JITTER
+    MAX_JOBS_PER_COMPANY = max(0, args.max_per_company)
+    JITTER = (min(args.jitter), max(args.jitter))
+    log.info(f"Max per company: {MAX_JOBS_PER_COMPANY or 'unlimited'} | jitter: {JITTER}")
+    global LOCATION_TERMS, SEARCH_TEXT
+    LOCATION_FILTER = "" if args.all_locations else args.location
+    LOCATION_TERMS = [t.strip().lower() for t in LOCATION_FILTER.split(",") if t.strip()]
+    SEARCH_TEXT = LOCATION_TERMS[0].title() if len(LOCATION_TERMS) == 1 else ""
+    if not args.output:
+        args.output = f"jobs_output_{datetime.now():%d%m%Y%H%M}.xlsx"
+    log.info(f"Location filter: {LOCATION_FILTER or '(none — keeping all locations)'}")
+
+    companies = load_companies(args.companies, args.top)
+    if not companies:
+        log.error("No companies to scrape — check your CSV or CAREER_PAGES.")
+        return
+    all_jobs  = asyncio.run(run_all(companies, args.workers))
+    total     = export(all_jobs, args.output)
+    print(f"\nDone! -> {args.output}  |  {total} jobs  |  {len(companies)} companies")
+
+
+if __name__ == "__main__":
+    main()

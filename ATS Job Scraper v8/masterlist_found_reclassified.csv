@@ -1,0 +1,1036 @@
+brand,ats,identifier,url,verified_name,jobs,sg_jobs,needs_review,src,ai_confidence
+6WIND,ai (browser),https://www.6wind.com,https://www.6wind.com,,-1,-1,,ai,low
+AACSB International,ai (browser),https://www.aacsb.edu/about-us/careers,https://www.aacsb.edu/about-us/careers,,-1,-1,,ai,low
+ACS,workday,https://acs.wd5.myworkdayjobs.com/AcsCareers,https://acs.wd5.myworkdayjobs.com/AcsCareers,acs,63,-1,0.0,api_sniff,
+ACWA Power,successfactors (browser),https://career23.sapsf.com/career?site=&company=acwapowerc&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career23.sapsf.com/career?site=&company=acwapowerc&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,acwapower,-1,-1,,ai,low
+ADLINK Technology,ai (browser),https://www.spectrumreach.com/404,https://www.spectrumreach.com/404,,-1,-1,,ai,low
+ADM,ai (browser),https://www.e-adm.com/,https://www.e-adm.com/,,-1,-1,,ai,high
+ADP Corporation,ai (browser),https://jobs.adp.com/en/,https://jobs.adp.com/en/,,-1,-1,,ai,high
+AFRY,smartrecruiters,afry,https://careers.smartrecruiters.com/afry,AFRY,1014,0,0.0,api_sniff,
+AGC,ai (browser),https://agccareers.com/,https://agccareers.com/,,-1,-1,,ai,low
+AICA,ai (browser),https://aica.com/careers/,https://aica.com/careers/,,-1,-1,,ai,low
+AIG,workday,https://aig.wd1.myworkdayjobs.com/Aig,https://aig.wd1.myworkdayjobs.com/Aig,aig,500,-1,0.0,api_sniff,
+ALTEN,smartrecruiters,alten,https://careers.smartrecruiters.com/alten,ALTEN,1128,0,0.0,api_sniff,
+AMD,icims (browser),https://careers.amd.com/careers-home/jobs,https://careers.amd.com/careers-home/jobs,amd,-1,-1,,ai,high
+APR Energy,ai (browser),https://www.aprenergy.com/careers/,https://www.aprenergy.com/careers/,,-1,-1,,ai,low
+ASSA ABLOY,ai (browser),https://www.assaabloy.com/career/en,https://www.assaabloy.com/career/en,,-1,-1,,ai,high
+AXA,icims (browser),https://cookie-policy-scripts.icims.com/axa/careers.axa.com/script.js,https://cookie-policy-scripts.icims.com/axa/careers.axa.com/script.js,axa,-1,-1,0.0,api_sniff,
+AXS,greenhouse,axs,https://boards.greenhouse.io/axs,AXS,44,0,0.0,api_sniff,
+Aarki,workable (browser),https://apply.workable.com/aarki/,https://apply.workable.com/aarki/,aarki,-1,-1,,ai,low
+AboitizPower,smartrecruiters,aboitizpower,https://careers.smartrecruiters.com/aboitizpower,AboitizPower,1,0,1.0,api_sniff,
+Absolutdata,workable (browser),https://apply.workable.com/absolutdata/,https://apply.workable.com/absolutdata/,absolutdata,-1,-1,,ai,low
+Academy Xi,ai (browser),https://academyxi.com/careers/,https://academyxi.com/careers/,,-1,-1,,ai,low
+Accelya,ai (browser),https://w3.accelya.com/careers/,https://w3.accelya.com/careers/,,-1,-1,,ai,low
+Accenture,workday,https://accenture.wd103.myworkdayjobs.com/AccentureCareers,https://accenture.wd103.myworkdayjobs.com/AccentureCareers,accenture,2000,-1,,ai,high
+Accor,smartrecruiters,accor,https://careers.smartrecruiters.com/accor,Accor,532,4,0.0,api_sniff,
+Acer,ai (browser),https://careers.acer.com/,https://careers.acer.com/,,-1,-1,,ai,high
+Acronis,ai (browser),https://www.acronis.com/en/careers/,https://www.acronis.com/en/careers/,,-1,-1,,ai,high
+Actualize Consulting,ai (browser),https://www.actualizeconsulting.com/careers.html,https://www.actualizeconsulting.com/careers.html,,-1,-1,,ai,low
+Adams Street Partners,greenhouse,adamsstreetpartners,https://boards.greenhouse.io/adamsstreetpartners,Adams Street Partners,13,1,0.0,api_sniff,
+Adobe,phenom (browser),https://careers.adobe.com/us/en/search-results?keywords=%7Bsearch_term_string%7D,https://careers.adobe.com/us/en/search-results?keywords=%7Bsearch_term_string%7D,adobe,-1,-1,,ai,high
+AerCap,ai (browser),https://www.aercap.com/careers/life-at-aercap,https://www.aercap.com/careers/life-at-aercap,,-1,-1,,ai,high
+Aeries,ai (browser),https://aeries.com/careers/,https://aeries.com/careers/,,-1,-1,,ai,low
+Aersale,ai (browser),https://www.aersale.com/careers,https://www.aersale.com/careers,,-1,-1,,ai,low
+Afiniti,ai (browser),https://www.afiniti.com/careers/,https://www.afiniti.com/careers/,,-1,-1,,ai,low
+Agilent Technologies,workday,https://agilent.wd5.myworkdayjobs.com/Agilent_Careers,https://agilent.wd5.myworkdayjobs.com/Agilent_Careers,agilent,296,-1,0.0,api_sniff,
+Agilysys,greenhouse,agilysys,https://boards.greenhouse.io/agilysys,Agilysys,13,2,0.0,api_sniff,
+Agoda,greenhouse,agoda,https://boards.greenhouse.io/agoda,Agoda,269,8,0.0,api_sniff,
+Ahlstrom,successfactors (browser),https://career5.successfactors.eu/career?company=Ahlstrom,https://career5.successfactors.eu/career?company=Ahlstrom,ahlstrom,-1,-1,0.0,api_sniff,
+AirAsia,workday,https://airasia.wd3.myworkdayjobs.com/Careers,https://airasia.wd3.myworkdayjobs.com/Careers,airasia,155,-1,0.0,api_sniff,
+Airtac,ai (browser),https://global.airtac.com,https://global.airtac.com,,-1,-1,,ai,low
+Airwallex,ai (browser),https://careers.airwallex.com,https://careers.airwallex.com,,-1,-1,,ai,high
+Alba Berlin,ai (browser),https://www.albaberlin.de/verein/jobs-ausbildung/stellenausschreibungen/,https://www.albaberlin.de/verein/jobs-ausbildung/stellenausschreibungen/,,-1,-1,,ai,low
+AliExpress,ai (browser),https://www.aliexpress.com/s/error/404,https://www.aliexpress.com/s/error/404,,-1,-1,,ai,low
+Alibaba,ai (browser),https://talent.alibaba.com/en/home,https://talent.alibaba.com/en/home,,-1,-1,,ai,high
+Alitrip,ai (browser),https://store.taobao.com/shop/noshop.htm,https://store.taobao.com/shop/noshop.htm,,-1,-1,,ai,low
+AlixPartners,greenhouse,alixpartners,https://boards.greenhouse.io/alixpartners,AlixPartners,113,3,0.0,api_sniff,
+Allegheny Technologies,ai (browser),https://www.atimaterials.com/Pages/default.aspx,https://www.atimaterials.com/Pages/default.aspx,,-1,-1,,ai,low
+Allegis Group,icims (browser),https://careers-actalentservices.icims.com/jobs/intro?mobile=false,https://careers-actalentservices.icims.com/jobs/intro?mobile=false,allegisgroup,-1,-1,1.0,api_sniff,
+Allot Communications,ai (browser),https://www.allot.com/careers/,https://www.allot.com/careers/,,-1,-1,,ai,low
+Allstate,workday,https://allstate.wd5.myworkdayjobs.com/Allstate_Careers,https://allstate.wd5.myworkdayjobs.com/Allstate_Careers,allstate,464,-1,0.0,api_sniff,
+Altimetrik,ai (browser),https://careers.altimetrik.com/,https://careers.altimetrik.com/,,-1,-1,,ai,low
+Amadeus,ai (browser),https://amadeus.com/en/careers/overview,https://amadeus.com/en/careers/overview,,-1,-1,,ai,high
+Amgen,workday,https://amgen.wd1.myworkdayjobs.com/Careers,https://amgen.wd1.myworkdayjobs.com/Careers,amgen,1606,-1,0.0,api_sniff,
+Ammann,ai (browser),https://jobs.ammann.com/,https://jobs.ammann.com/,,-1,-1,,ai,low
+Amneal,oracle,https://hcfa.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX,https://hcfa.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX,amneal,87,-1,0.0,api_sniff,
+Amoy,ai (browser),https://www.amoy.com/tc/index.html,https://www.amoy.com/tc/index.html,,-1,-1,,ai,low
+Ampol,smartrecruiters,ampol,https://careers.smartrecruiters.com/ampol,Ampol,115,0,0.0,api_sniff,
+Analog Devices,workday,https://analogdevices.wd1.myworkdayjobs.com/External,https://analogdevices.wd1.myworkdayjobs.com/External,analogdevices,980,-1,1.0,api_sniff,
+Analogfolk,lever,analogfolk,https://jobs.lever.co/analogfolk,,2,0,1.0,api_sniff,
+Anchnet,ai (browser),https://www.anchnet.com/,https://www.anchnet.com/,,-1,-1,,ai,low
+Andritz,ai (browser),https://www.andritz.com/careers-en,https://www.andritz.com/careers-en,,-1,-1,,ai,high
+Anord Mardix,workday,https://flextronics.wd1.myworkdayjobs.com/Anord_Mardix_Careers,https://flextronics.wd1.myworkdayjobs.com/Anord_Mardix_Careers,flextronics,89,-1,1.0,api_sniff,
+Anthem,workday,https://elevancehealth.wd1.myworkdayjobs.com/ANT,https://elevancehealth.wd1.myworkdayjobs.com/ANT,elevancehealth,393,-1,,ai,high
+Apave,taleo (browser),https://apave.taleo.net,https://apave.taleo.net,apave,-1,-1,,ai,low
+AppLovin,greenhouse,applovin,https://boards.greenhouse.io/applovin,AppLovin,29,3,0.0,api_sniff,
+Applied Materials,eightfold (browser),https://app.eightfold.ai/careers?domain=appliedmaterials.com,https://app.eightfold.ai/careers?domain=appliedmaterials.com,appliedmaterials,-1,-1,,ai,high
+April,ai (browser),https://www.april.com/fr/carrieres/travailler-chez-april/,https://www.april.com/fr/carrieres/travailler-chez-april/,,-1,-1,,ai,low
+Aptitude Software,ai (browser),https://www.aptitudesoftware.com/careers/,https://www.aptitudesoftware.com/careers/,,-1,-1,,ai,low
+Aqua Security,ai (browser),https://www.aquasec.com/careers/,https://www.aquasec.com/careers/,,-1,-1,,ai,low
+Aquifi,ai (browser),https://www.aquifi.com/careers,https://www.aquifi.com/careers,,-1,-1,,ai,low
+Archer,greenhouse,archer,https://boards.greenhouse.io/archer,Archer Veterinary Clinic,1,0,0.0,api_sniff,
+Arcserve,ai (browser),https://www.arcserve.com/careers,https://www.arcserve.com/careers,,-1,-1,,ai,low
+Ardian,workday,https://ardian.wd103.myworkdayjobs.com/ArdianCareers,https://ardian.wd103.myworkdayjobs.com/ArdianCareers,ardian,60,-1,0.0,api_sniff,
+Ardmac,ai (browser),https://www.ardmac.com/working-with-ardmac/,https://www.ardmac.com/working-with-ardmac/,,-1,-1,,ai,low
+Arista Networks,smartrecruiters,aristanetworks,https://careers.smartrecruiters.com/aristanetworks,Arista Networks,249,2,0.0,api_sniff,
+Artisan Partners,greenhouse,artisanpartners,https://boards.greenhouse.io/artisanpartners,Artisan Partners,12,0,0.0,api_sniff,
+Arton Capital,ai (browser),https://www.artoncapital.com/careers/,https://www.artoncapital.com/careers/,,-1,-1,,ai,low
+Ascendion,ai (browser),https://ascendion.com/careers,https://ascendion.com/careers,,-1,-1,,ai,low
+Asia Paint,successfactors (browser),https://career8.successfactors.com/career?site=&company=C0013041173P&lang=en_GB&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career8.successfactors.com/career?site=&company=C0013041173P&lang=en_GB&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,asiapaint,-1,-1,,ai,low
+Aspen Insurance,ai (browser),https://www.aspeninsurance.com/careers,https://www.aspeninsurance.com/careers,,-1,-1,,ai,low
+Astellas Pharma,successfactors (browser),https://career8.successfactors.com/career?site=&company=astellasT5&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career8.successfactors.com/career?site=&company=astellasT5&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,astellaspharma,-1,-1,,ai,high
+AstraZeneca,workday,https://astrazeneca.wd3.myworkdayjobs.com/Careers,https://astrazeneca.wd3.myworkdayjobs.com/Careers,astrazeneca,1408,-1,0.0,api_sniff,
+Asyril,ai (browser),https://asyril.com,https://asyril.com,,-1,-1,,ai,low
+Audible,ai (browser),https://www.amazon.jobs/en/search?locations=Singapore,https://www.amazon.jobs/en/search?locations=Singapore,,-1,-1,,ai,low
+Austal,ai (browser),https://careers.austal.com/,https://careers.austal.com/,,-1,-1,,ai,low
+Automation Anywhere,ai (browser),https://www.automationanywhere.com/company/careers,https://www.automationanywhere.com/company/careers,,-1,-1,,ai,high
+Avanade,avature (browser),https://www.avanade.com/en/career/search-jobs,https://www.avanade.com/en/career/search-jobs,avanade,-1,-1,,ai,high
+Avery Dennison,smartrecruiters,averydennison,https://careers.smartrecruiters.com/averydennison,Avery Dennison,410,0,0.0,api_sniff,
+Aviva,workday,https://aviva.wd1.myworkdayjobs.com/External,https://aviva.wd1.myworkdayjobs.com/External,aviva,117,-1,0.0,api_sniff,
+B2C2,greenhouse,b2c2,https://boards.greenhouse.io/b2c2,B2C2,9,2,0.0,api_sniff,
+BAE Systems,ai (browser),https://careers.baesystems.com/,https://careers.baesystems.com/,,-1,-1,,ai,high
+BASF,ai (browser),https://www.basf.com/global/en/careers,https://www.basf.com/global/en/careers,,-1,-1,,ai,high
+BCD Travel,successfactors (browser),https://career2.successfactors.eu/career?site=&company=bcdtravels&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career2.successfactors.eu/career?site=&company=bcdtravels&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,bcdtravel,-1,-1,,ai,high
+BIS,lever,bis,https://jobs.lever.co/bis,,13,0,0.0,api_sniff,
+BLS International,smartrecruiters,blsinternational,https://careers.smartrecruiters.com/blsinternational,BLS International,1,0,0.0,api_sniff,
+BMC Software,ai (browser),https://jobs.bmc.com/,https://jobs.bmc.com/,,-1,-1,,ai,high
+BNY Mellon,oracle,https://eofe.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/BNY-Careers,https://eofe.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/BNY-Careers,bnymellon,1674,-1,1.0,api_sniff,
+BTIG,ai (browser),https://www.btig.com/careers/,https://www.btig.com/careers/,,-1,-1,,ai,low
+BWT,ai (browser),https://www.bwt.com/en/careers/,https://www.bwt.com/en/careers/,,-1,-1,,ai,low
+BYD,greenhouse,byd,https://boards.greenhouse.io/byd,BYD North America,20,0,0.0,api_sniff,
+Backbase,ai (browser),https://www.backbase.com/careers,https://www.backbase.com/careers,,-1,-1,,ai,high
+Badger Meter,ai (browser),https://www.badgermeter.com/careers,https://www.badgermeter.com/careers,,-1,-1,,ai,low
+Baidu,greenhouse,baidu,https://boards.greenhouse.io/baidu,Baidu USA,27,0,0.0,api_sniff,
+Bain,ai (browser),https://www.bain.com/careers/,https://www.bain.com/careers/,,-1,-1,,ai,high
+Bakels,ai (browser),https://www.bakels.com,https://www.bakels.com,,-1,-1,,ai,low
+Baker Botts,ai (browser),https://www.bakerbotts.com/careers/careers-at-baker-botts,https://www.bakerbotts.com/careers/careers-at-baker-botts,,-1,-1,,ai,high
+Baker McKenzie,ai (browser),https://www.bakermckenzie.com/en/careers,https://www.bakermckenzie.com/en/careers,,-1,-1,,ai,high
+Bandai Namco,greenhouse,bandainamco,https://boards.greenhouse.io/bandainamco,Bandai Namco Entertainment America Inc.,10,0,0.0,api_sniff,
+Bank of China,ai (browser),https://www.boc.cn/custserv/cs1/msg/200909/t20090928_846317.html,https://www.boc.cn/custserv/cs1/msg/200909/t20090928_846317.html,,-1,-1,,ai,low
+Bank of East Asia,ai (browser),https://careers.hkbea.com/,https://careers.hkbea.com/,,-1,-1,,ai,high
+Baringa,greenhouse,baringa,https://boards.greenhouse.io/baringa,Baringa,64,2,0.0,api_sniff,
+Barings,workday,https://barings.wd1.myworkdayjobs.com/Barings,https://barings.wd1.myworkdayjobs.com/Barings,barings,37,-1,0.0,api_sniff,
+Barracuda Networks,ai (browser),https://www.barracuda.com/company/careers,https://www.barracuda.com/company/careers,,-1,-1,,ai,high
+Bauer,greenhouse,bauerhockeycascademaveriklacrosse,https://boards.greenhouse.io/bauerhockeycascademaveriklacrosse,Bauer Hockey/ Cascade Maverik Lacrosse,13,0,,ai,low
+BayWa,ai (browser),https://www.baywa.com/jobs-karriere/auf-einen-blick,https://www.baywa.com/jobs-karriere/auf-einen-blick,,-1,-1,,ai,low
+Bayer,ai (browser),https://jobs.bayer.com/,https://jobs.bayer.com/,,-1,-1,,ai,high
+Beaconhouse,ai (browser),https://beaconhouse.com/careers,https://beaconhouse.com/careers,,-1,-1,,ai,low
+Beca,ai (browser),https://www.beca.com/careers,https://www.beca.com/careers,,-1,-1,,ai,low
+Beetel,ai (browser),https://www.beetel.com/careers,https://www.beetel.com/careers,,-1,-1,,ai,low
+Belgacom,ai (browser),https://jobs.proximus.com/be/en,https://jobs.proximus.com/be/en,,-1,-1,,ai,low
+Benchmark Electronics,ai (browser),https://www.bench.com/careers/our-work,https://www.bench.com/careers/our-work,,-1,-1,,ai,low
+Benham and Reeves,recruitee (browser),https://benhamandreeves.recruitee.com,https://benhamandreeves.recruitee.com,benhamandreeves,-1,-1,,ai,low
+Bentley Systems,successfactors (browser),https://career4.successfactors.com/career?site=&company=bentleyprod&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career4.successfactors.com/career?site=&company=bentleyprod&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,bentleysystems,-1,-1,,ai,high
+Berjaya,ai (browser),https://www.berjaya.com/careers/,https://www.berjaya.com/careers/,,-1,-1,,ai,low
+Bestseller,ai (browser),https://bestseller.com/careers,https://bestseller.com/careers,,-1,-1,,ai,low
+BigBasket,ai (browser),https://careers.bigbasket.com/,https://careers.bigbasket.com/,,-1,-1,,ai,low
+Bilibili,ai (browser),https://jobs.bilibili.com/,https://jobs.bilibili.com/,,-1,-1,,ai,low
+Bimeda,ai (browser),https://www.boehringer-ingelheim.com/careers//,https://www.boehringer-ingelheim.com/careers//,,-1,-1,,ai,low
+Bioregen,ai (browser),https://careers.bioregen.com/,https://careers.bioregen.com/,,-1,-1,,ai,low
+Biotage,ai (browser),https://careers.biotage.com/,https://careers.biotage.com/,,-1,-1,,ai,low
+Birlasoft,successfactors (browser),https://career44.sapsf.com/career?site=&amp;company=birlasoftl&amp;lang=en%5FUS&amp;login_ns=register&amp;career_ns=home&amp;navBarLevel=MY_PROFILE,https://career44.sapsf.com/career?site=&amp;company=birlasoftl&amp;lang=en%5FUS&amp;login_ns=register&amp;career_ns=home&amp;navBarLevel=MY_PROFILE,birlasoft,-1,-1,0.0,api_sniff,
+BitGo,greenhouse,bitgo,https://boards.greenhouse.io/bitgo,BitGo,38,1,0.0,api_sniff,
+Blackboard,ai (browser),https://www.blackboard.com/company/careers,https://www.blackboard.com/company/careers,,-1,-1,,ai,high
+BlueScope,smartrecruiters,bluescope,https://careers.smartrecruiters.com/bluescope,BlueScope,24,0,0.0,api_sniff,
+Board of Innovation,workable (browser),https://apply.workable.com/boardofinnovation,https://apply.workable.com/boardofinnovation,boardofinnovation,-1,-1,1.0,api_sniff,
+Bobobox,ai (browser),https://bobobox.teamtailor.com/,https://bobobox.teamtailor.com/,,-1,-1,,ai,low
+Boge Kompressoren,ai (browser),https://www.boge.com/de-de/jobs-karriere/,https://www.boge.com/de-de/jobs-karriere/,,-1,-1,,ai,low
+Bonfiglioli,successfactors (browser),https://career5.successfactors.eu/career?company=C0001104584P&lang=en_US&login_ns=register&navBarLevel=MY_PROFILE,https://career5.successfactors.eu/career?company=C0001104584P&lang=en_US&login_ns=register&navBarLevel=MY_PROFILE,bonfiglioli,-1,-1,,ai,low
+Bosch,ai (browser),https://www.bosch.com/careers/,https://www.bosch.com/careers/,,-1,-1,,ai,high
+Boston Consulting,ai (browser),https://careers.bcg.com/global/en/,https://careers.bcg.com/global/en/,,-1,-1,,ai,high
+Bounce,ashby (browser),https://jobs.ashbyhq.com/Bounce,https://jobs.ashbyhq.com/Bounce,bounce,-1,-1,0.0,api_sniff,
+Boyden,ai (browser),https://www.boyden.com/careers/,https://www.boyden.com/careers/,,-1,-1,,ai,low
+Bracell,workday,https://averis.wd3.myworkdayjobs.com/RGE,https://averis.wd3.myworkdayjobs.com/RGE,averis,147,-1,1.0,api_sniff,
+Brady,greenhouse,brady,https://boards.greenhouse.io/brady,Brady Services,43,0,0.0,api_sniff,
+Brainlabs,greenhouse,brainlabs,https://boards.greenhouse.io/brainlabs,Brainlabs,53,3,0.0,api_sniff,
+Brand Finance,ai (browser),https://brandfinance.com/careers,https://brandfinance.com/careers,,-1,-1,,ai,low
+Bray Controls,ai (browser),https://www.bray.com/careers,https://www.bray.com/careers,,-1,-1,,ai,high
+BreadTalk,ai (browser),https://www.breadtalk.com/careers/,https://www.breadtalk.com/careers/,,-1,-1,,ai,low
+Bridgestone,workday,https://bridgestone.wd5.myworkdayjobs.com/External,https://bridgestone.wd5.myworkdayjobs.com/External,bridgestone,2000,-1,0.0,api_sniff,
+Bright Food,taleo (browser),https://brightfood.taleo.net/careersection/brightfood_external/jobsearch.ftl,https://brightfood.taleo.net/careersection/brightfood_external/jobsearch.ftl,brightfood,-1,-1,,ai,low
+Bristlecone,oracle,https://iaagiz.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/bristlecone-careers,https://iaagiz.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/bristlecone-careers,bristlecone,174,-1,0.0,api_sniff,
+British American Tobacco,successfactors (browser),https://career5.successfactors.eu/career?company=C0007596015P&site=&lang=en_GB&requestParams=&navBarLevel=MY_PROFILE&_s.crb=To3Q7O4TpqN7GvjwwX477%2FbyaZAvaVGYj52jGOdYEYQ%3D,https://career5.successfactors.eu/career?company=C0007596015P&site=&lang=en_GB&requestParams=&navBarLevel=MY_PROFILE&_s.crb=To3Q7O4TpqN7GvjwwX477%2FbyaZAvaVGYj52jGOdYEYQ%3D,britishamericantobacco,-1,-1,,ai,high
+Brookfield Properties,smartrecruiters,brookfieldproperties,https://careers.smartrecruiters.com/brookfieldproperties,Brookfield Properties,4,0,0.0,api_sniff,
+Brown Advisory,ai (browser),https://www.brownadvisory.com/careers,https://www.brownadvisory.com/careers,,-1,-1,,ai,high
+Bryden Wood,ai (browser),https://www.brydenwood.com/careers,https://www.brydenwood.com/careers,,-1,-1,,ai,low
+Buffalo Tours,ai (browser),https://www.discova.com/,https://www.discova.com/,,-1,-1,,ai,low
+Buhler,ai (browser),https://www.buhlergroup.com/global/en/info_pages/404_not_found.html,https://www.buhlergroup.com/global/en/info_pages/404_not_found.html,,-1,-1,,ai,medium
+Burckhardt Compression,successfactors (browser),https://performancemanager.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,burckhardtcompression,-1,-1,1.0,api_sniff,
+Bureau Veritas,ai (browser),https://careers.bureauveritas.com/,https://careers.bureauveritas.com/,,-1,-1,,ai,high
+ByteDance,smartrecruiters,bytedance,https://careers.smartrecruiters.com/bytedance,bytedance,2,0,0.0,api_sniff,
+CAB,ai (browser),https://clk.mamma.com/screen?d=cab.com,https://clk.mamma.com/screen?d=cab.com,,-1,-1,,ai,low
+CAE,ai (browser),https://www.cae.com/careers,https://www.cae.com/careers,,-1,-1,,ai,high
+CATL,ai (browser),https://www.catl.com/404/,https://www.catl.com/404/,,-1,-1,,ai,low
+CBRE,taleo (browser),https://cbre.taleo.net/careersection/external/jobsearch.ftl,https://cbre.taleo.net/careersection/external/jobsearch.ftl,cbre,-1,-1,,ai,high
+CDPQ,ai (browser),https://www.lacaisse.com/en/careers,https://www.lacaisse.com/en/careers,,-1,-1,,ai,low
+CECO Environmental,icims (browser),https://careers-usa-cecoenviro.icims.com/,https://careers-usa-cecoenviro.icims.com/,cecoenvironmental,-1,-1,1.0,api_sniff,
+CGI,ai (browser),https://www.cgi.com/en/careers,https://www.cgi.com/en/careers,,-1,-1,,ai,high
+CIEE,ai (browser),https://www.ciee.org/about/work-ciee,https://www.ciee.org/about/work-ciee,,-1,-1,,ai,low
+CIPD,icims (browser),https://careers.cipd.org/careers-home,https://careers.cipd.org/careers-home,cipd,-1,-1,,ai,low
+CJ Group,ai (browser),https://www.cj.net/careers,https://www.cj.net/careers,,-1,-1,,ai,low
+CLP,ai (browser),https://careers.clpgroup.com/,https://careers.clpgroup.com/,,-1,-1,,ai,low
+CLSA,ai (browser),https://www.clsa.com/careers/,https://www.clsa.com/careers/,,-1,-1,,ai,low
+CMC Markets,workday,https://cmcmarkets.wd3.myworkdayjobs.com/CMC_Markets_Careers,https://cmcmarkets.wd3.myworkdayjobs.com/CMC_Markets_Careers,cmcmarkets,55,-1,,ai,high
+CTBUH,ai (browser),https://verticalurbanism.org/about/careers/,https://verticalurbanism.org/about/careers/,,-1,-1,,ai,low
+Cainiao,ai (browser),https://jobs.alibaba.com/,https://jobs.alibaba.com/,,-1,-1,,ai,low
+Calabrio,oracle,https://fa-epcb-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX,https://fa-epcb-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX,calabrio,66,-1,0.0,api_sniff,
+Callsign,workable (browser),https://apply.workable.com/callsign,https://apply.workable.com/callsign,callsign,-1,-1,0.0,api_sniff,
+Campbell Soup,workday,https://campbellsoup.wd5.myworkdayjobs.com/ExternalCareers_GlobalSite,https://campbellsoup.wd5.myworkdayjobs.com/ExternalCareers_GlobalSite,campbellsoup,270,-1,1.0,api_sniff,
+Camstar,ai (browser),https://www.camstar.com/careers,https://www.camstar.com/careers,,-1,-1,,ai,low
+Camtek,ai (browser),https://www.camtek.com/careers/,https://www.camtek.com/careers/,,-1,-1,,ai,low
+Capco,greenhouse,capco,https://boards.greenhouse.io/capco,Capco,738,6,0.0,api_sniff,
+Capgemini,ai (browser),https://www.capgemini.com/careers/,https://www.capgemini.com/careers/,,-1,-1,,ai,high
+Capvision,greenhouse,capvision,https://boards.greenhouse.io/capvision,True North Insights,11,0,1.0,api_sniff,
+Carbery,ai (browser),https://www.carbery.com/about/join-our-team/,https://www.carbery.com/about/join-our-team/,,-1,-1,,ai,low
+Carestream Health,successfactors (browser),https://performancemanager4.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager4.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,carestreamhealth,-1,-1,1.0,api_sniff,
+Carey Olsen,ai (browser),https://www.careyolsen.com/careers,https://www.careyolsen.com/careers,,-1,-1,,ai,low
+Cargill,successfactors (browser),https://career2.successfactors.eu/career?career_company=cargill&lang=en_US&company=cargill&site=&loginFlowRequired=true&_s.crb=7GQWlQ1F2u73RR9o5QRvhyr14wcN%2FenWYFFu1Vh3r60%3D,https://career2.successfactors.eu/career?career_company=cargill&lang=en_US&company=cargill&site=&loginFlowRequired=true&_s.crb=7GQWlQ1F2u73RR9o5QRvhyr14wcN%2FenWYFFu1Vh3r60%3D,cargill,-1,-1,,ai,high
+Carrian,ai (browser),https://carrian.com/careers,https://carrian.com/careers,,-1,-1,,ai,low
+Carta,greenhouse,carta,https://boards.greenhouse.io/carta,Carta,50,2,0.0,api_sniff,
+Cartier,ai (browser),https://careers.cartier.com/,https://careers.cartier.com/,,-1,-1,,ai,low
+Caseware,lever,caseware,https://jobs.lever.co/caseware,,37,0,0.0,api_sniff,
+Catalent,workday,https://catalent.wd1.myworkdayjobs.com/External,https://catalent.wd1.myworkdayjobs.com/External,catalent,312,-1,0.0,api_sniff,
+Catenon,ai (browser),https://www.catenon.com,https://www.catenon.com,,-1,-1,,ai,low
+Cato Networks,greenhouse,catonetworks,https://boards.greenhouse.io/catonetworks,Cato Networks,109,3,0.0,api_sniff,
+Cemex,successfactors (browser),https://career5.successfactors.eu/career?company=emexcentrP2&site=&lang=en_US&requestParams=&login_ns=register&jobPipeline=RCM%20Redirect&navBarLevel=MY_PROFILE&_s.crb=xMnsH5S7ZsQ%2BZBkAaBGE0Ych71w%3D,https://career5.successfactors.eu/career?company=emexcentrP2&site=&lang=en_US&requestParams=&login_ns=register&jobPipeline=RCM%20Redirect&navBarLevel=MY_PROFILE&_s.crb=xMnsH5S7ZsQ%2BZBkAaBGE0Ych71w%3D,cemex,-1,-1,,ai,high
+Century 21,ai (browser),https://www.century21.com/general/careers/how-we-support-you,https://www.century21.com/general/careers/how-we-support-you,,-1,-1,,ai,low
+Cerner,ai (browser),https://www.oracle.com/careers/,https://www.oracle.com/careers/,,-1,-1,,ai,high
+ChannelEngine,recruitee (browser),https://careers-analytics.recruitee.com,https://careers-analytics.recruitee.com,channelengine,-1,-1,0.0,api_sniff,
+Chenega,icims (browser),https://www.icims.com/legal/privacy-notice-website/,https://www.icims.com/legal/privacy-notice-website/,chenega,-1,-1,0.0,api_sniff,
+Chevron Phillips,successfactors (browser),https://career4.successfactors.com/career?company=CPC&amp;site=&amp;lang=en_US&amp;requestParams=&amp;navBarLevel=MY%5fPROFILE&amp;_s.crb=WOjH75ul1ORT0%2fqxI1ytJJL3yqs%3d,https://career4.successfactors.com/career?company=CPC&amp;site=&amp;lang=en_US&amp;requestParams=&amp;navBarLevel=MY%5fPROFILE&amp;_s.crb=WOjH75ul1ORT0%2fqxI1ytJJL3yqs%3d,chevronphillips,-1,-1,1.0,api_sniff,
+China Civil Engineering Construction Corporation,ai (browser),https://www.ccecc.com.sg/careers/,https://www.ccecc.com.sg/careers/,,-1,-1,,ai,low
+China Eastern Airlines,ai (browser),https://job.ceair.com/,https://job.ceair.com/,,-1,-1,,ai,low
+China Harbour Engineering,ai (browser),https://www.chec.com.cn/en/recruit/,https://www.chec.com.cn/en/recruit/,,-1,-1,,ai,low
+China International,ai (browser),https://www.chinainter.com/careers,https://www.chinainter.com/careers,,-1,-1,,ai,low
+Chint,ai (browser),https://www.chint.com/en/careers,https://www.chint.com/en/careers,,-1,-1,,ai,low
+Cigna,workday,https://cigna.wd5.myworkdayjobs.com/CignaCareers,https://cigna.wd5.myworkdayjobs.com/CignaCareers,cigna,624,-1,0.0,api_sniff,
+Citigate Dewe Rogerson,greenhouse,citigatedewerogerson,https://boards.greenhouse.io/citigatedewerogerson,CDR,6,2,1.0,api_sniff,
+CitiusTech,ai (browser),https://www.citiustech.com/careers,https://www.citiustech.com/careers,,-1,-1,,ai,low
+Clarion,successfactors (browser),https://career2.successfactors.eu/career?career_company=adpllcP3&loginFlowRequired=true,https://career2.successfactors.eu/career?career_company=adpllcP3&loginFlowRequired=true,clarion,-1,-1,0.0,api_sniff,
+Clinical Laserthermia Systems,workable (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,clinicallaserthermiasystems,-1,-1,,ai,low
+CloudHQ,ai (browser),https://www.cloudhq.net/jobs,https://www.cloudhq.net/jobs,,-1,-1,,ai,low
+Cloudera,ai (browser),https://www.cloudera.com/careers.html,https://www.cloudera.com/careers.html,,-1,-1,,ai,high
+Cloudian,ai (browser),https://cloudian.com/company/careers/,https://cloudian.com/company/careers/,,-1,-1,,ai,low
+Cockett Marine Oil,ai (browser),https://www.cockettgroup.com/,https://www.cockettgroup.com/,,-1,-1,,ai,low
+Cofense,ai (browser),https://cofense.com/about/careers,https://cofense.com/about/careers,,-1,-1,,ai,low
+Cofra,taleo (browser),https://cofra.taleo.net,https://cofra.taleo.net,cofra,-1,-1,,ai,low
+Cognizant,ai (browser),https://careers.cognizant.com/us-en/,https://careers.cognizant.com/us-en/,,-1,-1,,ai,high
+Colas Rail,ai (browser),https://colasrail.com/en/careers/,https://colasrail.com/en/careers/,,-1,-1,,ai,low
+Colliers,smartrecruiters,colliers,https://careers.smartrecruiters.com/colliers,Colliers,112,0,0.0,api_sniff,
+Coloplast,ai (browser),https://careers.coloplast.com/,https://careers.coloplast.com/,,-1,-1,,ai,high
+Comba Telecom,ai (browser),https://combagroup.com/,https://combagroup.com/,,-1,-1,,ai,low
+Comexposium,ai (browser),https://careers.comexposium.com/,https://careers.comexposium.com/,,-1,-1,,ai,low
+Commonwealth War Graves Commission,ai (browser),https://careers.cwgc.org/,https://careers.cwgc.org/,,-1,-1,,ai,low
+Compassion International,workday,https://compassion.wd5.myworkdayjobs.com/CompassionCareers,https://compassion.wd5.myworkdayjobs.com/CompassionCareers,compassion,24,-1,0.0,api_sniff,
+Compressport,ai (browser),https://www.compressport.com/inter/en/,https://www.compressport.com/inter/en/,,-1,-1,,ai,low
+Compuage,ai (browser),https://www.compuage.com/careers,https://www.compuage.com/careers,,-1,-1,,ai,low
+ConMed,workday,https://conmed.wd5.myworkdayjobs.com/Conmed,https://conmed.wd5.myworkdayjobs.com/Conmed,conmed,91,-1,0.0,api_sniff,
+Conergy,ai (browser),https://www.conergy.com/404.html,https://www.conergy.com/404.html,,-1,-1,,ai,low
+Conservation International,taleo (browser),https://phh.tbe.taleo.net/phh04/ats/careers/v2/jobSearch?org=CONSERVATION&cws=39,https://phh.tbe.taleo.net/phh04/ats/careers/v2/jobSearch?org=CONSERVATION&cws=39,conservationinternational,-1,-1,,ai,low
+Container Leasing International,ai (browser),https://www.cli.com/careers,https://www.cli.com/careers,,-1,-1,,ai,low
+Contentserv,ai (browser),https://www.centricsoftware.com/careers,https://www.centricsoftware.com/careers,,-1,-1,,ai,low
+ConvaTec,workday,https://convatec.wd1.myworkdayjobs.com/Convatec,https://convatec.wd1.myworkdayjobs.com/Convatec,convatec,110,-1,0.0,api_sniff,
+Cordis,ai (browser),https://careers.cordis.com/,https://careers.cordis.com/,,-1,-1,,ai,low
+Corgan,icims (browser),https://join-corgan.icims.com/jobs/search?ss=1&amp;mobile=false&amp;width=1408&amp;height=500&amp;bga=true&amp;needsRedirect=false&amp;jan1offset=-360&amp;jun1offset=-300,https://join-corgan.icims.com/jobs/search?ss=1&amp;mobile=false&amp;width=1408&amp;height=500&amp;bga=true&amp;needsRedirect=false&amp;jan1offset=-360&amp;jun1offset=-300,corgan,-1,-1,0.0,api_sniff,
+Corteva Agriscience,eightfold (browser),https://corteva.eightfold.ai/events/open?domain=corteva.com&utm_source=event,https://corteva.eightfold.ai/events/open?domain=corteva.com&utm_source=event,cortevaagriscience,-1,-1,,ai,high
+Coupa,lever,coupa,https://jobs.lever.co/coupa,,96,1,0.0,api_sniff,
+Coverall,ai (browser),https://www.coverall.com/careers/,https://www.coverall.com/careers/,,-1,-1,,ai,low
+Credit Bureau,ai (browser),https://careers.equifax.com/en/,https://careers.equifax.com/en/,,-1,-1,,ai,low
+CrowdStrike,workday,https://crowdstrike.wd5.myworkdayjobs.com/CrowdstrikeCareers,https://crowdstrike.wd5.myworkdayjobs.com/CrowdstrikeCareers,crowdstrike,413,-1,0.0,api_sniff,
+Cubic,workday,https://cubic.wd1.myworkdayjobs.com/cubic_global_careers,https://cubic.wd1.myworkdayjobs.com/cubic_global_careers,cubic,105,-1,,ai,high
+Cumulocity,ai (browser),https://www.softwareag.com/en/,https://www.softwareag.com/en/,,-1,-1,,ai,high
+Curaden,ai (browser),https://curaden.com/careers/,https://curaden.com/careers/,,-1,-1,,ai,low
+Curefit,ai (browser),https://www.cult.fit/,https://www.cult.fit/,,-1,-1,,ai,low
+Cyient,ai (browser),https://careers.cyient.com/cyient/,https://careers.cyient.com/cyient/,,-1,-1,,ai,low
+Cyklop,ai (browser),https://www.cyklop.com/careers,https://www.cyklop.com/careers,,-1,-1,,ai,low
+Cytel,oracle,https://iblyjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/cytel,https://iblyjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/cytel,cytel,44,-1,0.0,api_sniff,
+DAP,oracle,https://hcwx.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_20,https://hcwx.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_20,dap,16,-1,0.0,api_sniff,
+DBS Group,workday,https://dbs.wd3.myworkdayjobs.com/Dbs_Careers,https://dbs.wd3.myworkdayjobs.com/Dbs_Careers,dbs,1401,-1,0.0,api_sniff,
+DKSH,successfactors (browser),https://career44.sapsf.com/career?site=&company=dkshcorpor&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career44.sapsf.com/career?site=&company=dkshcorpor&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,dksh,-1,-1,,ai,low
+DMG Mori,ai (browser),https://recruiting.dmgmori.com/Jobs/All?lang=eng,https://recruiting.dmgmori.com/Jobs/All?lang=eng,,-1,-1,,ai,low
+DMW,icims (browser),https://careers-kci.icims.com/jobs/intro?hashed=-626006866&mobile=false&width=2175&height=500&bga=true&needsRedirect=false&jan1offset=-300&jun1offset=-240,https://careers-kci.icims.com/jobs/intro?hashed=-626006866&mobile=false&width=2175&height=500&bga=true&needsRedirect=false&jan1offset=-300&jun1offset=-240,dmw,-1,-1,0.0,api_sniff,
+DNV,oracle,https://ecyq.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1,https://ecyq.fa.em2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1,dnv,216,-1,0.0,api_sniff,
+DS Avocats,ai (browser),https://www.dsavocats.com/,https://www.dsavocats.com/,,-1,-1,,ai,low
+DXC Technology,workday,https://dxctechnology.wd1.myworkdayjobs.com/DXCJobs,https://dxctechnology.wd1.myworkdayjobs.com/DXCJobs,dxctechnology,1266,-1,1.0,api_sniff,
+DaVita,phenom (browser),https://careers.davita.com/us/en/search-results?keywords={search_term_string},https://careers.davita.com/us/en/search-results?keywords={search_term_string},davita,-1,-1,0.0,api_sniff,
+Daifuku,icims (browser),https://careers-daifuku-america.icims.com/jobs/search?ss=1&amp;in_iframe=1,https://careers-daifuku-america.icims.com/jobs/search?ss=1&amp;in_iframe=1,daifuku,-1,-1,0.0,api_sniff,
+Daishin,ai (browser),https://www.daishin.com/careers,https://www.daishin.com/careers,,-1,-1,,ai,low
+Dallas Airmotive,oracle,https://cva.fa.us1.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_3,https://cva.fa.us1.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_3,dallasairmotive,251,-1,1.0,api_sniff,
+Danone,ai (browser),https://careers.danone.com/en-global/home.html,https://careers.danone.com/en-global/home.html,,-1,-1,,ai,high
+Danske Commodities,ai (browser),https://danskebank.com/careers,https://danskebank.com/careers,,-1,-1,,ai,low
+Darigold,ai (browser),https://www.darigold.com/careers/,https://www.darigold.com/careers/,,-1,-1,,ai,low
+Dasqua,ai (browser),https://www.dasqua.com/careers,https://www.dasqua.com/careers,,-1,-1,,ai,low
+Dassault Falcon,ai (browser),https://www.dassaultfalcon.com/careers/,https://www.dassaultfalcon.com/careers/,,-1,-1,,ai,high
+DataDirect Networks,icims (browser),https://careers-ddn.icims.com/jobs/intro?_gl=1*ms2z5o*_gcl_au*NDg3MzM0MjAzLjE3MjA3OTYyMjg.*_ga*MTU3MzM5NTYwNS4xNzIwNzk2MjI4*_ga_RPSCCB6F9T*MTcyMDc5NjIyOC4xLjEuMTcyMDc5NjI0MS40Ny4wLjA.&#038;mobile=false&#038;width=1200&#038;height=500&#038;bga=true&#038;needsRedirect=false&#038;jan1offset=120&#038;jun1offset=180,https://careers-ddn.icims.com/jobs/intro?_gl=1*ms2z5o*_gcl_au*NDg3MzM0MjAzLjE3MjA3OTYyMjg.*_ga*MTU3MzM5NTYwNS4xNzIwNzk2MjI4*_ga_RPSCCB6F9T*MTcyMDc5NjIyOC4xLjEuMTcyMDc5NjI0MS40Ny4wLjA.&#038;mobile=false&#038;width=1200&#038;height=500&#038;bga=true&#038;needsRedirect=false&#038;jan1offset=120&#038;jun1offset=180,datadirectnetworks,-1,-1,1.0,api_sniff,
+Databricks,greenhouse,databricks,https://boards.greenhouse.io/databricks,Databricks,787,31,0.0,api_sniff,
+Dayforce,ai (browser),https://www.dayforce.com/who-we-are/careers,https://www.dayforce.com/who-we-are/careers,,-1,-1,,ai,high
+De Brauw Blackstone Westbroek,ai (browser),https://www.debrauw.com/en/careers,https://www.debrauw.com/en/careers,,-1,-1,,ai,low
+De Nora,successfactors (browser),https://career2.successfactors.eu/career?site=&company=industried&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career2.successfactors.eu/career?site=&company=industried&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,denora,-1,-1,,ai,high
+Decathlon,taleo (browser),https://decathlon.taleo.net,https://decathlon.taleo.net,decathlon,-1,-1,,ai,low
+Dell,oracle,https://iawmqy.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/careers,https://iawmqy.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/careers,dell,363,-1,0.0,api_sniff,
+Delta Electronics,smartrecruiters,deltaelectronics,https://careers.smartrecruiters.com/deltaelectronics,Delta Electronics,58,0,0.0,api_sniff,
+DeltaPath,ai (browser),https://www.deltapath.com/,https://www.deltapath.com/,,-1,-1,,ai,low
+Dennemeyer Group,workday,https://dennemeyer.wd3.myworkdayjobs.com/Dennemeyer_Careers,https://dennemeyer.wd3.myworkdayjobs.com/Dennemeyer_Careers,dennemeyer,21,-1,0.0,api_sniff,
+Dentsply Sirona,successfactors (browser),"https://career5.successfactors.eu/career?career_company=DENTSPLY&amp;lang=en_US&amp;company=DENTSPLY&amp;site=&amp;loginFlowRequired=true&amp;_s.crb=LgGUPVp0%2fOiGY%2b3wAqGbCkCb4K4%3d&#34;,&#34;image&#34;:{&#34;repo:id&#34;:&#34;aa8f125e-9d95-4c84-811c-3dfa449dfe2c&#34;,&#34;repo:modifyDate&#34;:&#34;2025-02-12T15:40:02Z&#34;,&#34;@type&#34;:&#34;image/svg+xml&#34;,&#34;repo:path&#34;:&#34;/content/dam/master/corporate/brand-marketing/icons/icon-blue/CORP-Icon-blue-light-network-careers.svg&#34;,&#34;xdm:tags&#34;:[&#34;asset-type:&#34;,&#34;","https://career5.successfactors.eu/career?career_company=DENTSPLY&amp;lang=en_US&amp;company=DENTSPLY&amp;site=&amp;loginFlowRequired=true&amp;_s.crb=LgGUPVp0%2fOiGY%2b3wAqGbCkCb4K4%3d&#34;,&#34;image&#34;:{&#34;repo:id&#34;:&#34;aa8f125e-9d95-4c84-811c-3dfa449dfe2c&#34;,&#34;repo:modifyDate&#34;:&#34;2025-02-12T15:40:02Z&#34;,&#34;@type&#34;:&#34;image/svg+xml&#34;,&#34;repo:path&#34;:&#34;/content/dam/master/corporate/brand-marketing/icons/icon-blue/CORP-Icon-blue-light-network-careers.svg&#34;,&#34;xdm:tags&#34;:[&#34;asset-type:&#34;,&#34;",dentsplysirona,-1,-1,1.0,api_sniff,
+Dentsu,workday,https://dentsuaegis.wd3.myworkdayjobs.com/DAN_GLOBAL,https://dentsuaegis.wd3.myworkdayjobs.com/DAN_GLOBAL,dentsuaegis,961,-1,1.0,api_sniff,
+Deppon,ai (browser),https://www.deppon.com/careers,https://www.deppon.com/careers,,-1,-1,,ai,low
+Desmet,ai (browser),https://www.desmet.com/en/career,https://www.desmet.com/en/career,,-1,-1,,ai,low
+Deutsche,workday,https://db.wd3.myworkdayjobs.com/DBWebsite,https://db.wd3.myworkdayjobs.com/DBWebsite,db,1064,-1,,ai,high
+Dewesoft,ai (browser),https://dewesoft.com/careers,https://dewesoft.com/careers,,-1,-1,,ai,low
+Diageo,workday,https://diageo.wd3.myworkdayjobs.com/Diageo_Careers,https://diageo.wd3.myworkdayjobs.com/Diageo_Careers,diageo,90,-1,0.0,api_sniff,
+Diamond Offshore,workday,https://noblecorp.wd1.myworkdayjobs.com/noblecorp,https://noblecorp.wd1.myworkdayjobs.com/noblecorp,noblecorp,58,-1,1.0,api_sniff,
+DigitalBridge,greenhouse,digitalbridge,https://boards.greenhouse.io/digitalbridge,DigitalBridge,4,0,1.0,api_sniff,
+Discovery Networks,ai (browser),https://careers.wbd.com/global/en,https://careers.wbd.com/global/en,,-1,-1,,ai,low
+Dobot,ai (browser),https://www.dobot-robots.com/en/careers,https://www.dobot-robots.com/en/careers,,-1,-1,,ai,low
+DocuSign,smartrecruiters,docusign,https://careers.smartrecruiters.com/docusign,DocuSign,4,0,1.0,api_sniff,
+Donaldson,workday,https://donaldson.wd115.myworkdayjobs.com/DonaldsonCareers,https://donaldson.wd115.myworkdayjobs.com/DonaldsonCareers,donaldson,143,-1,,ai,high
+Dormakaba,ai (browser),https://jobs.dormakaba.com/,https://jobs.dormakaba.com/,,-1,-1,,ai,high
+Drewry,ai (browser),https://www.drewry.co.uk/careers,https://www.drewry.co.uk/careers,,-1,-1,,ai,low
+DriveWealth,greenhouse,drivewealth,https://boards.greenhouse.io/drivewealth,DriveWealth,21,0,0.0,api_sniff,
+DuPont,workday,https://dupont.wd5.myworkdayjobs.com/Jobs,https://dupont.wd5.myworkdayjobs.com/Jobs,dupont,169,-1,0.0,api_sniff,
+Dulwich College,ai (browser),https://singapore.dulwich.org/community/life-at-dulwich/careers,https://singapore.dulwich.org/community/life-at-dulwich/careers,,-1,-1,,ai,low
+Duopharma,ai (browser),https://duopharma.com/careers,https://duopharma.com/careers,,-1,-1,,ai,low
+Dymax,workable (browser),https://apply.workable.com/bce,https://apply.workable.com/bce,dymax,-1,-1,0.0,api_sniff,
+Dynapac,ai (browser),https://dynapac.com/en/,https://dynapac.com/en/,,-1,-1,,ai,low
+Dyson,workday,https://dyson.wd3.myworkdayjobs.com/Dyson_Careers,https://dyson.wd3.myworkdayjobs.com/Dyson_Careers,dyson,376,-1,0.0,api_sniff,
+EAS,workday,https://abbott.wd5.myworkdayjobs.com/abbottcareers,https://abbott.wd5.myworkdayjobs.com/abbottcareers,abbott,2000,-1,1.0,api_sniff,
+EDP,successfactors (browser),https://career5.successfactors.eu/career?site=&company=EDP&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career5.successfactors.eu/career?site=&company=EDP&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,edp,-1,-1,,ai,low
+EFG Hermes,ai (browser),https://efgholding.com/en/careers,https://efgholding.com/en/careers,,-1,-1,,ai,low
+EGIS,ai (browser),https://www.egis-group.com/fr,https://www.egis-group.com/fr,,-1,-1,,ai,low
+ENJO,ai (browser),https://www.enjo.com/sg/,https://www.enjo.com/sg/,,-1,-1,,ai,low
+ENSCO,greenhouse,ensco,https://boards.greenhouse.io/ensco,"ENSCO, Inc.",44,0,0.0,api_sniff,
+EOH,taleo (browser),https://eoh.taleo.net/careersection/external/jobsearch.ftl,https://eoh.taleo.net/careersection/external/jobsearch.ftl,eoh,-1,-1,,ai,low
+EPRI,ai (browser),https://www.epri.com/careers,https://www.epri.com/careers,,-1,-1,,ai,low
+ESET,ai (browser),https://jobs.eset.com/en-US/ESET_External,https://jobs.eset.com/en-US/ESET_External,,-1,-1,,ai,high
+Eagles Flight,ai (browser),https://eaglesflight.com/careers/,https://eaglesflight.com/careers/,,-1,-1,,ai,low
+Eastman,ai (browser),https://jobs.eastman.com/,https://jobs.eastman.com/,,-1,-1,,ai,high
+Eastman Chemical,taleo (browser),https://eastman.taleo.net/careersection/ext/joblist.ftl,https://eastman.taleo.net/careersection/ext/joblist.ftl,eastmanchemical,-1,-1,,ai,high
+Eberspacher,successfactors (browser),https://career012.successfactors.eu/career?company=eberspaecher,https://career012.successfactors.eu/career?company=eberspaecher,eberspacher,-1,-1,0.0,api_sniff,
+Echologics,ai (browser),https://www.echologics.com/,https://www.echologics.com/,,-1,-1,,ai,high
+Economist Group,ai (browser),https://www.economistgroup.com/careers,https://www.economistgroup.com/careers,,-1,-1,,ai,low
+Edgecore Networks,ai (browser),https://edgecore.com/company/careers,https://edgecore.com/company/careers,,-1,-1,,ai,low
+Electronic Arts,ai (browser),https://www.ea.com/careers,https://www.ea.com/careers,,-1,-1,,ai,high
+Element Materials Technology,ai (browser),https://www.element.com/careers,https://www.element.com/careers,,-1,-1,,ai,low
+Emerchantpay,ai (browser),https://www.emerchantpay.com/careers/,https://www.emerchantpay.com/careers/,,-1,-1,,ai,low
+Emerson,oracle,https://hdjq.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1,https://hdjq.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1,emerson,785,-1,0.0,api_sniff,
+Emirates,avature (browser),https://emiratesjobs.avature.net/careersmarketplace/Login,https://emiratesjobs.avature.net/careersmarketplace/Login,emirates,-1,-1,0.0,api_sniff,
+Encompass Digital Media,ai (browser),https://encompass.tv/careers/,https://encompass.tv/careers/,,-1,-1,,ai,high
+Endava,smartrecruiters,endava,https://careers.smartrecruiters.com/endava,Endava,236,0,0.0,api_sniff,
+Energy Exemplar,ai (browser),https://www.energyexemplar.com/careers/,https://www.energyexemplar.com/careers/,,-1,-1,,ai,low
+Engelhart,greenhouse,engelhart,https://boards.greenhouse.io/engelhart,Engelhart,10,0,0.0,api_sniff,
+Engis,ai (browser),https://www.engis.com/careers,https://www.engis.com/careers,,-1,-1,,ai,low
+Ensign,workday,https://ensign.wd1.myworkdayjobs.com/Ensign,https://ensign.wd1.myworkdayjobs.com/Ensign,ensign,1,-1,1.0,api_sniff,
+Eoptolink,ai (browser),http://www.eoptolink.com/about-us/careers,http://www.eoptolink.com/about-us/careers,,-1,-1,,ai,low
+Epic Games,greenhouse,epicgames,https://boards.greenhouse.io/epicgames,Epic Games,127,0,0.0,api_sniff,
+Epson,recruitee (browser),https://epson.recruitee.com,https://epson.recruitee.com,epson,-1,-1,,ai,low
+Eraneos,ai (browser),https://careers.eraneos.com/nl/en/,https://careers.eraneos.com/nl/en/,,-1,-1,,ai,low
+Ergon Oil,ai (browser),http://ergon.com/careers/,http://ergon.com/careers/,,-1,-1,,ai,low
+Ericsson,successfactors (browser),"https://career2.successfactors.eu/career?company=Ericsson&amp;career_ns=job_application&amp;src=Eightfold&amp;career_job_req_id={{job_id}}&#34;,","https://career2.successfactors.eu/career?company=Ericsson&amp;career_ns=job_application&amp;src=Eightfold&amp;career_job_req_id={{job_id}}&#34;,",ericsson,-1,-1,0.0,api_sniff,
+Esri,greenhouse,esri,https://boards.greenhouse.io/esri,Esri,442,4,0.0,api_sniff,
+Euler Hermes,ai (browser),https://www.allianz-trade.com/en_global.html,https://www.allianz-trade.com/en_global.html,,-1,-1,,ai,high
+Eurofins,smartrecruiters,eurofins,https://careers.smartrecruiters.com/eurofins,Eurofins,2506,1,0.0,api_sniff,
+Euromonitor,workable (browser),https://apply.workable.com/euromonitor,https://apply.workable.com/euromonitor,euromonitor,-1,-1,0.0,api_sniff,
+Eutelsat,ai (browser),https://careers.eutelsat.com/,https://careers.eutelsat.com/,,-1,-1,,ai,low
+Everbridge,lever,everbridge,https://jobs.lever.co/everbridge,,12,0,0.0,api_sniff,
+Evonik,workday,https://evonik.wd3.myworkdayjobs.com/External_Careers,https://evonik.wd3.myworkdayjobs.com/External_Careers,evonik,354,-1,0.0,api_sniff,
+Exact Software,ai (browser),https://www.exact.com/careers,https://www.exact.com/careers,,-1,-1,,ai,low
+Exacta,ai (browser),https://exacta.com/,https://exacta.com/,,-1,-1,,ai,low
+Exagrid,ai (browser),https://www.exagrid.com/careers/,https://www.exagrid.com/careers/,,-1,-1,,ai,high
+Excelitas Technologies,successfactors (browser),https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,excelitas,-1,-1,0.0,api_sniff,
+ExecuJet,ai (browser),https://www.execujet.com/careers/,https://www.execujet.com/careers/,,-1,-1,,ai,low
+Exiger,greenhouse,exiger,https://boards.greenhouse.io/exiger,Exiger,50,1,0.0,api_sniff,
+Exo Travel,ai (browser),https://www.exotravel.com/careers,https://www.exotravel.com/careers,,-1,-1,,ai,low
+Extreme Networks,lever,extremenetworks,https://jobs.lever.co/extremenetworks,,51,0,0.0,api_sniff,
+ExxonMobil,ai (browser),https://corporate.exxonmobil.com/careers,https://corporate.exxonmobil.com/careers,,-1,-1,,ai,high
+FEI Systems,ai (browser),https://feisystems.com/careers/,https://feisystems.com/careers/,,-1,-1,,ai,high
+FFR Group,ai (browser),https://www.ffrgroup.com/careers,https://www.ffrgroup.com/careers,,-1,-1,,ai,low
+FL Technics,ai (browser),https://fltechnics.com/careers/,https://fltechnics.com/careers/,,-1,-1,,ai,low
+FMC Technologies,workday,https://fmc.wd12.myworkdayjobs.com/Fmc,https://fmc.wd12.myworkdayjobs.com/Fmc,fmc,70,-1,0.0,api_sniff,
+FWD Group,workday,https://fwd.wd3.myworkdayjobs.com/FWDcareersite,https://fwd.wd3.myworkdayjobs.com/FWDcareersite,fwd,206,-1,0.0,api_sniff,
+Fastenal,ai (browser),https://careers.fastenal.com/,https://careers.fastenal.com/,,-1,-1,,ai,high
+Fastmarkets,smartrecruiters,fastmarkets,https://careers.smartrecruiters.com/fastmarkets,Fastmarkets,39,5,0.0,api_sniff,
+Fedders,ai (browser),https://careers.fedders.com/,https://careers.fedders.com/,,-1,-1,,ai,low
+Ferrero,successfactors (browser),https://career5.successfactors.eu/careers?company=ferreroint&amp;lang=en_US&amp;clientId=jobs2web&amp;jobPipeline=Direct&amp;navBarLevel=MY_PROFILE,https://career5.successfactors.eu/careers?company=ferreroint&amp;lang=en_US&amp;clientId=jobs2web&amp;jobPipeline=Direct&amp;navBarLevel=MY_PROFILE,ferrero,-1,-1,0.0,api_sniff,
+Ferrotec,ai (browser),https://www.ferrotec.com/company/careers/,https://www.ferrotec.com/company/careers/,,-1,-1,,ai,low
+Fidinam,ai (browser),https://www.fidinam.com/en/careers,https://www.fidinam.com/en/careers,,-1,-1,,ai,low
+Fifth Wall,ai (browser),https://www.fifthwall.com/careers,https://www.fifthwall.com/careers,,-1,-1,,ai,high
+Filtronic,ai (browser),https://filtronic.com/careers/,https://filtronic.com/careers/,,-1,-1,,ai,low
+Financial Times,ai (browser),https://job-boards.eu.greenhouse.io/financialtimes33,https://job-boards.eu.greenhouse.io/financialtimes33,,-1,-1,,ai,high
+Firefly,ai (browser),https://firefly.com/careers,https://firefly.com/careers,,-1,-1,,ai,low
+First Solar,oracle,https://fa-esbv-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1,https://fa-esbv-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1,firstsolar,260,-1,1.0,api_sniff,
+Firstmac,ai (browser),https://www.firstmac.com.au:443/,https://www.firstmac.com.au:443/,,-1,-1,,ai,low
+Fiserv,phenom (browser),https://careers.fiserv.com/us/en/search-results?keywords={search_term_string},https://careers.fiserv.com/us/en/search-results?keywords={search_term_string},fiserv,-1,-1,0.0,api_sniff,
+Flexicon,ai (browser),https://newcareers.flexicon.com/,https://newcareers.flexicon.com/,,-1,-1,,ai,low
+Flint Group,ashby (browser),https://jobs.ashbyhq.com/flint,https://jobs.ashbyhq.com/flint,flint,-1,-1,0.0,api_sniff,
+Flow Traders,greenhouse,flowtraders,https://boards.greenhouse.io/flowtraders,Flow Traders,35,0,0.0,api_sniff,
+Flowdesk,smartrecruiters,flowdesk,https://careers.smartrecruiters.com/flowdesk,Flowdesk,2,0,1.0,api_sniff,
+Fluenta,ai (browser),https://www.fluenta.com/careers,https://www.fluenta.com/careers,,-1,-1,,ai,low
+Fluidra,ai (browser),https://careers.fluidra.com/,https://careers.fluidra.com/,,-1,-1,,ai,low
+Fluke,eightfold (browser),https://careers.fortive.com/fluke/,https://careers.fortive.com/fluke/,fluke,-1,-1,,ai,high
+Flying Tiger Copenhagen,ai (browser),https://flyingtiger.com/pages/work-with-us,https://flyingtiger.com/pages/work-with-us,,-1,-1,,ai,low
+Fonterra,avature (browser),https://fonterrakf.avature.net/internalcareers,https://fonterrakf.avature.net/internalcareers,fonterra,-1,-1,0.0,api_sniff,
+FormFactor,ai (browser),https://www.formfactor.com/company/careers/career-opportunities/,https://www.formfactor.com/company/careers/career-opportunities/,,-1,-1,,ai,high
+Formica,ai (browser),https://www.formica.com/en-sg/,https://www.formica.com/en-sg/,,-1,-1,,ai,low
+Formlabs,greenhouse,formlabs,https://boards.greenhouse.io/formlabs,Formlabs,169,0,0.0,api_sniff,
+Forrester,ai (browser),https://www.forrester.com/careers/,https://www.forrester.com/careers/,,-1,-1,,ai,high
+Franklin Covey,ai (browser),https://careers.franklincovey.com/,https://careers.franklincovey.com/,,-1,-1,,ai,high
+Frasers Group,smartrecruiters,frasersgroup,https://careers.smartrecruiters.com/frasersgroup,Frasers Group,392,0,0.0,api_sniff,
+FreeBalance,ai (browser),https://www.freebalance.com/en/careers/,https://www.freebalance.com/en/careers/,,-1,-1,,ai,low
+Fugro,workday,https://fugro.wd3.myworkdayjobs.com/Careers,https://fugro.wd3.myworkdayjobs.com/Careers,fugro,152,-1,0.0,api_sniff,
+Fuji Dies Kogyo,taleo (browser),https://fujidies.taleo.net,https://fujidies.taleo.net,fujidieskogyo,-1,-1,,ai,low
+Fuji Yusoki Kogyo,ai (browser),https://www.fujiyusoki.com/careers,https://www.fujiyusoki.com/careers,,-1,-1,,ai,low
+Fumakilla,ai (browser),https://www.fumakilla.com/careers,https://www.fumakilla.com/careers,,-1,-1,,ai,low
+Fund Channel,ai (browser),https://fundchannel.com/careers,https://fundchannel.com/careers,,-1,-1,,ai,low
+GA Telesis,ai (browser),https://www.gatelesis.com/careers/,https://www.gatelesis.com/careers/,,-1,-1,,ai,low
+GBG,workable (browser),https://apply.workable.com/gbg,https://apply.workable.com/gbg,gbg,-1,-1,0.0,api_sniff,
+GIA,workday,https://gia.wd1.myworkdayjobs.com/Gia,https://gia.wd1.myworkdayjobs.com/Gia,gia,14,-1,0.0,api_sniff,
+GLMX,greenhouse,glmx,https://boards.greenhouse.io/glmx,GLMX,0,0,,ai,low
+GS Caltex,ai (browser),https://www.gscaltex.com/en/careers,https://www.gscaltex.com/en/careers,,-1,-1,,ai,low
+GSK,workday,https://gsk.wd5.myworkdayjobs.com/GskCareers,https://gsk.wd5.myworkdayjobs.com/GskCareers,gsk,763,-1,0.0,api_sniff,
+Galderma,workday,https://galderma.wd3.myworkdayjobs.com/External,https://galderma.wd3.myworkdayjobs.com/External,galderma,359,-1,0.0,api_sniff,
+Galileo,greenhouse,galileo,https://boards.greenhouse.io/galileo,Galileo,11,0,0.0,api_sniff,
+Gamuda,successfactors (browser),https://career44.sapsf.com/career?site=&amp;company=gamudaberh&amp;lang=en%5FGB&amp;login_ns=register&amp;career_ns=home&amp;navBarLevel=MY_PROFILE,https://career44.sapsf.com/career?site=&amp;company=gamudaberh&amp;lang=en%5FGB&amp;login_ns=register&amp;career_ns=home&amp;navBarLevel=MY_PROFILE,gamuda,-1,-1,0.0,api_sniff,
+Gandi,ai (browser),https://gandi.taleez.com/,https://gandi.taleez.com/,,-1,-1,,ai,low
+Gategroup,ai (browser),https://www.gategroup.com/careers/,https://www.gategroup.com/careers/,,-1,-1,,ai,low
+Gaumont,ai (browser),https://info.jazzhr.com/job-seekers.html,https://info.jazzhr.com/job-seekers.html,,-1,-1,,ai,low
+Genetec,smartrecruiters,genetec,https://careers.smartrecruiters.com/genetec,genetec,1,0,1.0,api_sniff,
+Genius Sports,greenhouse,geniussports,https://boards.greenhouse.io/geniussports,Genius Sports,44,0,0.0,api_sniff,
+Geometry,ai (browser),https://geometryonline.recruiterflow.com/,https://geometryonline.recruiterflow.com/,,-1,-1,,ai,low
+Gessi,ai (browser),https://www.gessi.com/en/careers,https://www.gessi.com/en/careers,,-1,-1,,ai,low
+Gland Pharma,ai (browser),https://glandpharma.com/careers,https://glandpharma.com/careers,,-1,-1,,ai,low
+Glencore,ai (browser),https://www.glencore.com/en/careers,https://www.glencore.com/en/careers,,-1,-1,,ai,high
+Global Blue,workday,https://globalblue.wd3.myworkdayjobs.com/External,https://globalblue.wd3.myworkdayjobs.com/External,globalblue,30,-1,1.0,api_sniff,
+Global Calcium,ai (browser),https://www.globalcalcium.com/careers,https://www.globalcalcium.com/careers,,-1,-1,,ai,low
+Global Infrastructure Partners,ai (browser),https://www.globalinfrastructurepartners.com/careers,https://www.globalinfrastructurepartners.com/careers,,-1,-1,,ai,low
+Global Payments,workday,https://worldpay.wd5.myworkdayjobs.com/Worldpay_External_Careers_Site,https://worldpay.wd5.myworkdayjobs.com/Worldpay_External_Careers_Site,worldpay,180,-1,,ai,high
+Global Switch,ai (browser),https://careers.globalswitch.com/,https://careers.globalswitch.com/,,-1,-1,,ai,low
+Golden Village,avature (browser),https://goldenvillage.avature.net,https://goldenvillage.avature.net,goldenvillage,-1,-1,,ai,low
+GoodWe,ai (browser),https://wecruit.hotjob.cn/SU630a3a0e2f9d2406b4f6c5f1/pb/index.html#/,https://wecruit.hotjob.cn/SU630a3a0e2f9d2406b4f6c5f1/pb/index.html#/,,-1,-1,,ai,low
+Goodwin Procter,workday,https://goodwinprocter.wd5.myworkdayjobs.com/External_Careers,https://goodwinprocter.wd5.myworkdayjobs.com/External_Careers,goodwinprocter,44,-1,1.0,api_sniff,
+Graceland Fruit,ai (browser),https://www.gracelandfruit.com/careers/,https://www.gracelandfruit.com/careers/,,-1,-1,,ai,low
+Grant Thornton,oracle,https://ehzq.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1,https://ehzq.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1,grantthornton,137,-1,1.0,api_sniff,
+Greenlam,ai (browser),https://www.greenlam.com/careers,https://www.greenlam.com/careers,,-1,-1,,ai,low
+Greif,workday,https://greif.wd5.myworkdayjobs.com/Greif,https://greif.wd5.myworkdayjobs.com/Greif,greif,229,-1,0.0,api_sniff,
+Groma,greenhouse,groma,https://boards.greenhouse.io/groma,Groma,3,0,1.0,api_sniff,
+Groupe OnePoint,workable (browser),https://apply.workable.com/onepoint/,https://apply.workable.com/onepoint/,groupeonepoint,-1,-1,,ai,low
+GuarantCo,ai (browser),https://guarantco.com/careers/,https://guarantco.com/careers/,,-1,-1,,ai,low
+Guidepoint,greenhouse,guidepoint,https://boards.greenhouse.io/guidepoint,Guidepoint,114,2,0.0,api_sniff,
+GumGum,greenhouse,gumgum,https://boards.greenhouse.io/gumgum,GumGum,10,0,0.0,api_sniff,
+GuotaiQixing,taleo (browser),https://guotaiqixing.taleo.net,https://guotaiqixing.taleo.net,guotaiqixing,-1,-1,,ai,low
+HKS,ai (browser),https://hks.com/careers,https://hks.com/careers,,-1,-1,,ai,low
+HTC,icims (browser),https://globalcareers-htcvive.icims.com/jobs/intro?hashed=-435804063&amp;mobile=false&amp;width=988&amp;height=500&amp;bga=true&amp;needsRedirect=false&amp;jan1offset=0&amp;jun1offset=60,https://globalcareers-htcvive.icims.com/jobs/intro?hashed=-435804063&amp;mobile=false&amp;width=988&amp;height=500&amp;bga=true&amp;needsRedirect=false&amp;jan1offset=0&amp;jun1offset=60,htc,-1,-1,0.0,api_sniff,
+Habitat for Humanity,ai (browser),https://www.habitat.org/about/careers,https://www.habitat.org/about/careers,,-1,-1,,ai,low
+Habyt,ai (browser),https://www.habyt.com/careers,https://www.habyt.com/careers,,-1,-1,,ai,low
+Hach,workday,https://veralto.wd1.myworkdayjobs.com/HachJobs,https://veralto.wd1.myworkdayjobs.com/HachJobs,veralto,92,-1,1.0,api_sniff,
+Haggai Institute,ai (browser),https://www.haggai-international.org/connect-page/,https://www.haggai-international.org/connect-page/,,-1,-1,,ai,low
+Haidilao,ai (browser),https://www.haidilao.com/careers,https://www.haidilao.com/careers,,-1,-1,,ai,low
+Hainan Airlines,ai (browser),https://www.hnair.com/404/,https://www.hnair.com/404/,,-1,-1,,ai,low
+Hakuhodo,ai (browser),https://www.hakuhodo.co.jp/hr/,https://www.hakuhodo.co.jp/hr/,,-1,-1,,ai,low
+Hammerspace,ai (browser),https://hammerspace.com/careers/,https://hammerspace.com/careers/,,-1,-1,,ai,low
+Hansaworld,ai (browser),https://www.hansaworld.com/en/careers,https://www.hansaworld.com/en/careers,,-1,-1,,ai,low
+Hanwa,ai (browser),https://www.hanwha.com/index.do,https://www.hanwha.com/index.do,,-1,-1,,ai,low
+Hanwha,ai (browser),https://jobs-offshore.hanwhaocean.com/go/Asia-Pacific/9738700/,https://jobs-offshore.hanwhaocean.com/go/Asia-Pacific/9738700/,,-1,-1,,ai,high
+Harmonic,greenhouse,harmonic,https://boards.greenhouse.io/harmonic,Harmonic,9,0,0.0,api_sniff,
+Harris Hotels,taleo (browser),https://harrishotels.taleo.net,https://harrishotels.taleo.net,harrishotels,-1,-1,,ai,low
+Harvey Norman,ai (browser),https://www.harveynorman.com.sg/careers.html,https://www.harveynorman.com.sg/careers.html,,-1,-1,,ai,low
+Harwin,ai (browser),https://www.harwin.com/careers,https://www.harwin.com/careers,,-1,-1,,ai,low
+HashKey Capital,ai (browser),https://www.hashkey.com/careers,https://www.hashkey.com/careers,,-1,-1,,ai,low
+Hassell,smartrecruiters,HassellServices,https://careers.smartrecruiters.com/HassellServices,Hassell Services,34,0,,ai,low
+Heerema,successfactors (browser),https://career2.successfactors.eu/career?site=&company=heeremamarP1&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career2.successfactors.eu/career?site=&company=heeremamarP1&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,heerema,-1,-1,,ai,low
+Heilind,taleo (browser),https://heilind.taleo.net/careersection/external,https://heilind.taleo.net/careersection/external,heilind,-1,-1,,ai,low
+Hella,ai (browser),https://www.hella.com/en/Career-230/,https://www.hella.com/en/Career-230/,,-1,-1,,ai,low
+Henderson,ai (browser),https://www.janushenderson.com/en-us/,https://www.janushenderson.com/en-us/,,-1,-1,,ai,low
+Henkel,ai (browser),https://jobs.henkel.com/,https://jobs.henkel.com/,,-1,-1,,ai,high
+Henry Jacques,ai (browser),https://www.henryjacques.com/careers,https://www.henryjacques.com/careers,,-1,-1,,ai,low
+Herman Miller,ai (browser),https://www.hermanmiller.com/en_us/careers/,https://www.hermanmiller.com/en_us/careers/,,-1,-1,,ai,high
+Hermes,ai (browser),https://talents.hermes.com/en/sites/CX/jobs,https://talents.hermes.com/en/sites/CX/jobs,,-1,-1,,ai,high
+HeyGen,greenhouse,heygen,https://boards.greenhouse.io/heygen,HeyGen,20,3,0.0,api_sniff,
+Highpower Technology,smartrecruiters,highpower,https://careers.smartrecruiters.com/highpower,High Power,1,0,1.0,api_sniff,
+Hill Dickinson,ai (browser),https://careers.hilldickinson.com/,https://careers.hilldickinson.com/,,-1,-1,,ai,low
+Hilti,ai (browser),https://careers.hilti.group/en,https://careers.hilti.group/en,,-1,-1,,ai,high
+Hisense,ai (browser),https://jobs.hisense.com/,https://jobs.hisense.com/,,-1,-1,,ai,low
+Hobart,ai (browser),https://www.hobartcorp.com/about-us-hobart/current-openings,https://www.hobartcorp.com/about-us-hobart/current-openings,,-1,-1,,ai,low
+Homag,ai (browser),https://www.homag.com/en/career,https://www.homag.com/en/career,,-1,-1,,ai,low
+Honda,phenom (browser),https://careers.honda.com/us/en/search-results?keywords=%7Bsearch_term_string%7D,https://careers.honda.com/us/en/search-results?keywords=%7Bsearch_term_string%7D,honda,-1,-1,,ai,high
+Honeywell,ai (browser),https://careers.honeywell.com/en/sites/Honeywell,https://careers.honeywell.com/en/sites/Honeywell,,-1,-1,,ai,high
+Hoogwegt,ai (browser),https://hoogwegt.com/careers,https://hoogwegt.com/careers,,-1,-1,,ai,low
+HotelPlanner,ai (browser),https://www.hotelplanner.com,https://www.hotelplanner.com,,-1,-1,,ai,low
+Huber,successfactors (browser),https://career8.successfactors.com/career?site=&company=JMHGPS&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career8.successfactors.com/career?site=&company=JMHGPS&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,huber,-1,-1,,ai,low
+Hugo Boss,ai (browser),https://careers.hugoboss.com/global/en,https://careers.hugoboss.com/global/en,,-1,-1,,ai,high
+Humanscale,ai (browser),https://www.humanscale.com/welcome,https://www.humanscale.com/welcome,,-1,-1,,ai,low
+Hunter Douglas,greenhouse,hunterdouglas,https://boards.greenhouse.io/hunterdouglas,Hunter Douglas,72,0,0.0,api_sniff,
+Huntsman,workday,https://huntsman.wd1.myworkdayjobs.com/Huntsman,https://huntsman.wd1.myworkdayjobs.com/Huntsman,huntsman,171,-1,0.0,api_sniff,
+Hutchinson,oracle,https://fa-eocc-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/fr/sites/CX_1007,https://fa-eocc-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/fr/sites/CX_1007,hutchinson,365,-1,,ai,low
+Hyland Software,icims (browser),https://www.hyland.com/en/company/careers,https://www.hyland.com/en/company/careers,hylandsoftware,-1,-1,,ai,high
+IAG,ai (browser),https://careers.iag.com.au/global/en,https://careers.iag.com.au/global/en,,-1,-1,,ai,low
+IDEMIA,icims (browser),https://uscareers-idemia.icims.com/,https://uscareers-idemia.icims.com/,idemia,-1,-1,0.0,api_sniff,
+IDEXX Laboratories,workday,https://idexx.wd1.myworkdayjobs.com/idexx,https://idexx.wd1.myworkdayjobs.com/idexx,idexx,195,-1,,ai,high
+IDP,ai (browser),https://careers.idp.com/,https://careers.idp.com/,,-1,-1,,ai,low
+IIF,taleo (browser),https://iif.taleo.net,https://iif.taleo.net,iif,-1,-1,,ai,low
+IKA,ai (browser),https://www.ika.com/en,https://www.ika.com/en,,-1,-1,,ai,low
+IMI,greenhouse,imi,https://boards.greenhouse.io/imi,IMI,4,0,1.0,api_sniff,
+INEOS,ai (browser),https://careers.ineos.com/,https://careers.ineos.com/,,-1,-1,,ai,low
+IONOS,greenhouse,ionos,https://boards.greenhouse.io/ionos,IONOS DE,30,0,0.0,api_sniff,
+IPECO,ai (browser),https://ipeco.com/work-for-us/,https://ipeco.com/work-for-us/,,-1,-1,,ai,low
+IQVIA,workday,https://iqvia.wd1.myworkdayjobs.com/Iqvia,https://iqvia.wd1.myworkdayjobs.com/Iqvia,iqvia,2000,-1,0.0,api_sniff,
+ISOQAR,ai (browser),https://isoqar.com/careers/,https://isoqar.com/careers/,,-1,-1,,ai,low
+Ibibo Group,workable (browser),https://apply.workable.com/goibibo/,https://apply.workable.com/goibibo/,ibibogroup,-1,-1,,ai,high
+Impossible Foods,ai (browser),https://impossiblefoods.com/careers,https://impossiblefoods.com/careers,,-1,-1,,ai,high
+InBody,ai (browser),https://www.inbody.com/careers,https://www.inbody.com/careers,,-1,-1,,ai,low
+Incubeta,ai (browser),https://incubeta.com/careers/,https://incubeta.com/careers/,,-1,-1,,ai,low
+Index Exchange,ai (browser),https://www.indexexchange.com/careers/,https://www.indexexchange.com/careers/,,-1,-1,,ai,high
+Infineon,ai (browser),https://www.infineon.com/careers,https://www.infineon.com/careers,,-1,-1,,ai,high
+Inflow Technologies,ai (browser),https://inflowtechnologies.com/careers/,https://inflowtechnologies.com/careers/,,-1,-1,,ai,low
+Infosys,ai (browser),https://career.infosys.com/joblist,https://career.infosys.com/joblist,,-1,-1,,ai,high
+Innio,ai (browser),https://careers.innio.com/en/,https://careers.innio.com/en/,,-1,-1,,ai,high
+Inspectorate,ai (browser),https://commodities.bureauveritas.com,https://commodities.bureauveritas.com,,-1,-1,,ai,low
+Instawork,greenhouse,instawork,https://boards.greenhouse.io/instawork,Instawork,55,0,0.0,api_sniff,
+Insulet,workday,https://insulet.wd5.myworkdayjobs.com/InsuletCareers,https://insulet.wd5.myworkdayjobs.com/InsuletCareers,insulet,194,-1,0.0,api_sniff,
+Integris Composites,ai (browser),https://integriscomposites.com/careers/,https://integriscomposites.com/careers/,,-1,-1,,ai,low
+Intel 471,ai (browser),https://intel471.bamboohr.com/careers,https://intel471.bamboohr.com/careers,,-1,-1,,ai,low
+Intellian,ai (browser),https://intellian.com/careers,https://intellian.com/careers,,-1,-1,,ai,low
+InterSystems,greenhouse,intersystems,https://boards.greenhouse.io/intersystems,InterSystems,142,4,0.0,api_sniff,
+International SOS,successfactors (browser),https://career4.successfactors.com/career?site=&company=INTLSOS&lang=en_GB&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career4.successfactors.com/career?site=&company=INTLSOS&lang=en_GB&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,internationalsos,-1,-1,,ai,low
+Investcorp,ai (browser),https://www.investcorp.com/careers/,https://www.investcorp.com/careers/,,-1,-1,,ai,low
+Ippudo,ai (browser),https://www.ippudo.com/,https://www.ippudo.com/,,-1,-1,,ai,low
+IronNet Cybersecurity,ai (browser),https://www.ironnet.com/company/careers,https://www.ironnet.com/company/careers,,-1,-1,,ai,low
+Ivanhoe Cambridge,ai (browser),https://www.ivanhoecambridge.com/en/,https://www.ivanhoecambridge.com/en/,,-1,-1,,ai,low
+JCB,ai (browser),https://careers.jcb.com/,https://careers.jcb.com/,,-1,-1,,ai,low
+JFrog,greenhouse,jfrog,https://boards.greenhouse.io/jfrog,JFrog,57,1,0.0,api_sniff,
+JM Financial,ai (browser),https://www.jmfinancial.com/careers,https://www.jmfinancial.com/careers,,-1,-1,,ai,low
+JPMorgan Chase,oracle,https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001,https://jpmc.fa.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001,jpmorganchase,7165,-1,,ai,high
+JW Player,ai (browser),https://jwx.com/careers,https://jwx.com/careers,,-1,-1,,ai,low
+JWT,workable (browser),https://apply.workable.com/jwt/,https://apply.workable.com/jwt/,jwt,-1,-1,,ai,low
+Jane Goodall Institute,ai (browser),https://janegoodall.org/,https://janegoodall.org/,,-1,-1,,ai,low
+Janus et Cie,ai (browser),https://www.janusetcie.com/careers,https://www.janusetcie.com/careers,,-1,-1,,ai,low
+Jardine Matheson,ai (browser),https://www.jardinegroup.com/careers,https://www.jardinegroup.com/careers,,-1,-1,,ai,low
+Jauch,ai (browser),https://www.jauch.com/en-INT/careers,https://www.jauch.com/en-INT/careers,,-1,-1,,ai,low
+Jet Aviation,ai (browser),https://www.jetaviation.com/company/careers/,https://www.jetaviation.com/company/careers/,,-1,-1,,ai,low
+Jetstar,taleo (browser),https://jetstar.taleo.net/careersection/jetstar/jobsearch.ftl,https://jetstar.taleo.net/careersection/jetstar/jobsearch.ftl,jetstar,-1,-1,,ai,high
+Jingdong,ai (browser),https://www.jd.com/error2.aspx?from=shopdomain,https://www.jd.com/error2.aspx?from=shopdomain,,-1,-1,,ai,low
+Johnson Controls,workday,https://jci.wd5.myworkdayjobs.com/JCI,https://jci.wd5.myworkdayjobs.com/JCI,jci,2662,-1,1.0,api_sniff,
+Johnson Electric,workday,https://johnsonelectric.wd3.myworkdayjobs.com/Career_JE,https://johnsonelectric.wd3.myworkdayjobs.com/Career_JE,johnsonelectric,279,-1,,ai,high
+Johnson Health,ai (browser),https://johnsonhealth.com/careers,https://johnsonhealth.com/careers,,-1,-1,,ai,low
+Juki,ai (browser),https://juki.com/careers,https://juki.com/careers,,-1,-1,,ai,low
+Julius Baer,workday,https://juliusbaer.wd3.myworkdayjobs.com/External,https://juliusbaer.wd3.myworkdayjobs.com/External,juliusbaer,172,-1,1.0,api_sniff,
+KFC,ai (browser),https://www.kfc.com.sg/careers,https://www.kfc.com.sg/careers,,-1,-1,,ai,high
+KFIN Technologies,ai (browser),https://www.kfintech.com/jobs/,https://www.kfintech.com/jobs/,,-1,-1,,ai,low
+KITZ,ai (browser),https://www.kitz.co.jp/recruit/,https://www.kitz.co.jp/recruit/,,-1,-1,,ai,low
+Kalsec,ai (browser),https://www.kalsec.com/about-kalsec/careers,https://www.kalsec.com/about-kalsec/careers,,-1,-1,,ai,low
+Kamigumi,ai (browser),https://www.kamigumi.co.jp/recruit/index.html,https://www.kamigumi.co.jp/recruit/index.html,,-1,-1,,ai,low
+Kandji,ai (browser),https://www.iru.com/,https://www.iru.com/,,-1,-1,,ai,high
+Kantar,workday,https://kantar.wd3.myworkdayjobs.com/Kantar,https://kantar.wd3.myworkdayjobs.com/Kantar,kantar,62,-1,0.0,api_sniff,
+Kao,greenhouse,kao,https://boards.greenhouse.io/kao,Kao Corporation,52,0,0.0,api_sniff,
+Kappa,ai (browser),https://kappagroup.com,https://kappagroup.com,,-1,-1,,ai,low
+Karmsund Maritime,ai (browser),https://karmsund.no/careers/,https://karmsund.no/careers/,,-1,-1,,ai,low
+Katoen Natie,ai (browser),https://www.katoennatie.com/careers/,https://www.katoennatie.com/careers/,,-1,-1,,ai,low
+Kayak,greenhouse,kayak,https://boards.greenhouse.io/kayak,KAYAK,1,0,1.0,api_sniff,
+Kdan,ai (browser),https://www.kdan.com/careers,https://www.kdan.com/careers,,-1,-1,,ai,low
+Kennedys,ai (browser),https://www.kennedyslaw.com/en/careers-at-kennedys/,https://www.kennedyslaw.com/en/careers-at-kennedys/,,-1,-1,,ai,low
+Kerber,ai (browser),https://kerber.com/careers,https://kerber.com/careers,,-1,-1,,ai,low
+Kering,eightfold (browser),https://kering-sandbox.eightfold.ai/careers,https://kering-sandbox.eightfold.ai/careers,kering,-1,-1,,ai,high
+Ketjen,ai (browser),https://www.ketjen.com/careers/,https://www.ketjen.com/careers/,,-1,-1,,ai,low
+Keune,recruitee (browser),https://keunehaircosmetics.recruitee.com,https://keunehaircosmetics.recruitee.com,keune,-1,-1,0.0,api_sniff,
+King Living,ai (browser),https://www.kingliving.com/careers,https://www.kingliving.com/careers,,-1,-1,,ai,low
+Kiwoom,ai (browser),https://www.kiwoom.com/error.html,https://www.kiwoom.com/error.html,,-1,-1,,ai,low
+Kleiberit,ai (browser),https://www.kleiberit.com/en/careers,https://www.kleiberit.com/en/careers,,-1,-1,,ai,low
+Knoll,workday,https://millerknoll.wd1.myworkdayjobs.com/MillerKnoll,https://millerknoll.wd1.myworkdayjobs.com/MillerKnoll,millerknoll,209,-1,,ai,high
+Koelis,ai (browser),https://koelis.com/career/,https://koelis.com/career/,,-1,-1,,ai,low
+Koerber,successfactors (browser),https://career5.successfactors.eu/careers?company=Koerber\,https://career5.successfactors.eu/careers?company=Koerber\,koerber,-1,-1,0.0,api_sniff,
+Komatsu,ai (browser),https://www.komatsu.com/en-us/careers,https://www.komatsu.com/en-us/careers,,-1,-1,,ai,low
+Konami,ai (browser),https://www.konami.com/games/us/en/jobs/,https://www.konami.com/games/us/en/jobs/,,-1,-1,,ai,high
+Koyo Engineering,ai (browser),https://koyotech.com/careers/,https://koyotech.com/careers/,,-1,-1,,ai,high
+KraussMaffei,ai (browser),https://www.kraussmaffei.com/en/404,https://www.kraussmaffei.com/en/404,,-1,-1,,ai,low
+Kumho Tire,recruitee (browser),https://kumhotire.recruitee.com,https://kumhotire.recruitee.com,kumhotire,-1,-1,,ai,low
+Kumul Petroleum,ai (browser),https://kumul.com/careers,https://kumul.com/careers,,-1,-1,,ai,low
+Kurita,ai (browser),https://www.kurita.com.sg/careers/,https://www.kurita.com.sg/careers/,,-1,-1,,ai,low
+Kyndryl,ai (browser),https://www.kyndryl.com/us/en/careers,https://www.kyndryl.com/us/en/careers,,-1,-1,,ai,high
+L3Harris,ai (browser),https://careers.l3harris.com/en,https://careers.l3harris.com/en,,-1,-1,,ai,high
+LBC Express,ai (browser),https://www.lbcexpress.com/about,https://www.lbcexpress.com/about,,-1,-1,,ai,low
+LG Display,ai (browser),https://careers.lg.com/,https://careers.lg.com/,,-1,-1,,ai,low
+LG Electronics,greenhouse,lgelectronics,https://boards.greenhouse.io/lgelectronics,LG Electronics,102,0,0.0,api_sniff,
+LPGA,ai (browser),https://www.lpga.com/careers,https://www.lpga.com/careers,,-1,-1,,ai,low
+LVMH,smartrecruiters,lvmh,https://careers.smartrecruiters.com/lvmh,LVMH,4,0,0.0,api_sniff,
+LaMotte,ai (browser),https://lamotte.com/careers/,https://lamotte.com/careers/,,-1,-1,,ai,low
+Lantech,ai (browser),https://lantech.applicantpro.com/notset.php?lantech&root=4&disabled=1,https://lantech.applicantpro.com/notset.php?lantech&root=4&disabled=1,,-1,-1,,ai,low
+Laura Ashley,ai (browser),https://www.lauraashley.com/content/international-store-locator,https://www.lauraashley.com/content/international-store-locator,,-1,-1,,ai,low
+Laurel Shipping,ai (browser),https://sg.linkedin.com/company/laurelshipmanagement,https://sg.linkedin.com/company/laurelshipmanagement,,-1,-1,,ai,low
+Lear,successfactors (browser),https://career5.successfactors.eu/career?site=&company=learcorporP2&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career5.successfactors.eu/career?site=&company=learcorporP2&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,lear,-1,-1,,ai,high
+Lectra,ai (browser),https://careers.lectra.com/,https://careers.lectra.com/,,-1,-1,,ai,high
+Lenovo,ai (browser),https://jobs.lenovo.com/en_US/careers,https://jobs.lenovo.com/en_US/careers,,-1,-1,,ai,high
+Leonardo,ai (browser),https://www.leonardo.com/en/careers,https://www.leonardo.com/en/careers,,-1,-1,,ai,high
+Lime,workable (browser),https://apply.workable.com/lime/,https://apply.workable.com/lime/,lime,-1,-1,,ai,high
+Lineage Logistics,phenom (browser),https://careers.onelineage.com/us/en/search-results?keywords={search_term_string},https://careers.onelineage.com/us/en/search-results?keywords={search_term_string},lineagelogistics,-1,-1,1.0,api_sniff,
+Lingaro,smartrecruiters,lingaro,https://careers.smartrecruiters.com/lingaro,Lingaro,1,0,1.0,api_sniff,
+Linxens,ai (browser),https://www.linxens.com/en,https://www.linxens.com/en,,-1,-1,,ai,low
+Liquidnet,ai (browser),https://www.liquidnet.com/careers,https://www.liquidnet.com/careers,,-1,-1,,ai,low
+Lockwood International,greenhouse,lockwood,https://boards.greenhouse.io/lockwood,"The Lockwood Group, LLC",29,0,0.0,api_sniff,
+Loftware,ai (browser),https://www.loftware.com/about-us/careers,https://www.loftware.com/about-us/careers,,-1,-1,,ai,low
+LogicMonitor,greenhouse,logicmonitor,https://boards.greenhouse.io/logicmonitor,LogicMonitor,54,0,0.0,api_sniff,
+Lojel,ai (browser),https://www.lojel.com/careers/,https://www.lojel.com/careers/,,-1,-1,,ai,low
+Lonza,smartrecruiters,lonza,https://careers.smartrecruiters.com/lonza,Lonza,6,0,0.0,api_sniff,
+Lotte,workable (browser),https://apply.workable.com/lotte-travel-retail-singapore/,https://apply.workable.com/lotte-travel-retail-singapore/,lotte,-1,-1,,ai,high
+Lotus Bakeries,recruitee (browser),https://lotusbakeries.recruitee.com,https://lotusbakeries.recruitee.com,lotusbakeries,-1,-1,,ai,low
+Lotusflare,ai (browser),https://careers.lotusflare.com/,https://careers.lotusflare.com/,,-1,-1,,ai,low
+Louis Dreyfus Company,smartrecruiters,louisdreyfuscompany,https://careers.smartrecruiters.com/louisdreyfuscompany,Louis Dreyfus Company,428,0,0.0,api_sniff,
+Louis Vuitton,taleo (browser),https://lvmh.taleo.net/careersection/lv_global/jobsearch.ftl,https://lvmh.taleo.net/careersection/lv_global/jobsearch.ftl,louisvuitton,-1,-1,,ai,high
+Lucidworks,lever,lucidworks,https://jobs.lever.co/lucidworks,,1,0,1.0,api_sniff,
+Lufthansa Technik,ai (browser),https://www.lufthansagroup.careers/en/lufthansa-technik,https://www.lufthansagroup.careers/en/lufthansa-technik,,-1,-1,,ai,high
+Lumen Technologies,ai (browser),https://jobs.lumen.com/global/en/,https://jobs.lumen.com/global/en/,,-1,-1,,ai,high
+Lummus Technology,ai (browser),https://www.lummus.com/careers,https://www.lummus.com/careers,,-1,-1,,ai,low
+Luxury Escapes,smartrecruiters,luxuryescapes,https://careers.smartrecruiters.com/luxuryescapes,Luxury Escapes,8,0,0.0,api_sniff,
+LyondellBasell,successfactors (browser),https://career4.successfactors.com/career?company=LBI&site=&lang=en_US&requestParams=&navBarLevel=MY_PROFILE&_s.crb=6xuTC%2BxT3UThiNKaZYuGw7jlp4A%3D,https://career4.successfactors.com/career?company=LBI&site=&lang=en_US&requestParams=&navBarLevel=MY_PROFILE&_s.crb=6xuTC%2BxT3UThiNKaZYuGw7jlp4A%3D,lyondellbasell,-1,-1,,ai,high
+MAPFRE,ai (browser),https://www.mapfre.com/en/talent/,https://www.mapfre.com/en/talent/,,-1,-1,,ai,low
+MDRT,ai (browser),https://www.mdrt.org/careers,https://www.mdrt.org/careers,,-1,-1,,ai,low
+MGI,ai (browser),https://careers.mgi.com/,https://careers.mgi.com/,,-1,-1,,ai,low
+MIPA,ai (browser),https://www.mipa.com/careers,https://www.mipa.com/careers,,-1,-1,,ai,low
+MISC,ai (browser),https://www.miscgroup.com/careers,https://www.miscgroup.com/careers,,-1,-1,,ai,low
+MSD,workday,https://msd.wd5.myworkdayjobs.com/SearchJobs,https://msd.wd5.myworkdayjobs.com/SearchJobs,msd,973,-1,,ai,high
+Magix,ai (browser),https://www.magix.com/us/,https://www.magix.com/us/,,-1,-1,,ai,low
+Magna International,workday,https://magna.wd3.myworkdayjobs.com/Magna,https://magna.wd3.myworkdayjobs.com/Magna,magna,1277,-1,0.0,api_sniff,
+Magnet Forensics,lever,magnetforensics,https://jobs.lever.co/magnetforensics,,47,1,0.0,api_sniff,
+Malaysia Marine and Heavy Engineering,ai (browser),https://www.mmhe.com/careers,https://www.mmhe.com/careers,,-1,-1,,ai,low
+Malindo Airways,ai (browser),https://www.kayak.sg,https://www.kayak.sg,,-1,-1,,ai,low
+Mambu,ai (browser),https://mambu.com/en/careers,https://mambu.com/en/careers,,-1,-1,,ai,high
+Management Development Institute of Singapore,ai (browser),https://www.mdis.edu.sg/careers,https://www.mdis.edu.sg/careers,,-1,-1,,ai,low
+Manila Water,successfactors (browser),https://career10.successfactors.com/career?site=&company=manilawate&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career10.successfactors.com/career?site=&company=manilawate&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,manilawater,-1,-1,,ai,low
+Maples and Calder,ai (browser),https://maples.com/,https://maples.com/,,-1,-1,,ai,low
+Marathon,workday,https://conocophillips.wd1.myworkdayjobs.com/External,https://conocophillips.wd1.myworkdayjobs.com/External,conocophillips,28,-1,1.0,api_sniff,
+Marchon,ai (browser),https://www.marchon.com/careers,https://www.marchon.com/careers,,-1,-1,,ai,low
+Marechal Electric,ai (browser),https://marechal-electric.com,https://marechal-electric.com,,-1,-1,,ai,low
+Marex,ai (browser),https://www.marex.com/careers,https://www.marex.com/careers,,-1,-1,,ai,low
+Markel,smartrecruiters,markel,https://careers.smartrecruiters.com/markel,Markel,1,0,1.0,api_sniff,
+Markham,lever,markham,https://jobs.lever.co/markham,,2,0,1.0,api_sniff,
+Maruho,ai (browser),https://www.maruho.co.jp/recruit/,https://www.maruho.co.jp/recruit/,,-1,-1,,ai,low
+Masimo,smartrecruiters,masimo,https://careers.smartrecruiters.com/masimo,Masimo,1,0,1.0,api_sniff,
+Mattson Technology,oracle,https://eidg.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2,https://eidg.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2,mattson,50,-1,0.0,api_sniff,
+Maybank,ai (browser),https://www.maybank.com/en/404-error.page,https://www.maybank.com/en/404-error.page,,-1,-1,,ai,high
+Mayer Brown,ai (browser),https://www.mayerbrown.com/en/careers,https://www.mayerbrown.com/en/careers,,-1,-1,,ai,high
+McCain Foods,phenom (browser),https://careers.mccain.com/us/en/search-results?keywords=%7Bsearch_term_string%7D,https://careers.mccain.com/us/en/search-results?keywords=%7Bsearch_term_string%7D,mccainfoods,-1,-1,,ai,low
+McCormick,successfactors (browser),https://career4.successfactors.com/career?site=&company=McCormick&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career4.successfactors.com/career?site=&company=McCormick&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,mccormick,-1,-1,,ai,high
+Mediacorp,ai (browser),https://careers.mediacorp.sg/,https://careers.mediacorp.sg/,,-1,-1,,ai,low
+Medpace,icims (browser),https://uscareers-medpace.icims.com/jobs/login?loginOnly=1,https://uscareers-medpace.icims.com/jobs/login?loginOnly=1,medpace,-1,-1,0.0,api_sniff,
+Meican,ai (browser),https://www.meican.com/,https://www.meican.com/,,-1,-1,,ai,low
+Melissa Data,ai (browser),https://www.melissa.com,https://www.melissa.com,,-1,-1,,ai,low
+Merrill Lynch,ai (browser),https://careers.bankofamerica.com/en-us,https://careers.bankofamerica.com/en-us,,-1,-1,,ai,high
+Michael Page,taleo (browser),https://michaelpage.taleo.net/careersection,https://michaelpage.taleo.net/careersection,michaelpage,-1,-1,,ai,high
+Microchip Technology,smartrecruiters,microchip,https://careers.smartrecruiters.com/microchip,Microchip,6,0,0.0,api_sniff,
+Micron,workday,https://micron.wd1.myworkdayjobs.com/External,https://micron.wd1.myworkdayjobs.com/External,micron,2885,-1,0.0,api_sniff,
+Midea,ai (browser),https://careers.midea.com/schoolOut,https://careers.midea.com/schoolOut,,-1,-1,,ai,low
+Midwich,ai (browser),https://careers.midwich.com/,https://careers.midwich.com/,,-1,-1,,ai,low
+Milestone,oracle,https://fa-ewto-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/jobs,https://fa-ewto-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/jobs,milestone,26,-1,,ai,high
+Minco,icims (browser),https://external-minco.icims.com,https://external-minco.icims.com,minco,-1,-1,0.0,api_sniff,
+Minden,ai (browser),https://www.minden.com/careers,https://www.minden.com/careers,,-1,-1,,ai,low
+Mindteck,ai (browser),https://careers.mindteck.com/,https://careers.mindteck.com/,,-1,-1,,ai,low
+Mitel,workday,https://mitel.wd3.myworkdayjobs.com/MitelCareers,https://mitel.wd3.myworkdayjobs.com/MitelCareers,mitel,67,-1,0.0,api_sniff,
+Mitsubishi,ai (browser),https://www.mitsubishielectric.com.sg/careers/job-listings/,https://www.mitsubishielectric.com.sg/careers/job-listings/,,-1,-1,,ai,high
+Mitsui,ai (browser),https://www.mitsui.com/ap/en/careers/1216407_9112.html,https://www.mitsui.com/ap/en/careers/1216407_9112.html,,-1,-1,,ai,high
+Mitutoyo,ai (browser),https://www.mitutoyo.com/about-us/careers/,https://www.mitutoyo.com/about-us/careers/,,-1,-1,,ai,low
+Mizkan,ai (browser),https://www.mizkan.com/careers/,https://www.mizkan.com/careers/,,-1,-1,,ai,low
+Mizuho,ai (browser),https://www.mizuho.com/error/notfound,https://www.mizuho.com/error/notfound,,-1,-1,,ai,low
+Modifi,workable (browser),https://apply.workable.com/modifi,https://apply.workable.com/modifi,modifi,-1,-1,0.0,api_sniff,
+Moloco,greenhouse,moloco,https://boards.greenhouse.io/moloco,Moloco,46,2,0.0,api_sniff,
+Monoxer,ai (browser),https://careers.monoxer.com/,https://careers.monoxer.com/,,-1,-1,,ai,low
+Moog,workday,https://moog.wd5.myworkdayjobs.com/MOOG_External_Career_Site,https://moog.wd5.myworkdayjobs.com/MOOG_External_Career_Site,moog,410,-1,,ai,high
+Morita,workable (browser),https://apply.workable.com/morita/,https://apply.workable.com/morita/,morita,-1,-1,,ai,low
+Morningstar,workday,https://morningstar.wd5.myworkdayjobs.com/Morningstar,https://morningstar.wd5.myworkdayjobs.com/Morningstar,morningstar,169,-1,0.0,api_sniff,
+Motion Picture Licensing Company,ai (browser),https://us.mplc.com/,https://us.mplc.com/,,-1,-1,,ai,low
+Motive,greenhouse,motive,https://boards.greenhouse.io/motive,Motive,19,0,0.0,api_sniff,
+Mount Elizabeth,ai (browser),https://careers.mountelizabeth.com/,https://careers.mountelizabeth.com/,,-1,-1,,ai,low
+Muehlhan,ai (browser),https://www.muehlhan.com/careers/,https://www.muehlhan.com/careers/,,-1,-1,,ai,low
+Musim Mas,taleo (browser),https://musimmas.taleo.net,https://musimmas.taleo.net,musimmas,-1,-1,,ai,low
+Mystifly,ai (browser),https://mystifly.com/careers/,https://mystifly.com/careers/,,-1,-1,,ai,low
+ND Industries,workday,https://hbfuller.wd1.myworkdayjobs.com/Careers,https://hbfuller.wd1.myworkdayjobs.com/Careers,hbfuller,138,-1,1.0,api_sniff,
+NIIT,ai (browser),https://jobs.niit.com/,https://jobs.niit.com/,,-1,-1,,ai,low
+NIO,workday,https://nio.wd3.myworkdayjobs.com/Nio_Careers,https://nio.wd3.myworkdayjobs.com/Nio_Careers,nio,18,-1,0.0,api_sniff,
+NLMK,ai (browser),https://nlmk.com/en/,https://nlmk.com/en/,,-1,-1,,ai,low
+NOV,oracle,https://egay.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2001,https://egay.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2001,nov,603,-1,0.0,api_sniff,
+NTT Data,ai (browser),https://careers.services.global.ntt/global/en,https://careers.services.global.ntt/global/en,,-1,-1,,ai,high
+NTT Docomo,taleo (browser),https://nttdocomo.taleo.net/careersection/,https://nttdocomo.taleo.net/careersection/,nttdocomo,-1,-1,,ai,low
+NVC Lighting,ai (browser),https://www.nvcuk.com/careers,https://www.nvcuk.com/careers,,-1,-1,,ai,low
+Nakheel,ai (browser),https://fa-ewid-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/errors/404,https://fa-ewid-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/errors/404,,-1,-1,,ai,low
+Nalco,taleo (browser),https://nalco.taleo.net/careersection/ex/jobsearch.ftl,https://nalco.taleo.net/careersection/ex/jobsearch.ftl,nalco,-1,-1,,ai,low
+Namco,ai (browser),https://www.bandainamcoent.com/careers,https://www.bandainamcoent.com/careers,,-1,-1,,ai,low
+Navis,ai (browser),https://kaleris.com/company/careers/,https://kaleris.com/company/careers/,,-1,-1,,ai,low
+Nayati,ai (browser),https://www.nayati.com/company-profile/careers/,https://www.nayati.com/company-profile/careers/,,-1,-1,,ai,low
+Neo Performance Materials,ai (browser),https://www.neomaterials.com/careers/,https://www.neomaterials.com/careers/,,-1,-1,,ai,low
+NetApp,ai (browser),https://jobs.netapp.com/,https://jobs.netapp.com/,,-1,-1,,ai,high
+Netflix,ai (browser),https://jobs.netflix.com/,https://jobs.netflix.com/,,-1,-1,,ai,high
+Newploy,avature (browser),https://ikea.avature.net/ko_KR/External/JobDetail/IKEA-Food-Team-Leader-10months-Temporary-IKEA-Goyang/310893\,https://ikea.avature.net/ko_KR/External/JobDetail/IKEA-Food-Team-Leader-10months-Temporary-IKEA-Goyang/310893\,newploy,-1,-1,0.0,api_sniff,
+Nexen Tire,ai (browser),https://www.nexentire.com/,https://www.nexentire.com/,,-1,-1,,ai,low
+Nidec,workday,https://nidec.wd1.myworkdayjobs.com/Nidec,https://nidec.wd1.myworkdayjobs.com/Nidec,nidec,366,-1,0.0,api_sniff,
+Nihon Shokken,ai (browser),https://www.nihonshokken.com/careers/,https://www.nihonshokken.com/careers/,,-1,-1,,ai,low
+Nike,workday,https://nike.wd1.myworkdayjobs.com/nke,https://nike.wd1.myworkdayjobs.com/nke,nike,746,-1,0.0,api_sniff,
+Nintendo,greenhouse,nintendo,https://boards.greenhouse.io/nintendo,Nintendo,51,0,0.0,api_sniff,
+Nippon Express,ai (browser),https://www.nipponexpress.com/careers,https://www.nipponexpress.com/careers,,-1,-1,,ai,low
+Nippon Paint,taleo (browser),https://nipponpaint.taleo.net/careersection/external/joblist.ftl,https://nipponpaint.taleo.net/careersection/external/joblist.ftl,nipponpaint,-1,-1,,ai,low
+Nissin Foods,icims (browser),https://careers-nissinfoods.icims.com/,https://careers-nissinfoods.icims.com/,nissinfoods,-1,-1,1.0,api_sniff,
+Nitto,ai (browser),https://careers.nitto.com/,https://careers.nitto.com/,,-1,-1,,ai,medium
+Nokia,ai (browser),https://jobs.nokia.com/en/sites/CX_1,https://jobs.nokia.com/en/sites/CX_1,,-1,-1,,ai,high
+Nordic Semiconductor,ai (browser),https://nordicjobs.com/,https://nordicjobs.com/,,-1,-1,,ai,low
+North London Collegiate School,recruitee (browser),https://nlcs.recruitee.com,https://nlcs.recruitee.com,northlondoncollegiateschool,-1,-1,,ai,low
+Northrop Grumman,eightfold (browser),https://ngc.eightfold.ai/careerhub,https://ngc.eightfold.ai/careerhub,northropgrumman,-1,-1,1.0,api_sniff,
+Nova Chemicals,successfactors (browser),https://career17.sapsf.com/career?site=&amp;company=novachemic&amp;lang=en%5FUS&amp;login_ns=register&amp;career_ns=home&amp;navBarLevel=MY_PROFILE,https://career17.sapsf.com/career?site=&amp;company=novachemic&amp;lang=en%5FUS&amp;login_ns=register&amp;career_ns=home&amp;navBarLevel=MY_PROFILE,novachemicals,-1,-1,1.0,api_sniff,
+Novatek,taleo (browser),https://novatek.taleo.net,https://novatek.taleo.net,novatek,-1,-1,,ai,low
+Novo Holdings,workable (browser),https://apply.workable.com/novoholdings,https://apply.workable.com/novoholdings,novoholdings,-1,-1,1.0,api_sniff,
+Novo Nordisk,ai (browser),https://www.novonordisk.com/careers.html,https://www.novonordisk.com/careers.html,,-1,-1,,ai,high
+Nozomi Networks,greenhouse,nozominetworks,https://boards.greenhouse.io/nozominetworks,Nozomi Networks,22,1,0.0,api_sniff,
+Nu Skin,workday,https://nuskin.wd5.myworkdayjobs.com/Nuskin,https://nuskin.wd5.myworkdayjobs.com/Nuskin,nuskin,20,-1,1.0,api_sniff,
+Nuctech,ai (browser),https://www.nuctech.com/,https://www.nuctech.com/,,-1,-1,,ai,low
+OCBC,taleo (browser),https://ocbc.taleo.net/careersection/ocbc_external/jobsearch.ftl,https://ocbc.taleo.net/careersection/ocbc_external/jobsearch.ftl,ocbc,-1,-1,0.0,api_sniff,
+ORIX,workday,https://orix.wd5.myworkdayjobs.com/External_ORIX,https://orix.wd5.myworkdayjobs.com/External_ORIX,orix,20,-1,0.0,api_sniff,
+OSF Digital,ai (browser),https://osf.digital/,https://osf.digital/,,-1,-1,,ai,low
+Oatly,ai (browser),https://careers.oatly.com/,https://careers.oatly.com/,,-1,-1,,ai,low
+Objective Systems,lever,objective,https://jobs.lever.co/objective,,11,0,0.0,api_sniff,
+Ocorian,smartrecruiters,ocorian,https://careers.smartrecruiters.com/ocorian,Ocorian,49,3,0.0,api_sniff,
+Okumura,ai (browser),https://sg.jobstreet.com/companies/okumura-corporation-singapore-branch-168555561968576/jobs,https://sg.jobstreet.com/companies/okumura-corporation-singapore-branch-168555561968576/jobs,,-1,-1,,ai,low
+Olam International,successfactors (browser),https://career10preview.sapsf.com//careers?site=&company=OLAMTEST&clientId=jobs2web&lang=en_GB&navBarLevel=MY_PROFILE,https://career10preview.sapsf.com//careers?site=&company=OLAMTEST&clientId=jobs2web&lang=en_GB&navBarLevel=MY_PROFILE,olaminternational,-1,-1,,ai,high
+Omers,phenom (browser),https://careers.omers.com/ca/en/search-results?keywords=%7Bsearch_term_string%7D,https://careers.omers.com/ca/en/search-results?keywords=%7Bsearch_term_string%7D,omers,-1,-1,,ai,low
+Omni Bridgeway,ai (browser),https://omnibridgeway.com/careers,https://omnibridgeway.com/careers,,-1,-1,,ai,low
+OneWeb,ai (browser),https://www.eutelsat.com/satellite-network/oneweb-leo-constellation,https://www.eutelsat.com/satellite-network/oneweb-leo-constellation,,-1,-1,,ai,low
+Ontic,ai (browser),https://www.ontic.com/careers,https://www.ontic.com/careers,,-1,-1,,ai,low
+Ooredoo,ai (browser),https://careers.ooredoo.com/,https://careers.ooredoo.com/,,-1,-1,,ai,low
+Optibelt,ai (browser),https://web.optibelt.com/en,https://web.optibelt.com/en,,-1,-1,,ai,low
+Orbit Techsol,ai (browser),https://www.orbittechsol.com/careers,https://www.orbittechsol.com/careers,,-1,-1,,ai,low
+Oregon Tool,ai (browser),http://www.oregontool.com/oregon-tool-careers/,http://www.oregontool.com/oregon-tool-careers/,,-1,-1,,ai,low
+Osaka Exchange,ai (browser),https://www.linkedin.com/jobs/search/?keywords=Osaka%20Exchange&location=Singapore,https://www.linkedin.com/jobs/search/?keywords=Osaka%20Exchange&location=Singapore,,-1,-1,,ai,low
+Osotspa,taleo (browser),https://osotspa.taleo.net,https://osotspa.taleo.net,osotspa,-1,-1,,ai,low
+Otsuka,taleo (browser),https://otsuka.taleo.net/careersection/,https://otsuka.taleo.net/careersection/,otsuka,-1,-1,,ai,low
+OwnDays,ai (browser),https://www.owndays.com/sg/en,https://www.owndays.com/sg/en,,-1,-1,,ai,low
+Oxford Economics,ai (browser),https://careers.oxfordeconomics.com/,https://careers.oxfordeconomics.com/,,-1,-1,,ai,low
+PAAMCO,ai (browser),https://paamcoprisma.com/careers,https://paamcoprisma.com/careers,,-1,-1,,ai,low
+PGIM,ai (browser),https://www.pgim.com/campaignCountry/en/institutional/about/careers,https://www.pgim.com/campaignCountry/en/institutional/about/careers,,-1,-1,,ai,medium
+POSCO,ai (browser),http://www.posco.co.kr/infomsg/error.html,http://www.posco.co.kr/infomsg/error.html,,-1,-1,,ai,low
+PZ Cussons,ai (browser),https://www.pzcussons.com/careers/,https://www.pzcussons.com/careers/,,-1,-1,,ai,low
+Palantir,lever,palantir,https://jobs.lever.co/palantir,,270,0,0.0,api_sniff,
+Pansar,ai (browser),https://pansar.com.my/careers/,https://pansar.com.my/careers/,,-1,-1,,ai,high
+Parexel,ai (browser),https://jobs.parexel.com/en,https://jobs.parexel.com/en,,-1,-1,,ai,high
+Paysafe,ai (browser),https://www.paysafe.com/en/careers/,https://www.paysafe.com/en/careers/,,-1,-1,,ai,low
+Peikko,ai (browser),https://www.peikko.com/careers/,https://www.peikko.com/careers/,,-1,-1,,ai,low
+Penguin Random House,ai (browser),https://careers.penguinrandomhouse.com/,https://careers.penguinrandomhouse.com/,,-1,-1,,ai,low
+Penn Color,ai (browser),https://www.penncolor.com/careers/,https://www.penncolor.com/careers/,,-1,-1,,ai,low
+Penningtons Manches Cooper,smartrecruiters,ReitmansCanadaLteLtd,https://careers.smartrecruiters.com/ReitmansCanadaLteLtd,Reitmans (Canada) Ltée/Ltd,269,0,,ai,low
+Penske,icims (browser),https://external-penskemotorgroup.icims.com/jobs/intro?mobile=false&amp;width=999&amp;height=500&amp;bga=true&amp;needsRedirect=false&amp;jan1offset=-300&amp;jun1offset=-240,https://external-penskemotorgroup.icims.com/jobs/intro?mobile=false&amp;width=999&amp;height=500&amp;bga=true&amp;needsRedirect=false&amp;jan1offset=-300&amp;jun1offset=-240,penske,-1,-1,0.0,api_sniff,
+Pentamaster Technology,ai (browser),https://pentamaster.com/career/,https://pentamaster.com/career/,,-1,-1,,ai,low
+Pentel,ai (browser),https://www.pentel.com/#seogid115714,https://www.pentel.com/#seogid115714,,-1,-1,,ai,low
+PepsiCo,icims (browser),https://pepjobs-pepsico.icims.com/?branding=&amp;mobile=false&amp;needsRedirect=false\,https://pepjobs-pepsico.icims.com/?branding=&amp;mobile=false&amp;needsRedirect=false\,pepsico,-1,-1,0.0,api_sniff,
+Perkins Eastman,ai (browser),https://www.perkinseastman.com/careers/,https://www.perkinseastman.com/careers/,,-1,-1,,ai,low
+Pexip,ai (browser),https://www.pexip.com/careers,https://www.pexip.com/careers,,-1,-1,,ai,high
+Philips,ai (browser),https://www.careers.philips.com/apac/en,https://www.careers.philips.com/apac/en,,-1,-1,,ai,high
+Pimax,ai (browser),https://pimax.com/#erid619085,https://pimax.com/#erid619085,,-1,-1,,ai,low
+PingCAP,greenhouse,pingcap,https://boards.greenhouse.io/pingcap,TiDB,20,4,1.0,api_sniff,
+Pizza Hut,ai (browser),https://jobs.pizzahut.com/,https://jobs.pizzahut.com/,,-1,-1,,ai,low
+PlanRadar,greenhouse,planradar,https://boards.greenhouse.io/planradar,PlanRadar GmbH,12,0,0.0,api_sniff,
+Plastic Energy,ai (browser),https://plasticenergy.com/careers/,https://plasticenergy.com/careers/,,-1,-1,,ai,low
+Plixer,ai (browser),https://www.plixer.com/careers/,https://www.plixer.com/careers/,,-1,-1,,ai,low
+Pole Star,ai (browser),https://careers.polestarglobal.com/,https://careers.polestarglobal.com/,,-1,-1,,ai,low
+Porsche,ai (browser),https://jobs.porsche.com/index.php?ac=start,https://jobs.porsche.com/index.php?ac=start,,-1,-1,,ai,high
+Portek,ai (browser),https://www.portek.com/contact/careers/,https://www.portek.com/contact/careers/,,-1,-1,,ai,low
+Premier Research,workday,https://premierresearch.wd12.myworkdayjobs.com/Premierresearch,https://premierresearch.wd12.myworkdayjobs.com/Premierresearch,premierresearch,48,-1,1.0,api_sniff,
+Profusa,ai (browser),https://profusa.com/careers-profusa/,https://profusa.com/careers-profusa/,,-1,-1,,ai,low
+Prudential,workday,https://prudential.wd3.myworkdayjobs.com/Prudential,https://prudential.wd3.myworkdayjobs.com/Prudential,prudential,548,-1,0.0,api_sniff,
+Puma Energy,workday,https://trafigura.wd3.myworkdayjobs.com/Puma_Energy_Careers,https://trafigura.wd3.myworkdayjobs.com/Puma_Energy_Careers,trafigura,35,-1,1.0,api_sniff,
+PxGeo,workable (browser),https://apply.workable.com/pxgeo,https://apply.workable.com/pxgeo,pxgeo,-1,-1,0.0,api_sniff,
+Qorvo,ai (browser),https://careers.qorvo.com/,https://careers.qorvo.com/,,-1,-1,,ai,high
+Quadria Capital,ai (browser),http://quadriacapital.com/careers,http://quadriacapital.com/careers,,-1,-1,,ai,low
+Qualys,workday,https://qualys.wd5.myworkdayjobs.com/Careers,https://qualys.wd5.myworkdayjobs.com/Careers,qualys,157,-1,0.0,api_sniff,
+Quantitative Brokers,ai (browser),https://www.quantitativebrokers.com/careers,https://www.quantitativebrokers.com/careers,,-1,-1,,ai,low
+Qumulo,ai (browser),https://qumulo.com/careers,https://qumulo.com/careers,,-1,-1,,ai,high
+RIMS,ai (browser),https://www.rims.org/careers,https://www.rims.org/careers,,-1,-1,,ai,low
+ROHM,ai (browser),https://www.rohm.com/careers,https://www.rohm.com/careers,,-1,-1,,ai,low
+RR Donnelley,smartrecruiters,rrdonnelley,https://careers.smartrecruiters.com/rrdonnelley,RR Donnelley,568,0,0.0,api_sniff,
+Radware,ai (browser),https://www.radware.com/careers/,https://www.radware.com/careers/,,-1,-1,,ai,medium
+Raine,lever,raine,https://jobs.lever.co/raine,,1,0,1.0,api_sniff,
+Rakon,ai (browser),https://www.rakon.com/careers,https://www.rakon.com/careers,,-1,-1,,ai,low
+Ratiodata,ai (browser),https://www.ratiodata.de,https://www.ratiodata.de,,-1,-1,,ai,low
+Raute,recruitee (browser),https://raute.recruitee.com,https://raute.recruitee.com,raute,-1,-1,,ai,low
+Reinhausen,ai (browser),https://www.reinhausen.com/index.php?id=585&uri=/encareers,https://www.reinhausen.com/index.php?id=585&uri=/encareers,,-1,-1,,ai,low
+Reliable Controls,oracle,https://ekkt.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_4,https://ekkt.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_4,reliablecontrols,22,-1,1.0,api_sniff,
+Renaissance Reinsurance,ai (browser),https://careers.renre.com/careers/careers-home/,https://careers.renre.com/careers/careers-home/,,-1,-1,,ai,low
+Rendezvous Hotels,ai (browser),https://www.rendezvoushotels.com/en/page-not-found/,https://www.rendezvoushotels.com/en/page-not-found/,,-1,-1,,ai,low
+Renishaw,workday,https://renishaw.wd3.myworkdayjobs.com/Renishaw,https://renishaw.wd3.myworkdayjobs.com/Renishaw,renishaw,62,-1,0.0,api_sniff,
+Repsol,workday,https://repsol.wd3.myworkdayjobs.com/Repsol,https://repsol.wd3.myworkdayjobs.com/Repsol,repsol,72,-1,0.0,api_sniff,
+Resolution Life,workday,https://resolutionlife.wd5.myworkdayjobs.com/resolutionlife_jobs,https://resolutionlife.wd5.myworkdayjobs.com/resolutionlife_jobs,resolutionlife,7,-1,1.0,api_sniff,
+Resorts World,ai (browser),https://www.rwsentosa.com/about/career,https://www.rwsentosa.com/about/career,,-1,-1,,ai,low
+Resulticks,ai (browser),https://www.go.resul.io/,https://www.go.resul.io/,,-1,-1,,ai,low
+Richard Mille,ai (browser),https://www.richardmille.com/,https://www.richardmille.com/,,-1,-1,,ai,low
+Richardson Electronics,taleo (browser),https://richardson.taleo.net/careersection/jobs,https://richardson.taleo.net/careersection/jobs,richardsonelectronics,-1,-1,,ai,low
+Rigaku,taleo (browser),https://rigaku.taleo.net,https://rigaku.taleo.net,rigaku,-1,-1,,ai,low
+Right Management,taleo (browser),https://rightmanagement.taleo.net,https://rightmanagement.taleo.net,rightmanagement,-1,-1,,ai,low
+Rimini Street,workday,https://riministreet.wd1.myworkdayjobs.com/Riministreet,https://riministreet.wd1.myworkdayjobs.com/Riministreet,riministreet,132,-1,1.0,api_sniff,
+Rio Tinto,workday,https://riotinto.wd3.myworkdayjobs.com/Riotinto_Careers,https://riotinto.wd3.myworkdayjobs.com/Riotinto_Careers,riotinto,193,-1,1.0,api_sniff,
+Riot Games,greenhouse,riotgames,https://boards.greenhouse.io/riotgames,Riot Games,162,20,0.0,api_sniff,
+Rippling,ai (browser),https://www.rippling.com/careers,https://www.rippling.com/careers,,-1,-1,,ai,high
+Robert Bosch,smartrecruiters,robertbosch,https://careers.smartrecruiters.com/robertbosch,Bosch Group,5,0,0.0,api_sniff,
+Robertet,ai (browser),https://www.robertet.com/en/careers/,https://www.robertet.com/en/careers/,,-1,-1,,ai,low
+Roblox,greenhouse,roblox,https://boards.greenhouse.io/roblox,Roblox,232,2,0.0,api_sniff,
+Rocket Software,workday,https://rocket.wd5.myworkdayjobs.com/rocket_careers,https://rocket.wd5.myworkdayjobs.com/rocket_careers,rocket,67,-1,,ai,high
+Rohde Nielsen,ai (browser),https://www.rohde-schwarz.com/sg/career/career-overview/career-overview_257552.html,https://www.rohde-schwarz.com/sg/career/career-overview/career-overview_257552.html,,-1,-1,,ai,low
+Roquette,workday,https://roquette.wd3.myworkdayjobs.com/External,https://roquette.wd3.myworkdayjobs.com/External,roquette,91,-1,0.0,api_sniff,
+Ross Video,ai (browser),https://www.rossvideo.com/company/careers/,https://www.rossvideo.com/company/careers/,,-1,-1,,ai,low
+Rotol,ai (browser),https://www.rotol.com/careers,https://www.rotol.com/careers,,-1,-1,,ai,low
+Rubrik,greenhouse,rubrik,https://boards.greenhouse.io/rubrik,Rubrik Job Board,99,2,0.0,api_sniff,
+Russell Reynolds Associates,ai (browser),https://www.russellreynolds.com/en/about/careers,https://www.russellreynolds.com/en/about/careers,,-1,-1,,ai,high
+Russian Standard,ai (browser),https://www.russianstandard.com/careers,https://www.russianstandard.com/careers,,-1,-1,,ai,low
+SAExploration,ai (browser),https://saexploration.com/careers/,https://saexploration.com/careers/,,-1,-1,,ai,low
+SCG,ai (browser),https://www.scg.com/,https://www.scg.com/,,-1,-1,,ai,low
+SETSCO,ai (browser),https://www.setsco.com/careers/,https://www.setsco.com/careers/,,-1,-1,,ai,low
+SGS,smartrecruiters,sgs,https://careers.smartrecruiters.com/sgs,SGS,4123,0,0.0,api_sniff,
+SHI International,workday,https://shi.wd12.myworkdayjobs.com/ShiCareers,https://shi.wd12.myworkdayjobs.com/ShiCareers,shi,209,-1,0.0,api_sniff,
+SIASUN,taleo (browser),https://siasun.taleo.net,https://siasun.taleo.net,siasun,-1,-1,,ai,low
+SLR Consulting,ai (browser),https://www.slrconsulting.com/careers/,https://www.slrconsulting.com/careers/,,-1,-1,,ai,low
+SPX,successfactors (browser),https://performancemanager8.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager8.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,spx,-1,-1,0.0,api_sniff,
+SUSE,ai (browser),https://www.suse.com/careers/,https://www.suse.com/careers/,,-1,-1,,ai,high
+SVN,ai (browser),https://svn.com/join-svn/commercial-real-estate-jobs/,https://svn.com/join-svn/commercial-real-estate-jobs/,,-1,-1,,ai,low
+Safran,ai (browser),https://careers.safran-group.com/accueil.aspx?LCID=1036,https://careers.safran-group.com/accueil.aspx?LCID=1036,,-1,-1,,ai,medium
+Salto Systems,ai (browser),https://www.salto.io/careers,https://www.salto.io/careers,,-1,-1,,ai,high
+Salzgitter,successfactors (browser),https://career5.successfactors.eu/careers?company=gesisgesel&amp;navBarLevel=MY_PROFILE&amp;site=VjItTWpjcXRjdUJoQUd0czhoLzVucEkvQT09,https://career5.successfactors.eu/careers?company=gesisgesel&amp;navBarLevel=MY_PROFILE&amp;site=VjItTWpjcXRjdUJoQUd0czhoLzVucEkvQT09,salzgitter,-1,-1,0.0,api_sniff,
+Samco,ai (browser),https://www.samco.com/careers/,https://www.samco.com/careers/,,-1,-1,,ai,low
+Samsonite,ai (browser),https://careers.samsonite.com/,https://careers.samsonite.com/,,-1,-1,,ai,high
+Sandbox VR,lever,sandboxvr,https://jobs.lever.co/sandboxvr,,17,0,0.0,api_sniff,
+Sanhua,taleo (browser),https://sanhua.taleo.net,https://sanhua.taleo.net,sanhua,-1,-1,,ai,low
+Sanko Gosei,ai (browser),https://www.sanko-gosei.com/recruit/,https://www.sanko-gosei.com/recruit/,,-1,-1,,ai,low
+Sankyu,ai (browser),https://www.sankyu.com/careers,https://www.sankyu.com/careers,,-1,-1,,ai,low
+Sansiri,ai (browser),https://www.sansiri.com/thai/404?q=careers,https://www.sansiri.com/thai/404?q=careers,,-1,-1,,ai,low
+Santos,taleo (browser),https://santos.taleo.net/careersection/external/jobsearch.ftl,https://santos.taleo.net/careersection/external/jobsearch.ftl,santos,-1,-1,,ai,low
+Santova,ai (browser),https://www.santova.com/careers,https://www.santova.com/careers,,-1,-1,,ai,low
+Schaeffler,ai (browser),https://jobs.schaeffler.com/,https://jobs.schaeffler.com/,,-1,-1,,ai,high
+Schreder,ai (browser),https://www.schreder.com/en/careers,https://www.schreder.com/en/careers,,-1,-1,,ai,low
+Schreiber Foods,ai (browser),https://careers.schreiber.com/,https://careers.schreiber.com/,,-1,-1,,ai,low
+Science in Sport,ai (browser),https://careers.scienceinsport.com/,https://careers.scienceinsport.com/,,-1,-1,,ai,low
+Scotts,workday,https://scottsmiraclegro.wd5.myworkdayjobs.com/SMGExternal,https://scottsmiraclegro.wd5.myworkdayjobs.com/SMGExternal,scottsmiraclegro,213,-1,,ai,low
+Seagate,ai (browser),https://www.seagate.com/sg/en/jobs/,https://www.seagate.com/sg/en/jobs/,,-1,-1,,ai,high
+Seamless,ai (browser),https://seamless.se/careers/,https://seamless.se/careers/,,-1,-1,,ai,low
+Searidge,ai (browser),https://searidge.com/careers,https://searidge.com/careers,,-1,-1,,ai,low
+Sebia,successfactors (browser),https://career2.successfactors.eu/career?career_ns=job_listing&company=sebia&career_job_req_id=6131,https://career2.successfactors.eu/career?career_ns=job_listing&company=sebia&career_job_req_id=6131,sebia,-1,-1,0.0,api_sniff,
+Secret Recipe,ai (browser),https://secretrecipe.com/careers,https://secretrecipe.com/careers,,-1,-1,,ai,low
+Securitas,smartrecruiters,securitas,https://careers.smartrecruiters.com/securitas,Securitas,1220,0,0.0,api_sniff,
+Securonix,ai (browser),https://www.securonix.com/company/careers/,https://www.securonix.com/company/careers/,,-1,-1,,ai,low
+Seeburger,successfactors (browser),https://career5.successfactors.eu/career?site=&company=seeburgera&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career5.successfactors.eu/career?site=&company=seeburgera&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,seeburger,-1,-1,,ai,low
+Sensient Technologies,ai (browser),https://careers.sensient.com/en,https://careers.sensient.com/en,,-1,-1,,ai,low
+Sensus,ai (browser),https://www.xylem.com/en-us/brand/sensus/,https://www.xylem.com/en-us/brand/sensus/,,-1,-1,,ai,low
+Sephora,ai (browser),https://jobs.sephora.com/,https://jobs.sephora.com/,,-1,-1,,ai,high
+Serapid,ai (browser),https://www.serapid.com/careers,https://www.serapid.com/careers,,-1,-1,,ai,low
+Serta,taleo (browser),https://serta.taleo.net/careersection/serta_external/jobsearch.ftl,https://serta.taleo.net/careersection/serta_external/jobsearch.ftl,serta,-1,-1,,ai,low
+Shake Shack,smartrecruiters,shakeshack,https://careers.smartrecruiters.com/shakeshack,Shake Shack,1,0,0.0,api_sniff,
+Shanghai International Port Group,ai (browser),https://www.sipg.com.cn/Error/Index,https://www.sipg.com.cn/Error/Index,,-1,-1,,ai,low
+Shanghai Tunnel Engineering,ai (browser),https://www.stecs.com.sg/stecscareers,https://www.stecs.com.sg/stecscareers,,-1,-1,,ai,high
+SharkNinja,ai (browser),https://careers.sharkninja.com/,https://careers.sharkninja.com/,,-1,-1,,ai,low
+Shutterstock,workday,https://shutterstock.wd1.myworkdayjobs.com/ShutterstockCareers,https://shutterstock.wd1.myworkdayjobs.com/ShutterstockCareers,shutterstock,4,-1,1.0,api_sniff,
+Sichuan Airlines,ai (browser),https://www.sichuanairlines.com/en/about/careers,https://www.sichuanairlines.com/en/about/careers,,-1,-1,,ai,low
+Silberline,ai (browser),https://www.eckart.net/en/,https://www.eckart.net/en/,,-1,-1,,ai,low
+SilverPush,ai (browser),https://silverpush.co/careers/,https://silverpush.co/careers/,,-1,-1,,ai,low
+Singapore Technologies,successfactors (browser),https://career10.successfactors.com/career?site=&company=singaporet&lang=en_GB&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career10.successfactors.com/career?site=&company=singaporet&lang=en_GB&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,singaporetechnologies,-1,-1,,ai,high
+Singleron Biotechnologies,ai (browser),https://singleron.bio/careers/,https://singleron.bio/careers/,,-1,-1,,ai,high
+Sinokor,taleo (browser),https://sinokor.taleo.net,https://sinokor.taleo.net,sinokor,-1,-1,,ai,low
+Six Seconds,ai (browser),https://www.6seconds.org/,https://www.6seconds.org/,,-1,-1,,ai,low
+Skanray,ai (browser),https://world.skanray.com/,https://world.skanray.com/,,-1,-1,,ai,low
+Skuld,ai (browser),https://www.skuld.com/careers,https://www.skuld.com/careers,,-1,-1,,ai,low
+SmallRig,ai (browser),https://www.smallrig.com/global/careers,https://www.smallrig.com/global/careers,,-1,-1,,ai,low
+SmartNews,workable (browser),https://apply.workable.com/smartnews/,https://apply.workable.com/smartnews/,smartnews,-1,-1,,ai,low
+Smarte Carte,ai (browser),https://smartecarte.com/careers/,https://smartecarte.com/careers/,,-1,-1,,ai,low
+Smiths Detection,ai (browser),https://www.smithsdetection.com/careers/,https://www.smithsdetection.com/careers/,,-1,-1,,ai,low
+Smollan,ai (browser),https://smollan.com,https://smollan.com,,-1,-1,,ai,low
+Socomec,ai (browser),https://www.socomec.com/en/careers,https://www.socomec.com/en/careers,,-1,-1,,ai,low
+SoftBank,ai (browser),https://www.softbank.jp/recruit/,https://www.softbank.jp/recruit/,,-1,-1,,ai,low
+Softiron,ai (browser),https://softiron.com/careers/,https://softiron.com/careers/,,-1,-1,,ai,low
+Softlink,workable (browser),https://apply.workable.com/softlink/,https://apply.workable.com/softlink/,softlink,-1,-1,,ai,low
+Sojitz,ai (browser),https://www.sojitz.com/en/,https://www.sojitz.com/en/,,-1,-1,,ai,low
+SolarWinds,greenhouse,solarwinds,https://boards.greenhouse.io/solarwinds,SolarWinds,90,1,0.0,api_sniff,
+Solpac,ai (browser),https://www.solpac.com/careers,https://www.solpac.com/careers,,-1,-1,,ai,low
+Solta Medical,ai (browser),https://www.solta.com/careers,https://www.solta.com/careers,,-1,-1,,ai,low
+Southern Baptist Convention,ai (browser),https://jobs.sbc.net/,https://jobs.sbc.net/,,-1,-1,,ai,low
+Sphera,workday,https://sphera.wd1.myworkdayjobs.com/Careers,https://sphera.wd1.myworkdayjobs.com/Careers,sphera,30,-1,0.0,api_sniff,
+Splashtop,ai (browser),https://www.splashtop.com/about/careers,https://www.splashtop.com/about/careers,,-1,-1,,ai,high
+Sportfive,ai (browser),https://sportfive.com/careers,https://sportfive.com/careers,,-1,-1,,ai,low
+Spotify,lever,spotify,https://jobs.lever.co/spotify,,104,2,0.0,api_sniff,
+Sprout Social,greenhouse,sproutsocial,https://boards.greenhouse.io/sproutsocial,Sprout Social,5,0,0.0,api_sniff,
+Squaretrade,ai (browser),https://www.squaretrade.com/careers/,https://www.squaretrade.com/careers/,,-1,-1,,ai,high
+StackAdapt,greenhouse,stackadapt,https://boards.greenhouse.io/stackadapt,StackAdapt,87,2,0.0,api_sniff,
+Standard Biotools,workday,https://standardbiotools.wd5.myworkdayjobs.com/External,https://standardbiotools.wd5.myworkdayjobs.com/External,standardbiotools,3,-1,1.0,api_sniff,
+Star Bulk,ai (browser),https://www.starbulk.com/gr/en/on-shore/,https://www.starbulk.com/gr/en/on-shore/,,-1,-1,,ai,high
+StarHub,ai (browser),https://careers.starhub.com/,https://careers.starhub.com/,,-1,-1,,ai,low
+Starburst Data,greenhouse,starburst,https://boards.greenhouse.io/starburst,Starburst,16,0,0.0,api_sniff,
+StayInFront,ai (browser),https://www.stayinfront.com/careers/,https://www.stayinfront.com/careers/,,-1,-1,,ai,low
+StemCell Technologies,workday,https://stemcell.wd3.myworkdayjobs.com/External_Careers,https://stemcell.wd3.myworkdayjobs.com/External_Careers,stemcell,22,-1,0.0,api_sniff,
+Stena Line,ai (browser),https://stenaline.com/career/job-openings/,https://stenaline.com/career/job-openings/,,-1,-1,,ai,high
+Studyportals,ai (browser),https://studyportals.com/careers/,https://studyportals.com/careers/,,-1,-1,,ai,low
+Subcom,ai (browser),https://www.paycomonline.net/v4/ats/web.php/portal/D643FF77D905DF5085183AF26960B58C/career-page,https://www.paycomonline.net/v4/ats/web.php/portal/D643FF77D905DF5085183AF26960B58C/career-page,,-1,-1,,ai,low
+Subsea 7,ai (browser),https://careers.subsea7.com/,https://careers.subsea7.com/,,-1,-1,,ai,high
+Sucofindo,ai (browser),https://sucofindo.com/careers,https://sucofindo.com/careers,,-1,-1,,ai,low
+Sumitomo,ai (browser),https://www.sumitomocorp.com/en/asia-oceania/careers,https://www.sumitomocorp.com/en/asia-oceania/careers,,-1,-1,,ai,high
+Sumitomo Corporation,ai (browser),https://www.sumitomocorp.com/en/global/404?item=%2fcareers&user=extranet%5cAnonymous&site=website,https://www.sumitomocorp.com/en/global/404?item=%2fcareers&user=extranet%5cAnonymous&site=website,,-1,-1,,ai,low
+Sumitomo Electric Industries,ai (browser),https://www.sumitomo-electric.com/careers,https://www.sumitomo-electric.com/careers,,-1,-1,,ai,low
+Sumsub,ai (browser),https://sumsub.com/careers/,https://sumsub.com/careers/,,-1,-1,,ai,high
+Sunseeker,ai (browser),https://www.sunseeker.com/en/careers,https://www.sunseeker.com/en/careers,,-1,-1,,ai,low
+Sunsuper,oracle,https://hcgh.fa.ap1.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_3001,https://hcgh.fa.ap1.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_3001,sunsuper,22,-1,,ai,low
+Surecomp,ai (browser),https://www.surecomp.com/careers,https://www.surecomp.com/careers,,-1,-1,,ai,low
+Suunto,ai (browser),https://www.suunto.com/careers,https://www.suunto.com/careers,,-1,-1,,ai,medium
+Suzumo,ai (browser),https://www.suzumo.com/,https://www.suzumo.com/,,-1,-1,,ai,low
+Suzuyo,ai (browser),https://www.suzuyo.co.jp/recruit/,https://www.suzuyo.co.jp/recruit/,,-1,-1,,ai,low
+Swire,ai (browser),https://careers.swire.com/en,https://careers.swire.com/en,,-1,-1,,ai,low
+Swiss Re,successfactors (browser),https://career2.successfactors.eu/career?career_company=SwissRe&lang=en_GB&company=SwissRe&site=&loginFlowRequired=true,https://career2.successfactors.eu/career?career_company=SwissRe&lang=en_GB&company=SwissRe&site=&loginFlowRequired=true,swissre,-1,-1,1.0,api_sniff,
+Swisslog,ai (browser),https://www.swisslog.com/en-us,https://www.swisslog.com/en-us,,-1,-1,,ai,low
+Synamedia,ai (browser),https://www.synamedia.com/careers/,https://www.synamedia.com/careers/,,-1,-1,,ai,low
+Synechron,smartrecruiters,synechron,https://careers.smartrecruiters.com/synechron,Synechron,3,0,1.0,api_sniff,
+Synopsys,avature (browser),https://synopsys.avature.net/talentcommunity?jobId=88&amp;source=Radancy&amp;tags=Careersite_leads,https://synopsys.avature.net/talentcommunity?jobId=88&amp;source=Radancy&amp;tags=Careersite_leads,synopsys,-1,-1,0.0,api_sniff,
+Synpulse,ai (browser),https://www.synpulse.com/en/careers,https://www.synpulse.com/en/careers,,-1,-1,,ai,low
+Syska Hennessy,greenhouse,syskahennessy,https://boards.greenhouse.io/syskahennessy,Syska Hennessy Group,111,0,0.0,api_sniff,
+TBWA,ai (browser),https://tbwa.com/page-not-found/,https://tbwa.com/page-not-found/,,-1,-1,,ai,low
+TIAA,workday,https://tiaa.wd1.myworkdayjobs.com/Search,https://tiaa.wd1.myworkdayjobs.com/Search,tiaa,166,-1,,ai,high
+TNO,ai (browser),https://www.tno.nl/en/careers/,https://www.tno.nl/en/careers/,,-1,-1,,ai,low
+TP ICAP,smartrecruiters,tpicap,https://careers.smartrecruiters.com/tpicap,TP ICAP,4,0,0.0,api_sniff,
+TRC Systems,ai (browser),https://www.trcsystems.com/careers,https://www.trcsystems.com/careers,,-1,-1,,ai,low
+TRL Krosaki,ai (browser),https://www.trlkrosaki.com/careers,https://www.trlkrosaki.com/careers,,-1,-1,,ai,low
+TUV SUD,ai (browser),https://careers.tuvsud.com/,https://careers.tuvsud.com/,,-1,-1,,ai,medium
+TVS,ai (browser),https://www.tvs.com/careers,https://www.tvs.com/careers,,-1,-1,,ai,low
+Tabreed,ai (browser),https://careers.tabreed.ae/,https://careers.tabreed.ae/,,-1,-1,,ai,low
+Taihei,ai (browser),https://www.taihei.com/careers,https://www.taihei.com/careers,,-1,-1,,ai,low
+Taiyo,ai (browser),https://taiyo.com.sg/careers/,https://taiyo.com.sg/careers/,,-1,-1,,ai,low
+Taiyo Ink,ai (browser),https://www.taiyo-hd.co.jp/jp/index.html,https://www.taiyo-hd.co.jp/jp/index.html,,-1,-1,,ai,low
+Takeda,workday,https://takeda.wd3.myworkdayjobs.com/External,https://takeda.wd3.myworkdayjobs.com/External,takeda,1655,-1,0.0,api_sniff,
+Takeda Pharmaceuticals,avature (browser),https://takeda.avature.net/TakedaTalentCommunity,https://takeda.avature.net/TakedaTalentCommunity,takedapharmaceuticals,-1,-1,,ai,high
+Talkdesk,greenhouse,talkdesk2,https://boards.greenhouse.io/talkdesk2,Talkdesk,50,0,,ai,high
+Tanla,ai (browser),https://www.tanla.com/careers,https://www.tanla.com/careers,,-1,-1,,ai,low
+Tasaki,ai (browser),https://careers.tasaki.co.jp/,https://careers.tasaki.co.jp/,,-1,-1,,ai,low
+Tata,ai (browser),https://www.tata.com/careers/jobs/joblisting,https://www.tata.com/careers/jobs/joblisting,,-1,-1,,ai,high
+Taulia,ai (browser),https://taulia.com/company/careers/,https://taulia.com/company/careers/,,-1,-1,,ai,low
+Tech Data,phenom (browser),https://careers.tdsynnex.com/us/en/search-results?keywords={search_term_string},https://careers.tdsynnex.com/us/en/search-results?keywords={search_term_string},techdata,-1,-1,1.0,api_sniff,
+Tech Mahindra,ai (browser),https://careers.techmahindra.com/,https://careers.techmahindra.com/,,-1,-1,,ai,high
+Technos,recruitee (browser),https://technos.recruitee.com,https://technos.recruitee.com,technos,-1,-1,,ai,low
+Tecnicas Reunidas,ai (browser),https://www.tecnicasreunidas.es/careers/,https://www.tecnicasreunidas.es/careers/,,-1,-1,,ai,low
+Tecnikabel,ai (browser),https://www.tecnikabel.com/page-not-found/,https://www.tecnikabel.com/page-not-found/,,-1,-1,,ai,low
+Teekay,oracle,https://eipv.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2001,https://eipv.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2001,teekay,3,-1,1.0,api_sniff,
+Telechips,ai (browser),https://careers.telechips.com/,https://careers.telechips.com/,,-1,-1,,ai,low
+Telesat,lever,telesat,https://jobs.lever.co/telesat,,48,0,0.0,api_sniff,
+Temenos,ai (browser),https://www.temenos.com/about-us/careers/,https://www.temenos.com/about-us/careers/,,-1,-1,,ai,high
+Tencent,workday,https://tencent.wd1.myworkdayjobs.com/Tencent_Careers,https://tencent.wd1.myworkdayjobs.com/Tencent_Careers,tencent,333,-1,0.0,api_sniff,
+Teneo,greenhouse,teneo,https://boards.greenhouse.io/teneo,Teneo ,63,1,0.0,api_sniff,
+Tential,ai (browser),https://tential.com/careers/,https://tential.com/careers/,,-1,-1,,ai,low
+Terex,workday,https://terex.wd1.myworkdayjobs.com/TerexCareers,https://terex.wd1.myworkdayjobs.com/TerexCareers,terex,252,-1,0.0,api_sniff,
+Thai AirAsia,ai (browser),https://careers.airasia.com/,https://careers.airasia.com/,,-1,-1,,ai,low
+Thales,smartrecruiters,thales,https://careers.smartrecruiters.com/thales,Thales,2,0,0.0,api_sniff,
+Thames Water,ai (browser),https://careers.thameswater.co.uk/,https://careers.thameswater.co.uk/,,-1,-1,,ai,low
+The Baltic Exchange,ai (browser),https://www.balticexchange.com/careers,https://www.balticexchange.com/careers,,-1,-1,,ai,low
+Thermosafe,ai (browser),https://thermosafe.com/careers/,https://thermosafe.com/careers/,,-1,-1,,ai,low
+ThinkPlace,ai (browser),https://www.thinkplace.com.sg/careers/,https://www.thinkplace.com.sg/careers/,,-1,-1,,ai,low
+Thomas Foods International,ai (browser),http://thomasfoods.com/careers/,http://thomasfoods.com/careers/,,-1,-1,,ai,low
+ThomasLloyd,workable (browser),https://apply.workable.com/thomaslloyd/,https://apply.workable.com/thomaslloyd/,thomaslloyd,-1,-1,,ai,low
+ThyssenKrupp,workday,https://thyssenkruppmaterialsna.wd12.myworkdayjobs.com/1,https://thyssenkruppmaterialsna.wd12.myworkdayjobs.com/1,thyssenkruppmaterialsna,207,-1,,ai,medium
+Tidewater,taleo (browser),https://phh.tbe.taleo.net/phh03/ats/careers/v2/searchResults?org=TIDETRANS&amp;cws=40,https://phh.tbe.taleo.net/phh03/ats/careers/v2/searchResults?org=TIDETRANS&amp;cws=40,tidewater,-1,-1,0.0,api_sniff,
+Tideway,ai (browser),https://www.tideway.london/our-people/,https://www.tideway.london/our-people/,,-1,-1,,ai,low
+Tigermed,recruitee (browser),https://tigermed.recruitee.com,https://tigermed.recruitee.com,tigermed,-1,-1,,ai,low
+TikTok,ai (browser),https://lifeattiktok.com/,https://lifeattiktok.com/,,-1,-1,,ai,high
+Timken,ai (browser),https://careers.timken.com/,https://careers.timken.com/,,-1,-1,,ai,high
+Todos Medical,ai (browser),https://www.applicantstack.com/job-not-found/,https://www.applicantstack.com/job-not-found/,,-1,-1,,ai,low
+Together Group Studios,smartrecruiters,together,https://careers.smartrecruiters.com/together,Together,25,0,0.0,api_sniff,
+Tokio Marine,ai (browser),https://www.tokyomarine.com/en/careers/,https://www.tokyomarine.com/en/careers/,,-1,-1,,ai,low
+Tokyo Century,ai (browser),https://www.tokyocentury.com/careers,https://www.tokyocentury.com/careers,,-1,-1,,ai,low
+Tokyo Keiki,ai (browser),https://www.tokyokeiki.com/recruit/,https://www.tokyokeiki.com/recruit/,,-1,-1,,ai,low
+Tokyu Land,ai (browser),https://www.tokyu-land.co.jp/recruit/,https://www.tokyu-land.co.jp/recruit/,,-1,-1,,ai,low
+Tong Ren Tang,ai (browser),https://www.tongrentang.com/,https://www.tongrentang.com/,,-1,-1,,ai,low
+Toronto Dominion,workday,https://td.wd3.myworkdayjobs.com/TD_Bank_Careers,https://td.wd3.myworkdayjobs.com/TD_Bank_Careers,td,1682,-1,,ai,high
+Toshiba,taleo (browser),https://toshiba.taleo.net/careersection/toshiba_external/jobsearch.ftl,https://toshiba.taleo.net/careersection/toshiba_external/jobsearch.ftl,toshiba,-1,-1,,ai,low
+Tower Transit,ai (browser),https://www.towertransit.sg/careers,https://www.towertransit.sg/careers,,-1,-1,,ai,high
+Toyota,phenom (browser),https://careers.toyota.com/us/en/search-results?keywords={search_term_string},https://careers.toyota.com/us/en/search-results?keywords={search_term_string},toyota,-1,-1,0.0,api_sniff,
+TraceSafe,ai (browser),https://tracesafe.com/careers,https://tracesafe.com/careers,,-1,-1,,ai,low
+Tracerco,ai (browser),https://tracerco.com/careers/,https://tracerco.com/careers/,,-1,-1,,ai,low
+Trackunit,ai (browser),https://careers.trackunit.com/,https://careers.trackunit.com/,,-1,-1,,ai,low
+Trafigura,workday,https://trafigura.wd3.myworkdayjobs.com/TrafiguraCareerSite,https://trafigura.wd3.myworkdayjobs.com/TrafiguraCareerSite,trafigura,104,-1,,ai,high
+Trafometal,recruitee (browser),https://trafometal.recruitee.com,https://trafometal.recruitee.com,trafometal,-1,-1,,ai,low
+Trainocate,ai (browser),https://trainocate.com/sg/careers,https://trainocate.com/sg/careers,,-1,-1,,ai,low
+Travel Guard,taleo (browser),https://travelguard.taleo.net/careersection/external/jobsearch.ftl,https://travelguard.taleo.net/careersection/external/jobsearch.ftl,travelguard,-1,-1,,ai,low
+Travix,greenhouse,travix,https://boards.greenhouse.io/travix,Travix,6,0,0.0,api_sniff,
+Traxys,ai (browser),https://www.traxys.com/careers,https://www.traxys.com/careers,,-1,-1,,ai,low
+Trek,workday,https://trekbikes.wd1.myworkdayjobs.com/TREK,https://trekbikes.wd1.myworkdayjobs.com/TREK,trekbikes,246,-1,,ai,high
+Trina Solar,ai (browser),https://careers.trinasolar.com/,https://careers.trinasolar.com/,,-1,-1,,ai,high
+TripAdvisor,greenhouse,tripadvisor,https://boards.greenhouse.io/tripadvisor,Tripadvisor,89,1,0.0,api_sniff,
+Triton International,ai (browser),https://www.tritoninternational.com/careers,https://www.tritoninternational.com/careers,,-1,-1,,ai,low
+Truecaller,greenhouse,truecaller,https://boards.greenhouse.io/truecaller,Truecaller,20,0,0.0,api_sniff,
+Tsui Wah,taleo (browser),https://tsuiwah.taleo.net/careersection,https://tsuiwah.taleo.net/careersection,tsuiwah,-1,-1,,ai,low
+Tudor Investment,ai (browser),https://www.tudorim.com/careers,https://www.tudorim.com/careers,,-1,-1,,ai,low
+Tunap,ai (browser),https://www.tunap.com/tunap/start.php,https://www.tunap.com/tunap/start.php,,-1,-1,,ai,low
+Twilio,greenhouse,twilio,https://boards.greenhouse.io/twilio,Twilio,154,3,0.0,api_sniff,
+Twitch,greenhouse,twitch,https://boards.greenhouse.io/twitch,Twitch,64,0,0.0,api_sniff,
+UCWeb,ai (browser),https://www.ucweb.com/,https://www.ucweb.com/,,-1,-1,,ai,low
+UFA,successfactors (browser),https://career17.sapsf.com/careers?company=unitedfarm,https://career17.sapsf.com/careers?company=unitedfarm,ufa,-1,-1,0.0,api_sniff,
+USANA Health Sciences,ai (browser),https://careers.usana.com/,https://careers.usana.com/,,-1,-1,,ai,high
+Udacity,greenhouse,udacity,https://boards.greenhouse.io/udacity,Udacity,14,0,0.0,api_sniff,
+Unilode,ai (browser),https://www.unilode.com/,https://www.unilode.com/,,-1,-1,,ai,low
+Union Bulk,recruitee (browser),https://unionbulk.recruitee.com,https://unionbulk.recruitee.com,unionbulk,-1,-1,,ai,low
+Uniphore,ai (browser),https://www.uniphore.com/careers/,https://www.uniphore.com/careers/,,-1,-1,,ai,low
+United Airlines,phenom (browser),https://careers.united.com/us/en/search-results?keywords=%7Bsearch_term_string%7D,https://careers.united.com/us/en/search-results?keywords=%7Bsearch_term_string%7D,unitedairlines,-1,-1,,ai,high
+United Overseas Bank,ai (browser),https://www.uobgroup.com/careers/index.page,https://www.uobgroup.com/careers/index.page,,-1,-1,,ai,high
+University of Warwick,taleo (browser),https://warwick.taleo.net/,https://warwick.taleo.net/,universityofwarwick,-1,-1,,ai,high
+Uzin Utz,ai (browser),https://int.uzin-utz.com/about-us/worldwide/singapore/,https://int.uzin-utz.com/about-us/worldwide/singapore/,,-1,-1,,ai,low
+VSL,ai (browser),https://vsl.com/,https://vsl.com/,,-1,-1,,ai,low
+Vale,eightfold (browser),https://vale.eightfold.ai/careers,https://vale.eightfold.ai/careers,vale,-1,-1,0.0,api_sniff,
+Valqua,ai (browser),https://valqua.recruiterflow.com/,https://valqua.recruiterflow.com/,,-1,-1,,ai,low
+Valr,ai (browser),https://valr.careers.hibob.com/,https://valr.careers.hibob.com/,,-1,-1,,ai,low
+Vard,ai (browser),https://www.vard.com/about-us/careers,https://www.vard.com/about-us/careers,,-1,-1,,ai,low
+Varde Partners,ai (browser),https://www.vardepartners.com/careers,https://www.vardepartners.com/careers,,-1,-1,,ai,low
+Vecima,ai (browser),https://vecima.com/company/careers/,https://vecima.com/company/careers/,,-1,-1,,ai,low
+Veka,ai (browser),https://jobs.veka.com/,https://jobs.veka.com/,,-1,-1,,ai,low
+Veolia,ai (browser),https://www.veolia.com/en/careers,https://www.veolia.com/en/careers,,-1,-1,,ai,high
+Verifavia,ai (browser),https://normecverifavia.com/jobs/,https://normecverifavia.com/jobs/,,-1,-1,,ai,low
+Verimatrix,ai (browser),https://www.verimatrix.com/careers/,https://www.verimatrix.com/careers/,,-1,-1,,ai,low
+Versuni,phenom (browser),https://careers.versuni.com/gb/en/search-results?keywords=%7Bsearch_term_string%7D,https://careers.versuni.com/gb/en/search-results?keywords=%7Bsearch_term_string%7D,versuni,-1,-1,,ai,low
+Vertu,ai (browser),https://vertu.com/careers,https://vertu.com/careers,,-1,-1,,ai,low
+Vetter Pharma,successfactors (browser),https://career5.successfactors.eu/career?company=Vetter&clientId=jobs2web&lang=en_US&navBarLevel=MY_PROFILE&_ga=2.48459876.337990762.1623053641-531145372.1615298274,https://career5.successfactors.eu/career?company=Vetter&clientId=jobs2web&lang=en_US&navBarLevel=MY_PROFILE&_ga=2.48459876.337990762.1623053641-531145372.1615298274,vetterpharma,-1,-1,,ai,low
+Viatris,workday,https://viatris.wd5.myworkdayjobs.com/External,https://viatris.wd5.myworkdayjobs.com/External,viatris,456,-1,0.0,api_sniff,
+Vimeo,ai (browser),https://vimeo.com/careers,https://vimeo.com/careers,,-1,-1,,ai,high
+Vintana,ai (browser),https://vintana.com/careers,https://vintana.com/careers,,-1,-1,,ai,low
+Virtus Health,ai (browser),https://virtushealth.com/careers,https://virtushealth.com/careers,,-1,-1,,ai,low
+Visa,smartrecruiters,visa,https://careers.smartrecruiters.com/visa,Visa,2,0,0.0,api_sniff,
+Visy,ai (browser),https://careers.visy.com/jobs/search,https://careers.visy.com/jobs/search,,-1,-1,,ai,low
+Vitasoy,ai (browser),https://www.vitasoy.com/en/careers,https://www.vitasoy.com/en/careers,,-1,-1,,ai,low
+Vitol,smartrecruiters,vitol,https://careers.smartrecruiters.com/vitol,Vitol,38,8,0.0,api_sniff,
+Vodafone,ai (browser),https://careers.vodafone.com/,https://careers.vodafone.com/,,-1,-1,,ai,high
+WAGO,ai (browser),https://www.wago.com/global/,https://www.wago.com/global/,,-1,-1,,ai,medium
+WBCSD,ai (browser),https://www.wbcsd.org/Careers/,https://www.wbcsd.org/Careers/,,-1,-1,,ai,low
+Wantedly,ai (browser),https://www.wantedly.com/companies/wantedly/projects,https://www.wantedly.com/companies/wantedly/projects,,-1,-1,,ai,high
+Wartsila,successfactors (browser),https://career2.successfactors.eu/career?career_company=Wartsila&amp;lang=en_GB&amp;company=Wartsila&amp;site=&amp;loginFlowRequired=true&amp;_s.crb=yTlPiLgyuwcNW6fgpvvCFJtAauWaAZVyQMz10xBgM1A%3d,https://career2.successfactors.eu/career?career_company=Wartsila&amp;lang=en_GB&amp;company=Wartsila&amp;site=&amp;loginFlowRequired=true&amp;_s.crb=yTlPiLgyuwcNW6fgpvvCFJtAauWaAZVyQMz10xBgM1A%3d,wartsila,-1,-1,0.0,api_sniff,
+Watchfinder,workday,https://richemont.wd3.myworkdayjobs.com/richemont,https://richemont.wd3.myworkdayjobs.com/richemont,richemont,1169,-1,1.0,api_sniff,
+Waterwipes,ai (browser),https://www.waterwipes.com/careers,https://www.waterwipes.com/careers,,-1,-1,,ai,low
+Webbeds,workday,https://webtravelgroup.wd103.myworkdayjobs.com/WebBeds_Jobs,https://webtravelgroup.wd103.myworkdayjobs.com/WebBeds_Jobs,webtravelgroup,32,-1,1.0,api_sniff,
+Weibo,ai (browser),https://passport.weibo.com/visitor/visitor?entry=miniblog&a=enter&url=https%3A%2F%2Fwww.weibo.com%2Fcareers&domain=weibo.com&ua=Mozilla%2F5.0%20%28Windows%20NT%2010.0%3B%20Win64%3B%20x64%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F121.0.0.0%20Safari%2F537.36&_rand=1783633076148&sudaref=,https://passport.weibo.com/visitor/visitor?entry=miniblog&a=enter&url=https%3A%2F%2Fwww.weibo.com%2Fcareers&domain=weibo.com&ua=Mozilla%2F5.0%20%28Windows%20NT%2010.0%3B%20Win64%3B%20x64%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F121.0.0.0%20Safari%2F537.36&_rand=1783633076148&sudaref=,,-1,-1,,ai,low
+Wella,successfactors (browser),https://career55.sapsf.eu/career?site=&company=wellanethe&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career55.sapsf.eu/career?site=&company=wellanethe&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,wella,-1,-1,,ai,low
+Wells Fargo,ai (browser),https://www.wellsfargo.com/about/careers/?utm_medium=www-redirect&utm_source=careers,https://www.wellsfargo.com/about/careers/?utm_medium=www-redirect&utm_source=careers,,-1,-1,,ai,high
+West Japan Railway,ai (browser),https://www.jrkyushu.co.jp/recruit/,https://www.jrkyushu.co.jp/recruit/,,-1,-1,,ai,low
+WestRock,avature (browser),https://westrockta.avature.net/en_US/careers,https://westrockta.avature.net/en_US/careers,westrock,-1,-1,0.0,api_sniff,
+Western Digital,smartrecruiters,westerndigital,https://careers.smartrecruiters.com/westerndigital,Western Digital,281,0,0.0,api_sniff,
+Wieland,icims (browser),https://careers-chasebrass.icims.com/jobs/intro?mobile=false&amp;width=1902&amp;height=500&amp;bga=true&amp;needsRedirect=false&amp;jan1offset=60&amp;jun1offset=120,https://careers-chasebrass.icims.com/jobs/intro?mobile=false&amp;width=1902&amp;height=500&amp;bga=true&amp;needsRedirect=false&amp;jan1offset=60&amp;jun1offset=120,wieland,-1,-1,0.0,api_sniff,
+Wieland Electric,icims (browser),https://www.wieland.com/en/career,https://www.wieland.com/en/career,wielandelectric,-1,-1,,ai,low
+Willis Towers Watson,ai (browser),https://careers.wtwco.com,https://careers.wtwco.com,,-1,-1,,ai,high
+Wilson,workday,https://wilsonhcg.wd5.myworkdayjobs.com/Wilson_Careers,https://wilsonhcg.wd5.myworkdayjobs.com/Wilson_Careers,wilsonhcg,39,-1,,ai,high
+Wilson Parking,ai (browser),https://www.wilsonparking.com.sg/join-wilson/,https://www.wilsonparking.com.sg/join-wilson/,,-1,-1,,ai,high
+Wilsonart,workday,https://wilsonart.wd5.myworkdayjobs.com/Wilsonart_Careers,https://wilsonart.wd5.myworkdayjobs.com/Wilsonart_Careers,wilsonart,62,-1,0.0,api_sniff,
+Wirebarley,ai (browser),https://www.wirebarley.com/en,https://www.wirebarley.com/en,,-1,-1,,ai,low
+Wizcraft International,taleo (browser),https://wizcraft.taleo.net/careersection/external,https://wizcraft.taleo.net/careersection/external,wizcraftinternational,-1,-1,,ai,low
+Wolters Kluwer,workday,https://wk.wd3.myworkdayjobs.com/External,https://wk.wd3.myworkdayjobs.com/External,wk,527,-1,,ai,high
+Woowa Brothers,ai (browser),https://www.woowabros.com/careers,https://www.woowabros.com/careers,,-1,-1,,ai,low
+World Hotels,recruitee (browser),https://worldhotels.recruitee.com,https://worldhotels.recruitee.com,worldhotels,-1,-1,1.0,api_sniff,
+WorldRemit,ai (browser),https://zepz.io,https://zepz.io,,-1,-1,,ai,high
+Worley,eightfold (browser),"https://www.eightfold.ai&#34;,","https://www.eightfold.ai&#34;,",worley,-1,-1,0.0,api_sniff,
+Wyeth,ai (browser),https://www.pfizer.com/about/careers,https://www.pfizer.com/about/careers,,-1,-1,,ai,high
+Wynn,ai (browser),https://www.wynnresorts.com/careers,https://www.wynnresorts.com/careers,,-1,-1,,ai,high
+XP Power,ai (browser),https://www.xppower.com/en/careers,https://www.xppower.com/en/careers,,-1,-1,,ai,low
+Xeikon,successfactors (browser),https://career55.sapsf.eu,https://career55.sapsf.eu,xeikon,-1,-1,0.0,api_sniff,
+Xiaomi,smartrecruiters,xiaomi,https://careers.smartrecruiters.com/xiaomi,Xiaomi,1,0,1.0,api_sniff,
+Xizi,ai (browser),https://www.xizi.com/,https://www.xizi.com/,,-1,-1,,ai,low
+Xtralis,ai (browser),https://xtralis.com/careers_list,https://xtralis.com/careers_list,,-1,-1,,ai,low
+YKK AP,successfactors (browser),https://career4.successfactors.com/career?site=&company=ykkapameri&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,https://career4.successfactors.com/career?site=&company=ykkapameri&lang=en_US&login_ns=register&career_ns=home&navBarLevel=MY_PROFILE,ykkap,-1,-1,,ai,low
+Yokogawa,ai (browser),https://www.yokogawa.com/about/careers/,https://www.yokogawa.com/about/careers/,,-1,-1,,ai,high
+Yuanta,ai (browser),https://www.yuanta.com/careers,https://www.yuanta.com/careers,,-1,-1,,ai,low
+Yubico,greenhouse,yubico,https://boards.greenhouse.io/yubico,Yubico Inc.,13,1,0.0,api_sniff,
+ZAGG,ai (browser),https://www.zagg.com/careers/,https://www.zagg.com/careers/,,-1,-1,,ai,low
+Zedra,ai (browser),https://www.zedra.com/careers/,https://www.zedra.com/careers/,,-1,-1,,ai,low
+Zegna,ai (browser),https://www.zegnagroup.com/en/zegna-careers/working-at-zegna/,https://www.zegnagroup.com/en/zegna-careers/working-at-zegna/,,-1,-1,,ai,low
+Zenitel,ai (browser),https://www.zenitel.com/careers,https://www.zenitel.com/careers,,-1,-1,,ai,low
+Zenlayer,ai (browser),https://www.zenlayer.com/careers/,https://www.zenlayer.com/careers/,,-1,-1,,ai,low
+Zensar Technologies,oracle,https://fa-etvl-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1,https://fa-etvl-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1,zensar,465,-1,0.0,api_sniff,
+Zinzino,ai (browser),https://www.zinzino.com/site/sg/en-gb,https://www.zinzino.com/site/sg/en-gb,,-1,-1,,ai,low
+Zoetis,workday,https://zoetis.wd5.myworkdayjobs.com/Zoetis,https://zoetis.wd5.myworkdayjobs.com/Zoetis,zoetis,103,-1,0.0,api_sniff,
+Zoom,workday,https://zoom.wd5.myworkdayjobs.com/Zoom,https://zoom.wd5.myworkdayjobs.com/Zoom,zoom,97,-1,0.0,api_sniff,
+iloom,workable (browser),https://apply.workable.com/iloom/,https://apply.workable.com/iloom/,iloom,-1,-1,,ai,low
+parkrun,ai (browser),https://www.parkrun.com/about/the-organisation/careers/,https://www.parkrun.com/about/the-organisation/careers/,,-1,-1,,ai,low

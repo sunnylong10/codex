@@ -1,0 +1,159 @@
+brand,ats,identifier,url,verified_name,jobs,sg_jobs,needs_review,src,ai_confidence
+ABC Arbitrage,greenhouse,abc,https://boards.greenhouse.io/abc,ThoughtWorks_new,24,1,1.0,api_sniff,
+ABC Cooking Studio,greenhouse,abc,https://boards.greenhouse.io/abc,ThoughtWorks_new,24,1,1.0,api_sniff,
+ADB SAFEGATE,successfactors (browser),https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,adbsafegate,-1,-1,1.0,api_sniff,
+ADP,ai (browser),https://jobs.adp.com/en/,https://jobs.adp.com/en/,,-1,-1,,ai,high
+AIMA,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Adways,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Air Canada,greenhouse,air,https://boards.greenhouse.io/air,Air,37,0,0.0,api_sniff,
+Air Charter Service,greenhouse,air,https://boards.greenhouse.io/air,Air,37,0,0.0,api_sniff,
+Air Cruisers,greenhouse,air,https://boards.greenhouse.io/air,Air,37,0,0.0,api_sniff,
+Air Liquide,greenhouse,air,https://boards.greenhouse.io/air,Air,37,0,0.0,api_sniff,
+Air Niugini,greenhouse,air,https://boards.greenhouse.io/air,Air,37,0,0.0,api_sniff,
+Air Premia,greenhouse,air,https://boards.greenhouse.io/air,Air,37,0,0.0,api_sniff,
+Allied Automotive,greenhouse,allied,https://boards.greenhouse.io/allied,Allied Mechanical,5,0,0.0,api_sniff,
+Antin Infrastructure Partners,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Apparel Resource,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Arisaig Partners,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Arjo,successfactors (browser),https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,arjo,-1,-1,0.0,api_sniff,
+Arper,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Astellar,ai (browser),https://careers.astellas.com/,https://careers.astellas.com/,,-1,-1,,ai,high
+BQT Solutions,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+BW Offshore,greenhouse,bw,https://boards.greenhouse.io/bw,BW,12,0,0.0,api_sniff,
+Belden,successfactors (browser),https://performancemanager4.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager4.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,belden,-1,-1,0.0,api_sniff,
+Berkeley Energy,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Bird Electronic,greenhouse,bird,https://boards.greenhouse.io/bird,Bird,39,0,0.0,api_sniff,
+Blue Yonder,lever,blue,https://jobs.lever.co/blue,,7,0,0.0,api_sniff,
+Bluetti,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Bound4Blue,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Brady Corporation,greenhouse,brady,https://boards.greenhouse.io/brady,Brady Services,43,0,0.0,api_sniff,
+CallTower,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Capital Drilling,lever,capital,https://jobs.lever.co/capital,,49,0,0.0,api_sniff,
+Capital Economics,lever,capital,https://jobs.lever.co/capital,,49,0,0.0,api_sniff,
+Charles River,greenhouse,charles,https://boards.greenhouse.io/charles,charles,4,0,0.0,api_sniff,
+Clariant,successfactors (browser),https://performancemanager.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,clariant,-1,-1,0.0,api_sniff,
+ClearCube,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Contenur,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+DBS,workday,https://dbs.wd3.myworkdayjobs.com/Dbs_Careers,https://dbs.wd3.myworkdayjobs.com/Dbs_Careers,dbs,1407,-1,0.0,api_sniff,
+Delvaux,workday,https://richemont.wd3.myworkdayjobs.com/richemont,https://richemont.wd3.myworkdayjobs.com/richemont,richemont,1169,-1,1.0,api_sniff,
+Detpak,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Doosan Bobcat,successfactors (browser),https://performancemanager4.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager4.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,doosanbobcat,-1,-1,1.0,api_sniff,
+EMC,oracle,https://iawmqy.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/careers,https://iawmqy.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/careers,emc,362,-1,,ai,high
+ESMO,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Eksons,ai (browser),https://corporate.exxonmobil.com/careers,https://corporate.exxonmobil.com/careers,,-1,-1,,ai,high
+Entrepreneur First,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Exxon,ai (browser),https://corporate.exxonmobil.com/careers,https://corporate.exxonmobil.com/careers,,-1,-1,,ai,high
+Fagerdala,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Felicite IP Consulting,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Fenix Outdoor,smartrecruiters,fenix,https://careers.smartrecruiters.com/fenix,Fenix,20,0,0.0,api_sniff,
+Flokk,ai (browser),https://info.jazzhr.com/job-seekers.html,https://info.jazzhr.com/job-seekers.html,,-1,-1,,ai,low
+Freshly,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Frontier Strategy Group,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+GEOS,workday,https://fugro.wd3.myworkdayjobs.com/Careers,https://fugro.wd3.myworkdayjobs.com/Careers,fugro,151,-1,1.0,api_sniff,
+Gate Gourmet,lever,gate,https://jobs.lever.co/gate,,19,0,0.0,api_sniff,
+General Motors,greenhouse,general,https://boards.greenhouse.io/general,General Interest,1,0,0.0,api_sniff,
+General Reinsurance,greenhouse,general,https://boards.greenhouse.io/general,General Interest,1,0,0.0,api_sniff,
+Gleeds,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Go City,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Harris,ai (browser),https://careers.l3harris.com/en,https://careers.l3harris.com/en,,-1,-1,,ai,low
+Hatch,successfactors (browser),https://performancemanager4.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager4.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,hatch,-1,-1,0.0,api_sniff,
+Haycarb,ai (browser),https://www.applicantstack.com/job-not-found/,https://www.applicantstack.com/job-not-found/,,-1,-1,,ai,low
+Hershey,successfactors (browser),https://performancemanager4.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager4.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,hershey,-1,-1,0.0,api_sniff,
+Hiperbaric,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+INTERTANKO,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Impiana Hotels,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+India Infrastructure Fund,greenhouse,india,https://boards.greenhouse.io/india,AQR India,11,0,0.0,api_sniff,
+Indiba,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Infratil,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Ingenico,successfactors (browser),https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,ingenico,-1,-1,0.0,api_sniff,
+Integra LifeSciences,greenhouse,integra,https://boards.greenhouse.io/integra,IntegraFEC,7,0,1.0,api_sniff,
+International Trademark Association,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Ion Beam Applications,lever,ion,https://jobs.lever.co/ion,,66,0,0.0,api_sniff,
+Japan Real Estate Institute,greenhouse,japan,https://boards.greenhouse.io/japan,Mirakl - Japan,3,0,0.0,api_sniff,
+Kaya,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Kennametal,successfactors (browser),https://performancemanager4.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager4.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,kennametal,-1,-1,0.0,api_sniff,
+Keolis,successfactors (browser),https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,keolis,-1,-1,0.0,api_sniff,
+Knomo,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Korea Exchange,greenhouse,korea,https://boards.greenhouse.io/korea,SIE KOREA,1,0,0.0,api_sniff,
+Korea Investment Corporation,greenhouse,korea,https://boards.greenhouse.io/korea,SIE KOREA,1,0,0.0,api_sniff,
+Korea Investment Partners,greenhouse,korea,https://boards.greenhouse.io/korea,SIE KOREA,1,0,0.0,api_sniff,
+Korea Venture Investment,greenhouse,korea,https://boards.greenhouse.io/korea,SIE KOREA,1,0,0.0,api_sniff,
+Kredivo,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Kvadrat,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Lactalis,successfactors (browser),https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,lactalis,-1,-1,0.0,api_sniff,
+Lalique,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Lawo,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Leoch International,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+MAS Holdings,greenhouse,mas,https://boards.greenhouse.io/mas,Midwest Applied Solutions,4,0,1.0,api_sniff,
+Magna,workday,https://magna.wd3.myworkdayjobs.com/Magna,https://magna.wd3.myworkdayjobs.com/Magna,magna,1285,-1,0.0,api_sniff,
+McLaren,recruitee (browser),https://careers-analytics.recruitee.com,https://careers-analytics.recruitee.com,mclaren,-1,-1,0.0,api_sniff,
+Metro Pacific Tollways,greenhouse,metro,https://boards.greenhouse.io/metro,Metro East JV,3,0,0.0,api_sniff,
+Mimaki,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Modern Hire,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Monash IVF,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Montague,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Music for Young Children,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+NGC,eightfold (browser),https://ngc.eightfold.ai/careerhub,https://ngc.eightfold.ai/careerhub,ngc,-1,-1,0.0,api_sniff,
+NX Shoji,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+National Pension Service,greenhouse,national,https://boards.greenhouse.io/national,NATIONAL,8,0,0.0,api_sniff,
+National Petrochemical,greenhouse,national,https://boards.greenhouse.io/national,NATIONAL,8,0,0.0,api_sniff,
+NextLabs,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Noble Drilling,greenhouse,noble,https://boards.greenhouse.io/noble,Noble,2,0,0.0,api_sniff,
+OCS Group,greenhouse,ocs,https://boards.greenhouse.io/ocs,Opportunity Charter School,3,0,1.0,api_sniff,
+OPay,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+PT Surveyor Indonesia,greenhouse,pt,https://boards.greenhouse.io/pt,WePractice (Psychotherapeut:in),7,0,1.0,api_sniff,
+Perspectum,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Planet Payment,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Prada,successfactors (browser),https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,prada,-1,-1,0.0,api_sniff,
+Pulse Electronics,greenhouse,pulse,https://boards.greenhouse.io/pulse,Pulse Healthcare,2577,0,0.0,api_sniff,
+Puratos,successfactors (browser),https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,puratos,-1,-1,0.0,api_sniff,
+Revio,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Richemont,workday,https://richemont.wd3.myworkdayjobs.com/Richemont,https://richemont.wd3.myworkdayjobs.com/Richemont,richemont,1169,-1,0.0,api_sniff,
+Rocketseed,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Roses Only,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+SAFE STS,lever,safe,https://jobs.lever.co/safe,,11,0,0.0,api_sniff,
+SIA Partners,smartrecruiters,sia,https://careers.smartrecruiters.com/sia,Sia,550,0,0.0,api_sniff,
+SITA,icims (browser),https://www.icims.com/legal/privacy-notice-website/,https://www.icims.com/legal/privacy-notice-website/,sita,-1,-1,0.0,api_sniff,
+Samty,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Santen Pharmaceutical,smartrecruiters,santen,https://careers.smartrecruiters.com/santen,Santen,72,1,0.0,api_sniff,
+Seal for Life Industries,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Shelf Drilling,greenhouse,shelf,https://boards.greenhouse.io/shelf,Shelf,13,0,0.0,api_sniff,
+Signium International,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Silab,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Sindicatum,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Sitel,successfactors (browser),https://performancemanager4.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager4.successfactors.com/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,sitel,-1,-1,0.0,api_sniff,
+Spider Holster,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Study Group,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+TAL International,smartrecruiters,tal,https://careers.smartrecruiters.com/tal,TAL,48,0,0.0,api_sniff,
+TPM Flavour,greenhouse,tpm,https://boards.greenhouse.io/tpm,TPM Group,3,0,0.0,api_sniff,
+Tatler,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Technogym,successfactors (browser),https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,technogym,-1,-1,0.0,api_sniff,
+Tetra Chemicals,greenhouse,tetra,https://boards.greenhouse.io/tetra,Tetra,1,0,0.0,api_sniff,
+Tezos,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Tim Ho Wan,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Timematters,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Tony Blair Institute,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Traxdata,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Tribal Group,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Trident Trust,greenhouse,trident,https://boards.greenhouse.io/trident,Trident,6,0,0.0,api_sniff,
+Trulioo,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,high
+Tyco Electronics,smartrecruiters,tyco,https://careers.smartrecruiters.com/tyco,Tyco,12,0,0.0,api_sniff,
+Tyco International,smartrecruiters,tyco,https://careers.smartrecruiters.com/tyco,Tyco,12,0,0.0,api_sniff,
+USANA,ai (browser),https://careers.usana.com/,https://careers.usana.com/,,-1,-1,,ai,high
+UWI Applied Materials,ai (browser),https://careers.appliedmaterials.com/careers,https://careers.appliedmaterials.com/careers,,-1,-1,,ai,high
+Velocity Solutions,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Vertex Ventures,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Vesconite,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Videology,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Vision RT,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Vistra,successfactors (browser),https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager5.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,vistra,-1,-1,0.0,api_sniff,
+Vitalink,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Volvo,successfactors (browser),https://career55.sapsf.eu,https://career55.sapsf.eu,volvo,-1,-1,0.0,api_sniff,
+Walkaroo,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Wevo,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+World Gold Council,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Worldline,successfactors (browser),https://performancemanager.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,https://performancemanager.successfactors.eu/verp/vmod_v1/ui/extlib/jquery_3.5.1/jquery.js,worldline,-1,-1,0.0,api_sniff,
+Woven Image,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Xado,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+Zinus,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low
+iClick Interactive,ai (browser),https://apply.workable.com/oops,https://apply.workable.com/oops,,-1,-1,,ai,low

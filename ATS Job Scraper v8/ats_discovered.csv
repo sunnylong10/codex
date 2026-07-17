@@ -1,0 +1,11 @@
+brand,ats,identifier,url,verified_name,jobs,sg_jobs,needs_review,ats_confidence,ats_verification_status,ats_evidence,ats_alternatives
+Tencent,workday,https://tencent.wd1.myworkdayjobs.com/Tencent_Careers,https://tencent.wd1.myworkdayjobs.com/Tencent_Careers,tencent,350,-1,0,1.0,verified,original_url:https://tencent.wd1.myworkdayjobs.com/Tencent_Careers;api_verified:workday,
+Air Canada,greenhouse,air,https://boards.greenhouse.io/air,Air,35,0,0,1.0,verified,original_url:https://boards.greenhouse.io/air;api_verified:greenhouse,
+Xiaomi,smartrecruiters,Xiaomi,https://careers.smartrecruiters.com/Xiaomi,Xiaomi,1,0,0,1.0,verified,original_url:https://careers.smartrecruiters.com/Xiaomi;api_verified:smartrecruiters,
+Google,smartrecruiters,Google,https://careers.smartrecruiters.com/Google,,0,0,1,1.0,verified,original_url:https://careers.smartrecruiters.com/Google;api_verified:smartrecruiters,
+McDonald's,smartrecruiters,Mcdonalds,https://careers.smartrecruiters.com/Mcdonalds,,0,0,1,1.0,verified,original_url:https://careers.smartrecruiters.com/Mcdonalds;api_verified:smartrecruiters,
+IBM,smartrecruiters,IBM,https://careers.smartrecruiters.com/IBM,,0,0,1,1.0,verified,original_url:https://careers.smartrecruiters.com/IBM;api_verified:smartrecruiters,
+GSC,smartrecruiters,GSC,https://careers.smartrecruiters.com/GSC,,0,0,1,1.0,verified,original_url:https://careers.smartrecruiters.com/GSC;api_verified:smartrecruiters,
+Weibo,smartrecruiters,Weibo,https://careers.smartrecruiters.com/Weibo,,0,0,1,1.0,verified,original_url:https://careers.smartrecruiters.com/Weibo;api_verified:smartrecruiters,
+Eu Yan Sang,smartrecruiters,Eu,https://careers.smartrecruiters.com/Eu,,0,0,1,1.0,verified,original_url:https://careers.smartrecruiters.com/Eu;api_verified:smartrecruiters,
+MISC,smartrecruiters,MISC,https://careers.smartrecruiters.com/MISC,,0,0,1,1.0,verified,original_url:https://careers.smartrecruiters.com/MISC;api_verified:smartrecruiters,
